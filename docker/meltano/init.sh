@@ -1,6 +1,7 @@
 #!/bin/bash
 
 python scripts/generate_meltano_config.py $ENV
+( cd scripts && python3 generate_rules_sql.py )
 
 while ! PGPASSWORD=$PG_PASSWORD pg_isready -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME; do sleep 1; done
 echo 'Importing seeds'
@@ -20,7 +21,5 @@ if [ -z "$NO_AIRFLOW" ]; then
 else
   echo "Skip creating admin"
 fi
-
-( cd scripts && python3 generate_rules_sql.py )
 
 meltano "$@"

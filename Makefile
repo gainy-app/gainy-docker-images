@@ -11,6 +11,7 @@ ifeq (${GITHUB_REF:refs/heads/%=},)
 	GITHUB_BRANCH := ${GITHUB_REF:refs/heads/%=%}
 	IMAGE_TAG ?= ${GITHUB_BRANCH}
 endif
+IMAGE_TAG ?= "latest"
 
 all: help;
 default: help;
