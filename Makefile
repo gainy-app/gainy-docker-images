@@ -17,22 +17,22 @@ all: help;
 default: help;
 
 build-meltano:
-	docker build --rm --no-cache -t ${BASE_IMAGE_PREFIX}-meltano:${IMAGE_TAG} docker/meltano
+	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-meltano:${IMAGE_TAG} docker/meltano
 
 publish-meltano:
-	docker image push ${BASE_IMAGE_PREFIX}-meltano:${IMAGE_TAG}
+	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-meltano:${IMAGE_TAG}
 
 build-firebase:
-	docker build --rm --no-cache -t ${BASE_IMAGE_PREFIX}-firebase:${IMAGE_TAG} docker/firebase
+	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-firebase:${IMAGE_TAG} docker/firebase
 
 publish-firebase:
-	docker image push ${BASE_IMAGE_PREFIX}-firebase:${IMAGE_TAG}
+	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-firebase:${IMAGE_TAG}
 
 build-hasura:
-	docker build --rm --no-cache -t ${BASE_IMAGE_PREFIX}-hasura:${IMAGE_TAG} docker/hasura
+	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-hasura:${IMAGE_TAG} docker/hasura
 
 publish-hasura:
-	docker image push ${BASE_IMAGE_PREFIX}-hasura:${IMAGE_TAG}
+	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-hasura:${IMAGE_TAG}
 
 build: build-meltano build-firebase build-hasura
 
