@@ -19,13 +19,13 @@ build-meltano:
 	docker build --rm --no-cache -t ${IMAGE_BASE}-meltano:${IMAGE_TAG} docker/meltano
 
 publish-meltano:
-	docker image push ${IMAGE_BASE}-meltano:${TAG}
+	docker image push ${IMAGE_BASE}-meltano:${IMAGE_TAG}
 
 build-firebase:
 	docker build --rm --no-cache -t ${IMAGE_BASE}-firebase:${IMAGE_TAG} docker/firebase
 
 publish-firebase:
-	docker image push ${IMAGE_BASE}-firebase:${TAG}
+	docker image push ${IMAGE_BASE}-firebase:${IMAGE_TAG}
 
 build-hasura:
 	docker build --rm --no-cache -t ${IMAGE_BASE}-hasura:${IMAGE_TAG} docker/hasura
