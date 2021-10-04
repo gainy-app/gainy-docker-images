@@ -1,0 +1,31 @@
+name: "Main"
+
+on:
+  push:
+    tags:
+      - *
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: build
+        run: make build
+
+      - name: authorize
+#        if: startsWith(github.ref, 'refs/tags/')
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 217303665077.dkr.ecr.us-east-1.amazonaws.com
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: publish
+        if: startsWith(github.ref, 'refs/tags/')
+        run: make publish

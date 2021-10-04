@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "Code": {
+      "type": "string"
+    },
+    "date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "open": {
+      "type": "number"
+    },
+    "high": {
+      "type": "number"
+    },
+    "low": {
+      "type": "number"
+    },
+    "close": {
+      "type": "number"
+    },
+    "adjusted_close": {
+      "type": "number"
+    },
+    "volume": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "date",
+    "open",
+    "high",
+    "low",
+    "close",
+    "adjusted_close",
+    "volume"
+  ]
+}

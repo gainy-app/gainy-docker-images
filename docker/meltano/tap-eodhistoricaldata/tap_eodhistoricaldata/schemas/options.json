@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "Code": {
+      "type": "string"
+    },
+    "callOpenInterest": {
+      "type": "integer"
+    },
+    "callVolume": {
+      "type": "integer"
+    },
+    "expirationDate": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "impliedVolatility": {
+      "type": "number"
+    },
+    "optionsCount": {
+      "type": "integer"
+    },
+    "putCallOpenInterestRatio": {
+      "type": "number"
+    },
+    "putCallVolumeRatio": {
+      "type": "number"
+    },
+    "putOpenInterest": {
+      "type": "integer"
+    },
+    "putVolume": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "callOpenInterest",
+    "callVolume",
+    "expirationDate",
+    "impliedVolatility",
+    "optionsCount",
+    "putCallOpenInterestRatio",
+    "putCallVolumeRatio",
+    "putOpenInterest",
+    "putVolume"
+  ]
+}

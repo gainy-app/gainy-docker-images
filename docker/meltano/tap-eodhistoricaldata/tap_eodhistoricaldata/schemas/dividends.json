@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "Code": {
+      "type": "string"
+    },
+    "date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "declarationDate": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "recordDate": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "paymentDate": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "period": {
+      "type": "string"
+    },
+    "value": {
+      "type": "number"
+    },
+    "unadjustedValue": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "Code",
+    "date",
+    "declarationDate",
+    "recordDate",
+    "paymentDate",
+    "period",
+    "value",
+    "unadjustedValue",
+    "currency"
+  ]
+}

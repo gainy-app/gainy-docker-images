@@ -1,0 +1,2956 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Code": {
+      "type": "string"
+    },
+    "UpdatedAt": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "General": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Code": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Exchange": {
+          "type": "string"
+        },
+        "CurrencyCode": {
+          "type": "string",
+          "title": "Currency"
+        },
+        "CurrencyName": {
+          "type": "string"
+        },
+        "CurrencySymbol": {
+          "type": "string"
+        },
+        "CountryName": {
+          "type": "string"
+        },
+        "CountryISO": {
+          "type": "string"
+        },
+        "ISIN": {
+          "type": "string"
+        },
+        "CUSIP": {
+          "type": "string"
+        },
+        "CIK": {
+          "type": "string",
+          "format": "integer"
+        },
+        "EmployerIdNumber": {
+          "type": "string"
+        },
+        "FiscalYearEnd": {
+          "type": "string"
+        },
+        "IPODate": {
+          "type": "string",
+          "format": "date"
+        },
+        "InternationalDomestic": {
+          "type": "string"
+        },
+        "Sector": {
+          "type": "string"
+        },
+        "Industry": {
+          "type": "string"
+        },
+        "GicSector": {
+          "type": "string"
+        },
+        "GicGroup": {
+          "type": "string"
+        },
+        "GicIndustry": {
+          "type": "string"
+        },
+        "GicSubIndustry": {
+          "type": "string"
+        },
+        "HomeCategory": {
+          "type": "string"
+        },
+        "IsDelisted": {
+          "type": "boolean"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Address": {
+          "type": "string"
+        },
+        "AddressData": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Street": {
+              "type": "string"
+            },
+            "City": {
+              "type": "string"
+            },
+            "State": {
+              "type": "string"
+            },
+            "Country": {
+              "type": "string"
+            },
+            "ZIP": {
+              "type": "string",
+              "format": "integer"
+            }
+          },
+          "required": [
+            "City",
+            "Country",
+            "State",
+            "Street",
+            "ZIP"
+          ],
+          "title": "AddressData"
+        },
+        "Listings": {
+          "type": "object",
+          "properties": {
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Code": {
+                "type": "string"
+              },
+              "Exchange": {
+                "type": "string"
+              },
+              "Name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Code",
+              "Exchange",
+              "Name"
+            ],
+            "title": "Listing"
+          }
+        },
+        "Officers": {
+          "type": "object",
+          "properties": {
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Name": {
+                "type": "string"
+              },
+              "Title": {
+                "type": "string"
+              },
+              "YearBorn": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "Name",
+              "Title",
+              "YearBorn"
+            ],
+            "title": "Officer"
+          }
+        },
+        "Phone": {
+          "type": "string"
+        },
+        "WebURL": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": [
+            "http"
+          ]
+        },
+        "LogoURL": {
+          "type": "string"
+        },
+        "FullTimeEmployees": {
+          "type": "integer"
+        },
+        "UpdatedAt": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": [
+        "Address",
+        "AddressData",
+        "CIK",
+        "CUSIP",
+        "Code",
+        "CountryISO",
+        "CountryName",
+        "CurrencyCode",
+        "CurrencyName",
+        "CurrencySymbol",
+        "Description",
+        "EmployerIdNumber",
+        "Exchange",
+        "FiscalYearEnd",
+        "FullTimeEmployees",
+        "GicGroup",
+        "GicIndustry",
+        "GicSector",
+        "GicSubIndustry",
+        "HomeCategory",
+        "IPODate",
+        "ISIN",
+        "Industry",
+        "InternationalDomestic",
+        "IsDelisted",
+        "Listings",
+        "LogoURL",
+        "Name",
+        "Officers",
+        "Phone",
+        "Sector",
+        "Type",
+        "UpdatedAt",
+        "WebURL"
+      ],
+      "title": "General"
+    },
+    "Highlights": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MarketCapitalization": {
+          "type": "integer"
+        },
+        "MarketCapitalizationMln": {
+          "type": "number"
+        },
+        "EBITDA": {
+          "type": "integer"
+        },
+        "PERatio": {
+          "type": "number"
+        },
+        "PEGRatio": {
+          "type": "number"
+        },
+        "WallStreetTargetPrice": {
+          "type": "number"
+        },
+        "BookValue": {
+          "type": "number"
+        },
+        "DividendShare": {
+          "type": "number"
+        },
+        "DividendYield": {
+          "type": "number"
+        },
+        "EarningsShare": {
+          "type": "number"
+        },
+        "EPSEstimateCurrentYear": {
+          "type": "number"
+        },
+        "EPSEstimateNextYear": {
+          "type": "number"
+        },
+        "EPSEstimateNextQuarter": {
+          "type": "integer"
+        },
+        "EPSEstimateCurrentQuarter": {
+          "type": "number"
+        },
+        "MostRecentQuarter": {
+          "type": "string",
+          "format": "date"
+        },
+        "ProfitMargin": {
+          "type": "number"
+        },
+        "OperatingMarginTTM": {
+          "type": "number"
+        },
+        "ReturnOnAssetsTTM": {
+          "type": "number"
+        },
+        "ReturnOnEquityTTM": {
+          "type": "number"
+        },
+        "RevenueTTM": {
+          "type": "integer"
+        },
+        "RevenuePerShareTTM": {
+          "type": "number"
+        },
+        "QuarterlyRevenueGrowthYOY": {
+          "type": "number"
+        },
+        "GrossProfitTTM": {
+          "type": "integer"
+        },
+        "DilutedEpsTTM": {
+          "type": "number"
+        },
+        "QuarterlyEarningsGrowthYOY": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "BookValue",
+        "DilutedEpsTTM",
+        "DividendShare",
+        "DividendYield",
+        "EBITDA",
+        "EPSEstimateCurrentQuarter",
+        "EPSEstimateCurrentYear",
+        "EPSEstimateNextQuarter",
+        "EPSEstimateNextYear",
+        "EarningsShare",
+        "GrossProfitTTM",
+        "MarketCapitalization",
+        "MarketCapitalizationMln",
+        "MostRecentQuarter",
+        "OperatingMarginTTM",
+        "PEGRatio",
+        "PERatio",
+        "ProfitMargin",
+        "QuarterlyEarningsGrowthYOY",
+        "QuarterlyRevenueGrowthYOY",
+        "ReturnOnAssetsTTM",
+        "ReturnOnEquityTTM",
+        "RevenuePerShareTTM",
+        "RevenueTTM",
+        "WallStreetTargetPrice"
+      ],
+      "title": "Highlights"
+    },
+    "Valuation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TrailingPE": {
+          "type": "number"
+        },
+        "ForwardPE": {
+          "type": "number"
+        },
+        "PriceSalesTTM": {
+          "type": "number"
+        },
+        "PriceBookMRQ": {
+          "type": "number"
+        },
+        "EnterpriseValue": {
+          "type": "integer"
+        },
+        "EnterpriseValueRevenue": {
+          "type": "number"
+        },
+        "EnterpriseValueEbitda": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "EnterpriseValue",
+        "EnterpriseValueEbitda",
+        "EnterpriseValueRevenue",
+        "ForwardPE",
+        "PriceBookMRQ",
+        "PriceSalesTTM",
+        "TrailingPE"
+      ],
+      "title": "Valuation"
+    },
+    "SharesStats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SharesOutstanding": {
+          "type": "integer"
+        },
+        "SharesFloat": {
+          "type": "integer"
+        },
+        "PercentInsiders": {
+          "type": "number"
+        },
+        "PercentInstitutions": {
+          "type": "number"
+        },
+        "SharesShort": {
+          "type": "integer"
+        },
+        "SharesShortPriorMonth": {
+          "type": "integer"
+        },
+        "ShortRatio": {
+          "type": "number"
+        },
+        "ShortPercentOutstanding": {
+          "type": "number"
+        },
+        "ShortPercentFloat": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "PercentInsiders",
+        "PercentInstitutions",
+        "SharesFloat",
+        "SharesOutstanding",
+        "SharesShort",
+        "SharesShortPriorMonth",
+        "ShortPercentFloat",
+        "ShortPercentOutstanding",
+        "ShortRatio"
+      ],
+      "title": "SharesStats"
+    },
+    "Technicals": {
+      "type": "object",
+      "properties": {
+      },
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "SplitsDividends": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ForwardAnnualDividendRate": {
+          "type": "number"
+        },
+        "ForwardAnnualDividendYield": {
+          "type": "number"
+        },
+        "PayoutRatio": {
+          "type": "number"
+        },
+        "DividendDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "ExDividendDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "LastSplitFactor": {
+          "type": "string"
+        },
+        "LastSplitDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "NumberDividendsByYear": {
+          "type": "object",
+          "properties": {
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Year": {
+                "type": "integer"
+              },
+              "Count": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "Count",
+              "Year"
+            ],
+            "title": "NumberDividendsByYear"
+          }
+        }
+      },
+      "required": [
+        "DividendDate",
+        "ExDividendDate",
+        "ForwardAnnualDividendRate",
+        "ForwardAnnualDividendYield",
+        "LastSplitDate",
+        "LastSplitFactor",
+        "NumberDividendsByYear",
+        "PayoutRatio"
+      ],
+      "title": "SplitsDividends"
+    },
+    "AnalystRatings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Rating": {
+          "type": "number"
+        },
+        "TargetPrice": {
+          "type": "number"
+        },
+        "StrongBuy": {
+          "type": "integer"
+        },
+        "Buy": {
+          "type": "integer"
+        },
+        "Hold": {
+          "type": "integer"
+        },
+        "Sell": {
+          "type": "integer"
+        },
+        "StrongSell": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Buy",
+        "Hold",
+        "Rating",
+        "Sell",
+        "StrongBuy",
+        "StrongSell",
+        "TargetPrice"
+      ],
+      "title": "AnalystRatings"
+    },
+    "Holders": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Institutions": {
+          "type": "object",
+          "properties": {
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "totalShares": {
+                "type": "number"
+              },
+              "totalAssets": {
+                "type": "number"
+              },
+              "currentShares": {
+                "type": "integer"
+              },
+              "change": {
+                "type": "integer"
+              },
+              "change_p": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "change",
+              "change_p",
+              "currentShares",
+              "date",
+              "name",
+              "totalAssets",
+              "totalShares"
+            ],
+            "title": "Fund"
+          }
+        },
+        "Funds": {
+          "type": "object",
+          "properties": {
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "totalShares": {
+                "type": "number"
+              },
+              "totalAssets": {
+                "type": "number"
+              },
+              "currentShares": {
+                "type": "integer"
+              },
+              "change": {
+                "type": "integer"
+              },
+              "change_p": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "change",
+              "change_p",
+              "currentShares",
+              "date",
+              "name",
+              "totalAssets",
+              "totalShares"
+            ],
+            "title": "Fund"
+          }
+        }
+      },
+      "required": [
+        "Funds",
+        "Institutions"
+      ],
+      "title": "Holders"
+    },
+    "InsiderTransactions": {
+      "properties": {
+      },
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "ownerCik": {
+            "type": "string"
+          },
+          "ownerName": {
+            "type": "string",
+            "title": "OwnerName"
+          },
+          "transactionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "transactionCode": {
+            "type": "string",
+            "title": "TransactionCode"
+          },
+          "transactionAmount": {
+            "type": "integer"
+          },
+          "transactionPrice": {
+            "type": "number"
+          },
+          "transactionAcquiredDisposed": {
+            "type": "string",
+            "title": "TransactionAcquiredDisposed"
+          },
+          "postTransactionAmount": {
+            "type": "integer"
+          },
+          "secLink": {
+            "type": "string",
+            "format": "uri",
+            "qt-uri-protocols": [
+              "https"
+            ],
+            "qt-uri-extensions": [
+              ".xml"
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "ownerCik",
+          "ownerName",
+          "postTransactionAmount",
+          "secLink",
+          "transactionAcquiredDisposed",
+          "transactionAmount",
+          "transactionCode",
+          "transactionDate",
+          "transactionPrice"
+        ],
+        "title": "InsiderTransaction"
+      }
+    },
+    "ESGScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Disclaimer": {
+          "type": "string"
+        },
+        "RatingDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "TotalEsg": {
+          "type": "number"
+        },
+        "TotalEsgPercentile": {
+          "type": "number"
+        },
+        "EnvironmentScore": {
+          "type": "number"
+        },
+        "EnvironmentScorePercentile": {
+          "type": "integer"
+        },
+        "SocialScore": {
+          "type": "number"
+        },
+        "SocialScorePercentile": {
+          "type": "integer"
+        },
+        "GovernanceScore": {
+          "type": "number"
+        },
+        "GovernanceScorePercentile": {
+          "type": "integer"
+        },
+        "ControversyLevel": {
+          "type": "integer"
+        },
+        "ActivitiesInvolvement": {
+          "type": "object",
+          "properties": {
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Activity": {
+                "type": "string"
+              },
+              "Involvement": {
+                "type": "string",
+                "title": "Involvement"
+              }
+            },
+            "required": [
+              "Activity",
+              "Involvement"
+            ],
+            "title": "ActivitiesInvolvement"
+          }
+        }
+      },
+      "required": [
+        "ActivitiesInvolvement",
+        "ControversyLevel",
+        "Disclaimer",
+        "EnvironmentScore",
+        "EnvironmentScorePercentile",
+        "GovernanceScore",
+        "GovernanceScorePercentile",
+        "RatingDate",
+        "SocialScore",
+        "SocialScorePercentile",
+        "TotalEsg",
+        "TotalEsgPercentile"
+      ],
+      "title": "ESGScores"
+    },
+    "outstandingShares": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "annual": {
+          "type": "object",
+          "properties": {
+
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "dateFormatted": {
+                "type": "string",
+                "format": "date"
+              },
+              "sharesMln": {
+                "type": "string"
+              },
+              "shares": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "date",
+              "dateFormatted",
+              "shares",
+              "sharesMln"
+            ],
+            "title": "AnnualValue"
+          }
+        },
+        "quarterly": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "dateFormatted": {
+                "type": "string",
+                "format": "date"
+              },
+              "sharesMln": {
+                "type": "string"
+              },
+              "shares": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "date",
+              "dateFormatted",
+              "shares",
+              "sharesMln"
+            ],
+            "title": "AnnualValue"
+          }
+        }
+      },
+      "required": [
+        "annual",
+        "quarterly"
+      ],
+      "title": "OutstandingShares"
+    },
+    "Earnings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "History": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "reportDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "beforeAfterMarket": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "title": "Currency"
+              },
+              "epsActual": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "epsEstimate": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "epsDifference": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "surprisePercent": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "beforeAfterMarket",
+              "currency",
+              "date",
+              "epsActual",
+              "epsDifference",
+              "epsEstimate",
+              "reportDate",
+              "surprisePercent"
+            ],
+            "title": "History"
+          }
+        },
+        "Trend": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "$id": "#/properties/date",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The date schema",
+              "default": "",
+              "examples": [
+                "2022-09-30"
+              ]
+            },
+            "period": {
+              "$id": "#/properties/period",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The period schema",
+              "default": "",
+              "examples": [
+                "+1y"
+              ]
+            },
+            "growth": {
+              "$id": "#/properties/growth",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The growth schema",
+              "default": "",
+              "examples": [
+                "0.0290"
+              ]
+            },
+            "earningsEstimateAvg": {
+              "$id": "#/properties/earningsEstimateAvg",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The earningsEstimateAvg schema",
+              "default": "",
+              "examples": [
+                "5.3500"
+              ]
+            },
+            "earningsEstimateLow": {
+              "$id": "#/properties/earningsEstimateLow",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The earningsEstimateLow schema",
+              "default": "",
+              "examples": [
+                "4.7700"
+              ]
+            },
+            "earningsEstimateHigh": {
+              "$id": "#/properties/earningsEstimateHigh",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The earningsEstimateHigh schema",
+              "default": "",
+              "examples": [
+                "6.1300"
+              ]
+            },
+            "earningsEstimateYearAgoEps": {
+              "$id": "#/properties/earningsEstimateYearAgoEps",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The earningsEstimateYearAgoEps schema",
+              "default": "",
+              "examples": [
+                "5.2000"
+              ]
+            },
+            "earningsEstimateNumberOfAnalysts": {
+              "$id": "#/properties/earningsEstimateNumberOfAnalysts",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The earningsEstimateNumberOfAnalysts schema",
+              "default": "",
+              "examples": [
+                "40.0000"
+              ]
+            },
+            "earningsEstimateGrowth": {
+              "$id": "#/properties/earningsEstimateGrowth",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The earningsEstimateGrowth schema",
+              "default": "",
+              "examples": [
+                "0.0290"
+              ]
+            },
+            "revenueEstimateAvg": {
+              "$id": "#/properties/revenueEstimateAvg",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The revenueEstimateAvg schema",
+              "default": "",
+              "examples": [
+                "369057000000.00"
+              ]
+            },
+            "revenueEstimateLow": {
+              "$id": "#/properties/revenueEstimateLow",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The revenueEstimateLow schema",
+              "default": "",
+              "examples": [
+                "336323000000.00"
+              ]
+            },
+            "revenueEstimateHigh": {
+              "$id": "#/properties/revenueEstimateHigh",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The revenueEstimateHigh schema",
+              "default": "",
+              "examples": [
+                "400900000000.00"
+              ]
+            },
+            "revenueEstimateYearAgoEps": {
+              "$id": "#/properties/revenueEstimateYearAgoEps",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The revenueEstimateYearAgoEps schema",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "revenueEstimateNumberOfAnalysts": {
+              "$id": "#/properties/revenueEstimateNumberOfAnalysts",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The revenueEstimateNumberOfAnalysts schema",
+              "default": "",
+              "examples": [
+                "37.00"
+              ]
+            },
+            "revenueEstimateGrowth": {
+              "$id": "#/properties/revenueEstimateGrowth",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The revenueEstimateGrowth schema",
+              "default": "",
+              "examples": [
+                "0.0420"
+              ]
+            },
+            "epsTrendCurrent": {
+              "$id": "#/properties/epsTrendCurrent",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsTrendCurrent schema",
+              "default": "",
+              "examples": [
+                "5.3500"
+              ]
+            },
+            "epsTrend7daysAgo": {
+              "$id": "#/properties/epsTrend7daysAgo",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsTrend7daysAgo schema",
+              "default": "",
+              "examples": [
+                "5.3500"
+              ]
+            },
+            "epsTrend30daysAgo": {
+              "$id": "#/properties/epsTrend30daysAgo",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsTrend30daysAgo schema",
+              "default": "",
+              "examples": [
+                "5.3500"
+              ]
+            },
+            "epsTrend60daysAgo": {
+              "$id": "#/properties/epsTrend60daysAgo",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsTrend60daysAgo schema",
+              "default": "",
+              "examples": [
+                "4.7000"
+              ]
+            },
+            "epsTrend90daysAgo": {
+              "$id": "#/properties/epsTrend90daysAgo",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsTrend90daysAgo schema",
+              "default": "",
+              "examples": [
+                "4.6800"
+              ]
+            },
+            "epsRevisionsUpLast7days": {
+              "$id": "#/properties/epsRevisionsUpLast7days",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsRevisionsUpLast7days schema",
+              "default": "",
+              "examples": [
+                "2.0000"
+              ]
+            },
+            "epsRevisionsUpLast30days": {
+              "$id": "#/properties/epsRevisionsUpLast30days",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsRevisionsUpLast30days schema",
+              "default": "",
+              "examples": [
+                "4.0000"
+              ]
+            },
+            "epsRevisionsDownLast30days": {
+              "$id": "#/properties/epsRevisionsDownLast30days",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsRevisionsDownLast30days schema",
+              "default": "",
+              "examples": [
+                "0.0000"
+              ]
+            },
+            "epsRevisionsDownLast90days": {
+              "$id": "#/properties/epsRevisionsDownLast90days",
+              "type": [
+                "string",
+                "null"
+              ],
+              "title": "The epsRevisionsDownLast90days schema",
+              "default": null,
+              "examples": [
+                null
+              ]
+            }
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "Annual": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "epsActual": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "date",
+              "epsActual"
+            ],
+            "title": "Annual"
+          }
+        }
+      },
+      "required": [
+        "Annual",
+        "History",
+        "Trend"
+      ],
+      "title": "Earnings"
+    },
+    "Financials": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "Balance_Sheet": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "currency_symbol": {
+              "type": "string",
+              "title": "Currency"
+            },
+            "quarterly": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "$id": "#/properties/date",
+                    "type": "string",
+                    "title": "The date schema",
+                    "default": "",
+                    "examples": [
+                      "2021-03-31"
+                    ]
+                  },
+                  "filing_date": {
+                    "$id": "#/properties/filing_date",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The filing_date schema",
+                    "default": "",
+                    "examples": [
+                      "2021-04-29"
+                    ]
+                  },
+                  "currency_symbol": {
+                    "$id": "#/properties/currency_symbol",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The currency_symbol schema",
+                    "default": "",
+                    "examples": [
+                      "USD"
+                    ]
+                  },
+                  "totalAssets": {
+                    "$id": "#/properties/totalAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalAssets schema",
+                    "default": "",
+                    "examples": [
+                      "337158000000.00"
+                    ]
+                  },
+                  "intangibleAssets": {
+                    "$id": "#/properties/intangibleAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The intangibleAssets schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "earningAssets": {
+                    "$id": "#/properties/earningAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The earningAssets schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "otherCurrentAssets": {
+                    "$id": "#/properties/otherCurrentAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherCurrentAssets schema",
+                    "default": "",
+                    "examples": [
+                      "13376000000.00"
+                    ]
+                  },
+                  "totalLiab": {
+                    "$id": "#/properties/totalLiab",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalLiab schema",
+                    "default": "",
+                    "examples": [
+                      "267980000000.00"
+                    ]
+                  },
+                  "totalStockholderEquity": {
+                    "$id": "#/properties/totalStockholderEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalStockholderEquity schema",
+                    "default": "",
+                    "examples": [
+                      "69178000000.00"
+                    ]
+                  },
+                  "deferredLongTermLiab": {
+                    "$id": "#/properties/deferredLongTermLiab",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The deferredLongTermLiab schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "otherCurrentLiab": {
+                    "$id": "#/properties/otherCurrentLiab",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherCurrentLiab schema",
+                    "default": "",
+                    "examples": [
+                      "53255000000.00"
+                    ]
+                  },
+                  "commonStock": {
+                    "$id": "#/properties/commonStock",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The commonStock schema",
+                    "default": "",
+                    "examples": [
+                      "54203000000.00"
+                    ]
+                  },
+                  "retainedEarnings": {
+                    "$id": "#/properties/retainedEarnings",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The retainedEarnings schema",
+                    "default": "",
+                    "examples": [
+                      "15261000000.00"
+                    ]
+                  },
+                  "otherLiab": {
+                    "$id": "#/properties/otherLiab",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherLiab schema",
+                    "default": "",
+                    "examples": [
+                      "52953000000.00"
+                    ]
+                  },
+                  "goodWill": {
+                    "$id": "#/properties/goodWill",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The goodWill schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "otherAssets": {
+                    "$id": "#/properties/otherAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherAssets schema",
+                    "default": "",
+                    "examples": [
+                      "43339000000.00"
+                    ]
+                  },
+                  "cash": {
+                    "$id": "#/properties/cash",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The cash schema",
+                    "default": "",
+                    "examples": [
+                      "38466000000.00"
+                    ]
+                  },
+                  "totalCurrentLiabilities": {
+                    "$id": "#/properties/totalCurrentLiabilities",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalCurrentLiabilities schema",
+                    "default": "",
+                    "examples": [
+                      "106385000000.00"
+                    ]
+                  },
+                  "netDebt": {
+                    "$id": "#/properties/netDebt",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netDebt schema",
+                    "default": "",
+                    "examples": [
+                      "83179000000.00"
+                    ]
+                  },
+                  "shortTermDebt": {
+                    "$id": "#/properties/shortTermDebt",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The shortTermDebt schema",
+                    "default": "",
+                    "examples": [
+                      "13003000000.00"
+                    ]
+                  },
+                  "shortLongTermDebt": {
+                    "$id": "#/properties/shortLongTermDebt",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The shortLongTermDebt schema",
+                    "default": "",
+                    "examples": [
+                      "13003000000.00"
+                    ]
+                  },
+                  "shortLongTermDebtTotal": {
+                    "$id": "#/properties/shortLongTermDebtTotal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The shortLongTermDebtTotal schema",
+                    "default": "",
+                    "examples": [
+                      "121645000000.00"
+                    ]
+                  },
+                  "otherStockholderEquity": {
+                    "$id": "#/properties/otherStockholderEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherStockholderEquity schema",
+                    "default": "",
+                    "examples": [
+                      "-286000000.00"
+                    ]
+                  },
+                  "propertyPlantEquipment": {
+                    "$id": "#/properties/propertyPlantEquipment",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The propertyPlantEquipment schema",
+                    "default": "",
+                    "examples": [
+                      "37815000000.00"
+                    ]
+                  },
+                  "totalCurrentAssets": {
+                    "$id": "#/properties/totalCurrentAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalCurrentAssets schema",
+                    "default": "",
+                    "examples": [
+                      "121465000000.00"
+                    ]
+                  },
+                  "longTermInvestments": {
+                    "$id": "#/properties/longTermInvestments",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The longTermInvestments schema",
+                    "default": "",
+                    "examples": [
+                      "134539000000.00"
+                    ]
+                  },
+                  "netTangibleAssets": {
+                    "$id": "#/properties/netTangibleAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netTangibleAssets schema",
+                    "default": "",
+                    "examples": [
+                      "69178000000.00"
+                    ]
+                  },
+                  "shortTermInvestments": {
+                    "$id": "#/properties/shortTermInvestments",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The shortTermInvestments schema",
+                    "default": "",
+                    "examples": [
+                      "31368000000.00"
+                    ]
+                  },
+                  "netReceivables": {
+                    "$id": "#/properties/netReceivables",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netReceivables schema",
+                    "default": "",
+                    "examples": [
+                      "33036000000.00"
+                    ]
+                  },
+                  "longTermDebt": {
+                    "$id": "#/properties/longTermDebt",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The longTermDebt schema",
+                    "default": "",
+                    "examples": [
+                      "108642000000.00"
+                    ]
+                  },
+                  "inventory": {
+                    "$id": "#/properties/inventory",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The inventory schema",
+                    "default": "",
+                    "examples": [
+                      "5219000000.00"
+                    ]
+                  },
+                  "accountsPayable": {
+                    "$id": "#/properties/accountsPayable",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The accountsPayable schema",
+                    "default": "",
+                    "examples": [
+                      "40127000000.00"
+                    ]
+                  },
+                  "totalPermanentEquity": {
+                    "$id": "#/properties/totalPermanentEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalPermanentEquity schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "noncontrollingInterestInConsolidatedEntity": {
+                    "$id": "#/properties/noncontrollingInterestInConsolidatedEntity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The noncontrollingInterestInConsolidatedEntity schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "temporaryEquityRedeemableNoncontrollingInterests": {
+                    "$id": "#/properties/temporaryEquityRedeemableNoncontrollingInterests",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The temporaryEquityRedeemableNoncontrollingInterests schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "accumulatedOtherComprehensiveIncome": {
+                    "$id": "#/properties/accumulatedOtherComprehensiveIncome",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The accumulatedOtherComprehensiveIncome schema",
+                    "default": "",
+                    "examples": [
+                      "-286000000.00"
+                    ]
+                  },
+                  "additionalPaidInCapital": {
+                    "$id": "#/properties/additionalPaidInCapital",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The additionalPaidInCapital schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "commonStockTotalEquity": {
+                    "$id": "#/properties/commonStockTotalEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The commonStockTotalEquity schema",
+                    "default": "",
+                    "examples": [
+                      "54203000000.00"
+                    ]
+                  },
+                  "preferredStockTotalEquity": {
+                    "$id": "#/properties/preferredStockTotalEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The preferredStockTotalEquity schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "retainedEarningsTotalEquity": {
+                    "$id": "#/properties/retainedEarningsTotalEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The retainedEarningsTotalEquity schema",
+                    "default": "",
+                    "examples": [
+                      "15261000000.00"
+                    ]
+                  },
+                  "treasuryStock": {
+                    "$id": "#/properties/treasuryStock",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The treasuryStock schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "accumulatedAmortization": {
+                    "$id": "#/properties/accumulatedAmortization",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The accumulatedAmortization schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "nonCurrrentAssetsOther": {
+                    "$id": "#/properties/nonCurrrentAssetsOther",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The nonCurrrentAssetsOther schema",
+                    "default": "",
+                    "examples": [
+                      "43339000000.00"
+                    ]
+                  },
+                  "deferredLongTermAssetCharges": {
+                    "$id": "#/properties/deferredLongTermAssetCharges",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The deferredLongTermAssetCharges schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "nonCurrentAssetsTotal": {
+                    "$id": "#/properties/nonCurrentAssetsTotal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The nonCurrentAssetsTotal schema",
+                    "default": "",
+                    "examples": [
+                      "215693000000.00"
+                    ]
+                  },
+                  "capitalLeaseObligations": {
+                    "$id": "#/properties/capitalLeaseObligations",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The capitalLeaseObligations schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "longTermDebtTotal": {
+                    "$id": "#/properties/longTermDebtTotal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The longTermDebtTotal schema",
+                    "default": "",
+                    "examples": [
+                      "108642000000.00"
+                    ]
+                  },
+                  "nonCurrentLiabilitiesOther": {
+                    "$id": "#/properties/nonCurrentLiabilitiesOther",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The nonCurrentLiabilitiesOther schema",
+                    "default": "",
+                    "examples": [
+                      "52953000000.00"
+                    ]
+                  },
+                  "nonCurrentLiabilitiesTotal": {
+                    "$id": "#/properties/nonCurrentLiabilitiesTotal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The nonCurrentLiabilitiesTotal schema",
+                    "default": "",
+                    "examples": [
+                      "161595000000.00"
+                    ]
+                  },
+                  "negativeGoodwill": {
+                    "$id": "#/properties/negativeGoodwill",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The negativeGoodwill schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "warrants": {
+                    "$id": "#/properties/warrants",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The warrants schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "preferredStockRedeemable": {
+                    "$id": "#/properties/preferredStockRedeemable",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The preferredStockRedeemable schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "capitalSurpluse": {
+                    "$id": "#/properties/capitalSurpluse",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The capitalSurpluse schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "liabilitiesAndStockholdersEquity": {
+                    "$id": "#/properties/liabilitiesAndStockholdersEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The liabilitiesAndStockholdersEquity schema",
+                    "default": "",
+                    "examples": [
+                      "337158000000.00"
+                    ]
+                  },
+                  "cashAndShortTermInvestments": {
+                    "$id": "#/properties/cashAndShortTermInvestments",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The cashAndShortTermInvestments schema",
+                    "default": "",
+                    "examples": [
+                      "69834000000.00"
+                    ]
+                  },
+                  "propertyPlantAndEquipmentGross": {
+                    "$id": "#/properties/propertyPlantAndEquipmentGross",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The propertyPlantAndEquipmentGross schema",
+                    "default": "",
+                    "examples": [
+                      "37815000000.00"
+                    ]
+                  },
+                  "accumulatedDepreciation": {
+                    "$id": "#/properties/accumulatedDepreciation",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The accumulatedDepreciation schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "netWorkingCapital": {
+                    "$id": "#/properties/netWorkingCapital",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netWorkingCapital schema",
+                    "default": "",
+                    "examples": [
+                      "15080000000.00"
+                    ]
+                  },
+                  "netInvestedCapital": {
+                    "$id": "#/properties/netInvestedCapital",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netInvestedCapital schema",
+                    "default": "",
+                    "examples": [
+                      "190823000000.00"
+                    ]
+                  },
+                  "commonStockSharesOutstanding": {
+                    "$id": "#/properties/commonStockSharesOutstanding",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The commonStockSharesOutstanding schema",
+                    "default": "",
+                    "examples": [
+                      "16686305000.00"
+                    ]
+                  }
+                }
+              }
+            },
+            "yearly": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "$id": "#/properties/date",
+                    "type": "string",
+                    "title": "The date schema",
+                    "default": "",
+                    "examples": [
+                      "2021-03-31"
+                    ]
+                  },
+                  "filing_date": {
+                    "$id": "#/properties/filing_date",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The filing_date schema",
+                    "default": "",
+                    "examples": [
+                      "2021-04-29"
+                    ]
+                  },
+                  "currency_symbol": {
+                    "$id": "#/properties/currency_symbol",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The currency_symbol schema",
+                    "default": "",
+                    "examples": [
+                      "USD"
+                    ]
+                  },
+                  "totalAssets": {
+                    "$id": "#/properties/totalAssets",
+                    "type": "string",
+                    "title": "The totalAssets schema",
+                    "default": "",
+                    "examples": [
+                      "337158000000.00"
+                    ]
+                  },
+                  "intangibleAssets": {
+                    "$id": "#/properties/intangibleAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The intangibleAssets schema",
+                    "description": "An explanation about the purpose of this instance."
+                  },
+                  "earningAssets": {
+                    "$id": "#/properties/earningAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The earningAssets schema",
+                    "description": "An explanation about the purpose of this instance."
+                  },
+                  "otherCurrentAssets": {
+                    "$id": "#/properties/otherCurrentAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherCurrentAssets schema",
+                    "default": "",
+                    "examples": [
+                      "13376000000.00"
+                    ]
+                  },
+                  "totalLiab": {
+                    "$id": "#/properties/totalLiab",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalLiab schema",
+                    "default": "",
+                    "examples": [
+                      "267980000000.00"
+                    ]
+                  },
+                  "totalStockholderEquity": {
+                    "$id": "#/properties/totalStockholderEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalStockholderEquity schema",
+                    "default": "",
+                    "examples": [
+                      "69178000000.00"
+                    ]
+                  },
+                  "deferredLongTermLiab": {
+                    "$id": "#/properties/deferredLongTermLiab",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The deferredLongTermLiab schema",
+                    "description": "An explanation about the purpose of this instance."
+                  },
+                  "otherCurrentLiab": {
+                    "$id": "#/properties/otherCurrentLiab",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherCurrentLiab schema",
+                    "default": "",
+                    "examples": [
+                      "53255000000.00"
+                    ]
+                  },
+                  "commonStock": {
+                    "$id": "#/properties/commonStock",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The commonStock schema",
+                    "default": "",
+                    "examples": [
+                      "54203000000.00"
+                    ]
+                  },
+                  "retainedEarnings": {
+                    "$id": "#/properties/retainedEarnings",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The retainedEarnings schema",
+                    "default": "",
+                    "examples": [
+                      "15261000000.00"
+                    ]
+                  },
+                  "otherLiab": {
+                    "$id": "#/properties/otherLiab",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherLiab schema",
+                    "default": "",
+                    "examples": [
+                      "52953000000.00"
+                    ]
+                  },
+                  "goodWill": {
+                    "$id": "#/properties/goodWill",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The goodWill schema",
+                    "description": "An explanation about the purpose of this instance."
+                  },
+                  "otherAssets": {
+                    "$id": "#/properties/otherAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherAssets schema",
+                    "default": "",
+                    "examples": [
+                      "43339000000.00"
+                    ]
+                  },
+                  "cash": {
+                    "$id": "#/properties/cash",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The cash schema",
+                    "default": "",
+                    "examples": [
+                      "38466000000.00"
+                    ]
+                  },
+                  "totalCurrentLiabilities": {
+                    "$id": "#/properties/totalCurrentLiabilities",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalCurrentLiabilities schema",
+                    "default": "",
+                    "examples": [
+                      "106385000000.00"
+                    ]
+                  },
+                  "netDebt": {
+                    "$id": "#/properties/netDebt",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netDebt schema",
+                    "default": "",
+                    "examples": [
+                      "83179000000.00"
+                    ]
+                  },
+                  "shortTermDebt": {
+                    "$id": "#/properties/shortTermDebt",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The shortTermDebt schema",
+                    "default": "",
+                    "examples": [
+                      "13003000000.00"
+                    ]
+                  },
+                  "shortLongTermDebt": {
+                    "$id": "#/properties/shortLongTermDebt",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The shortLongTermDebt schema",
+                    "default": "",
+                    "examples": [
+                      "13003000000.00"
+                    ]
+                  },
+                  "shortLongTermDebtTotal": {
+                    "$id": "#/properties/shortLongTermDebtTotal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The shortLongTermDebtTotal schema",
+                    "default": "",
+                    "examples": [
+                      "121645000000.00"
+                    ]
+                  },
+                  "otherStockholderEquity": {
+                    "$id": "#/properties/otherStockholderEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The otherStockholderEquity schema",
+                    "default": "",
+                    "examples": [
+                      "-286000000.00"
+                    ]
+                  },
+                  "propertyPlantEquipment": {
+                    "$id": "#/properties/propertyPlantEquipment",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The propertyPlantEquipment schema",
+                    "default": "",
+                    "examples": [
+                      "37815000000.00"
+                    ]
+                  },
+                  "totalCurrentAssets": {
+                    "$id": "#/properties/totalCurrentAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalCurrentAssets schema",
+                    "default": "",
+                    "examples": [
+                      "121465000000.00"
+                    ]
+                  },
+                  "longTermInvestments": {
+                    "$id": "#/properties/longTermInvestments",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The longTermInvestments schema",
+                    "default": "",
+                    "examples": [
+                      "134539000000.00"
+                    ]
+                  },
+                  "netTangibleAssets": {
+                    "$id": "#/properties/netTangibleAssets",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netTangibleAssets schema",
+                    "default": "",
+                    "examples": [
+                      "69178000000.00"
+                    ]
+                  },
+                  "shortTermInvestments": {
+                    "$id": "#/properties/shortTermInvestments",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The shortTermInvestments schema",
+                    "default": "",
+                    "examples": [
+                      "31368000000.00"
+                    ]
+                  },
+                  "netReceivables": {
+                    "$id": "#/properties/netReceivables",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netReceivables schema",
+                    "default": "",
+                    "examples": [
+                      "33036000000.00"
+                    ]
+                  },
+                  "longTermDebt": {
+                    "$id": "#/properties/longTermDebt",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The longTermDebt schema",
+                    "default": "",
+                    "examples": [
+                      "108642000000.00"
+                    ]
+                  },
+                  "inventory": {
+                    "$id": "#/properties/inventory",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The inventory schema",
+                    "default": "",
+                    "examples": [
+                      "5219000000.00"
+                    ]
+                  },
+                  "accountsPayable": {
+                    "$id": "#/properties/accountsPayable",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The accountsPayable schema",
+                    "default": "",
+                    "examples": [
+                      "40127000000.00"
+                    ]
+                  },
+                  "totalPermanentEquity": {
+                    "$id": "#/properties/totalPermanentEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The totalPermanentEquity schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "noncontrollingInterestInConsolidatedEntity": {
+                    "$id": "#/properties/noncontrollingInterestInConsolidatedEntity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The noncontrollingInterestInConsolidatedEntity schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "temporaryEquityRedeemableNoncontrollingInterests": {
+                    "$id": "#/properties/temporaryEquityRedeemableNoncontrollingInterests",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The temporaryEquityRedeemableNoncontrollingInterests schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "accumulatedOtherComprehensiveIncome": {
+                    "$id": "#/properties/accumulatedOtherComprehensiveIncome",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The accumulatedOtherComprehensiveIncome schema",
+                    "default": "",
+                    "examples": [
+                      "-286000000.00"
+                    ]
+                  },
+                  "additionalPaidInCapital": {
+                    "$id": "#/properties/additionalPaidInCapital",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The additionalPaidInCapital schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "commonStockTotalEquity": {
+                    "$id": "#/properties/commonStockTotalEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The commonStockTotalEquity schema",
+                    "default": "",
+                    "examples": [
+                      "54203000000.00"
+                    ]
+                  },
+                  "preferredStockTotalEquity": {
+                    "$id": "#/properties/preferredStockTotalEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The preferredStockTotalEquity schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "retainedEarningsTotalEquity": {
+                    "$id": "#/properties/retainedEarningsTotalEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The retainedEarningsTotalEquity schema",
+                    "default": "",
+                    "examples": [
+                      "15261000000.00"
+                    ]
+                  },
+                  "treasuryStock": {
+                    "$id": "#/properties/treasuryStock",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The treasuryStock schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "accumulatedAmortization": {
+                    "$id": "#/properties/accumulatedAmortization",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The accumulatedAmortization schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "nonCurrrentAssetsOther": {
+                    "$id": "#/properties/nonCurrrentAssetsOther",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The nonCurrrentAssetsOther schema",
+                    "default": "",
+                    "examples": [
+                      "43339000000.00"
+                    ]
+                  },
+                  "deferredLongTermAssetCharges": {
+                    "$id": "#/properties/deferredLongTermAssetCharges",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The deferredLongTermAssetCharges schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "nonCurrentAssetsTotal": {
+                    "$id": "#/properties/nonCurrentAssetsTotal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The nonCurrentAssetsTotal schema",
+                    "default": "",
+                    "examples": [
+                      "215693000000.00"
+                    ]
+                  },
+                  "capitalLeaseObligations": {
+                    "$id": "#/properties/capitalLeaseObligations",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The capitalLeaseObligations schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "longTermDebtTotal": {
+                    "$id": "#/properties/longTermDebtTotal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The longTermDebtTotal schema",
+                    "default": "",
+                    "examples": [
+                      "108642000000.00"
+                    ]
+                  },
+                  "nonCurrentLiabilitiesOther": {
+                    "$id": "#/properties/nonCurrentLiabilitiesOther",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The nonCurrentLiabilitiesOther schema",
+                    "default": "",
+                    "examples": [
+                      "52953000000.00"
+                    ]
+                  },
+                  "nonCurrentLiabilitiesTotal": {
+                    "$id": "#/properties/nonCurrentLiabilitiesTotal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The nonCurrentLiabilitiesTotal schema",
+                    "default": "",
+                    "examples": [
+                      "161595000000.00"
+                    ]
+                  },
+                  "negativeGoodwill": {
+                    "$id": "#/properties/negativeGoodwill",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The negativeGoodwill schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "warrants": {
+                    "$id": "#/properties/warrants",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The warrants schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "preferredStockRedeemable": {
+                    "$id": "#/properties/preferredStockRedeemable",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The preferredStockRedeemable schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "capitalSurpluse": {
+                    "$id": "#/properties/capitalSurpluse",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The capitalSurpluse schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "liabilitiesAndStockholdersEquity": {
+                    "$id": "#/properties/liabilitiesAndStockholdersEquity",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The liabilitiesAndStockholdersEquity schema",
+                    "default": "",
+                    "examples": [
+                      "337158000000.00"
+                    ]
+                  },
+                  "cashAndShortTermInvestments": {
+                    "$id": "#/properties/cashAndShortTermInvestments",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The cashAndShortTermInvestments schema",
+                    "default": "",
+                    "examples": [
+                      "69834000000.00"
+                    ]
+                  },
+                  "propertyPlantAndEquipmentGross": {
+                    "$id": "#/properties/propertyPlantAndEquipmentGross",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The propertyPlantAndEquipmentGross schema",
+                    "default": "",
+                    "examples": [
+                      "37815000000.00"
+                    ]
+                  },
+                  "accumulatedDepreciation": {
+                    "$id": "#/properties/accumulatedDepreciation",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The accumulatedDepreciation schema",
+                    "default": null,
+                    "examples": [
+                      null
+                    ]
+                  },
+                  "netWorkingCapital": {
+                    "$id": "#/properties/netWorkingCapital",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netWorkingCapital schema",
+                    "default": "",
+                    "examples": [
+                      "15080000000.00"
+                    ]
+                  },
+                  "netInvestedCapital": {
+                    "$id": "#/properties/netInvestedCapital",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The netInvestedCapital schema",
+                    "default": "",
+                    "examples": [
+                      "190823000000.00"
+                    ]
+                  },
+                  "commonStockSharesOutstanding": {
+                    "$id": "#/properties/commonStockSharesOutstanding",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "The commonStockSharesOutstanding schema",
+                    "default": "",
+                    "examples": [
+                      "16686305000.00"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "currency_symbol",
+            "quarterly",
+            "yearly"
+          ],
+          "title": "BalanceSheet"
+        },
+        "Cash_Flow": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "currency_symbol": {
+              "type": "string",
+              "title": "Currency"
+            },
+            "quarterly": {
+              "type": "object",
+              "patternProperties": {
+                "^[0-9]{4}-[0-9]{2}-[0-9]{2}$": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "filing_date": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "currency_symbol": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "investments": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "changeToLiabilities": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "changeToInventory": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "dividendsPaid": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "depreciation": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "totalCashFromOperatingActivities": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "endPeriodCashFlow": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "beginPeriodCashFlow": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "yearly": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "required": [
+            "currency_symbol",
+            "quarterly",
+            "yearly"
+          ],
+          "title": "CashFlow"
+        },
+        "Income_Statement": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "currency_symbol": {
+              "type": "string",
+              "title": "Currency"
+            },
+            "quarterly": {
+              "type": "object",
+              "patternProperties": {
+                "^[0-9]{4}-[0-9]{2}-[0-9]{2}$": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "filing_date": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "currency_symbol": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "researchDevelopment": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "effectOfAccountingCharges": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "yearly": {
+              "type": "object",
+              "patternProperties": {
+                "^[0-9]{4}-[0-9]{2}-[0-9]{2}$": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "filing_date": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "currency_symbol": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "researchDevelopment": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "effectOfAccountingCharges": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "currency_symbol",
+            "quarterly",
+            "yearly"
+          ],
+          "title": "IncomeStatement"
+        }
+      },
+      "required": [
+        "Balance_Sheet",
+        "Cash_Flow",
+        "Income_Statement"
+      ],
+      "title": "Financials"
+    }
+  },
+  "required": [
+    "AnalystRatings",
+    "ESGScores",
+    "Earnings",
+    "Financials",
+    "General",
+    "Highlights",
+    "Holders",
+    "InsiderTransactions",
+    "SharesStats",
+    "SplitsDividends",
+    "Technicals",
+    "Valuation",
+    "outstandingShares"
+  ]
+}
