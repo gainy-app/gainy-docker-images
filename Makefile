@@ -34,9 +34,15 @@ build-hasura:
 publish-hasura:
 	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-hasura:${IMAGE_TAG}
 
-build: build-meltano build-firebase build-hasura
+build-lambda-python:
+	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-lambda-python:${IMAGE_TAG} docker/lambda-python
 
-publish: publish-meltano publish-firebase publish-hasura
+publish-lambda-python:
+	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-lambda-python:${IMAGE_TAG}
+
+build: build-meltano build-firebase build-hasura build-lambda-python
+
+publish: publish-meltano publish-firebase publish-hasura publish-lambda-python
 
 %:
 	@:

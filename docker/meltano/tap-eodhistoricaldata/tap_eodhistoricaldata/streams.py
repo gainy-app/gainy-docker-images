@@ -10,6 +10,9 @@ import singer
 from singer import RecordMessage
 from singer_sdk.helpers._typing import conform_record_data_types
 from singer_sdk.helpers._util import utc_now
+from singer_sdk.helpers._state import (
+    get_state_partitions_list,
+)
 
 from tap_eodhistoricaldata.client import eodhistoricaldataStream
 
@@ -24,21 +27,14 @@ class AbstractEODStream(eodhistoricaldataStream):
     @property
     def partitions(self) -> Iterator[Dict[str, Any]]:
         parts = super().partitions
+
         start = self.config.get('start_symbol', None)
         sorted_symbols = sorted(self.config['symbols'])
 
         if start and start in sorted_symbols:
             return list(map(lambda x: {'Code': x}, sorted_symbols[sorted_symbols.index(start):]))
 
-        if not parts:
-            return list(map(lambda x: {'Code': x}, sorted_symbols))
-
-        last_processed_item = parts[-1]["Code"]
-
-        if last_processed_item not in sorted_symbols:
-            return list(map(lambda x: {'Code': x}, sorted_symbols))
-
-        return list(map(lambda x: {'Code': x}, sorted_symbols[sorted_symbols.index(last_processed_item) + 1:]))
+        return list(map(lambda x: {'Code': x}, sorted_symbols))
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
         row['Code'] = context['Code']
@@ -86,7 +82,6 @@ class Fundamentals(AbstractEODStream):
 
     STATE_MSG_FREQUENCY = 100
 
-    replication_key = 'UpdatedAt'
     schema_filepath = SCHEMAS_DIR / "fundamentals.json"
 
     def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
@@ -114,6 +109,13 @@ class HistoricalDividends(AbstractEODStream):
     replication_key = 'date'
     schema_filepath = SCHEMAS_DIR / "dividends.json"
 
+    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+
+        if self.get_starting_replication_key_value(context) is not None:
+            params['from'] = self.get_starting_replication_key_value(context)
+        return params
+
 class HistoricalPrices(AbstractEODStream):
     name = "raw_historical_prices"
     path = "/eod/{Code}?fmt=json&period=d"
@@ -127,6 +129,9 @@ class HistoricalPrices(AbstractEODStream):
 
     def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
+
+        if self.get_starting_replication_key_value(context) is not None:
+            params['from'] = self.get_starting_replication_key_value(context)
         return params
 
 class Options(AbstractEODStream):
@@ -137,7 +142,6 @@ class Options(AbstractEODStream):
 
     STATE_MSG_FREQUENCY = 1000
 
-    replication_key = 'expirationDate'
     schema_filepath = SCHEMAS_DIR / "options.json"
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
