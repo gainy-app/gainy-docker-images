@@ -10,6 +10,7 @@ plugins:
       capabilities:
         - discover
         - catalog
+        - state
       settings:
         - name: api_token
         - name: start_symbol

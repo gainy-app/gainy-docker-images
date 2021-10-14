@@ -1,0 +1,1 @@
+Enter docker container with tap: `docker run --rm -v "$(pwd)/tap-eodhistoricaldata:/tap-eodhistoricaldata" --entrypoint /bin/bash -w /tap-eodhistoricaldata -it $(docker build -q .)`
