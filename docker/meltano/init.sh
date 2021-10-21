@@ -1,6 +1,11 @@
 #!/bin/bash
 
+echo ENV $ENV
+echo EODHISTORICALDATA_JOBS_COUNT $EODHISTORICALDATA_JOBS_COUNT
+
 python scripts/generate_meltano_config.py $ENV
+cat meltano.yml
+
 ( cd scripts && python3 generate_rules_sql.py )
 
 while ! PGPASSWORD=$PG_PASSWORD pg_isready -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME; do sleep 1; done
