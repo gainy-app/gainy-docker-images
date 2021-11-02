@@ -75,7 +75,7 @@ class AbstractEODStream(eodhistoricaldataStream):
             pass
 
 class Fundamentals(AbstractEODStream):
-    name = "fundamentals"
+    name = "eod_fundamentals"
     path = "/fundamentals/{Code}"
     primary_keys = ["Code"]
     selected_by_default = True
@@ -99,7 +99,7 @@ class Fundamentals(AbstractEODStream):
         return super().post_process(row, context)
 
 class HistoricalDividends(AbstractEODStream):
-    name = "dividends"
+    name = "eod_dividends"
     path = "/div/{Code}?fmt=json"
     primary_keys = ["Code", "date"]
     selected_by_default = True
@@ -117,7 +117,7 @@ class HistoricalDividends(AbstractEODStream):
         return params
 
 class HistoricalPrices(AbstractEODStream):
-    name = "raw_historical_prices"
+    name = "eod_historical_prices"
     path = "/eod/{Code}?fmt=json&period=d"
     primary_keys = ["Code", "date"]
     selected_by_default = True
@@ -135,7 +135,7 @@ class HistoricalPrices(AbstractEODStream):
         return params
 
 class Options(AbstractEODStream):
-    name = "options"
+    name = "eod_options"
     path = "/options/{Code}?fmt=json"
     primary_keys = ["Code", "expirationDate"]
     selected_by_default = True
