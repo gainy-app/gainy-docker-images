@@ -5,7 +5,7 @@ python scripts/generate_meltano_config.py $ENV
 
 while ! PGPASSWORD=$PG_PASSWORD pg_isready -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME; do sleep 1; done
 echo 'Importing seeds'
-find seed -iname '*.sql' | while read -r i; do
+find seed -iname '*.sql' | sort | while read -r i; do
   PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -P pager -f "$i"
 done
 PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -P pager -f "CREATE SCHEMA IF NOT EXISTS $DBT_TARGET_SCHEMA;"
