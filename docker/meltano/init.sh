@@ -11,7 +11,7 @@ done
 PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -P pager -f "CREATE SCHEMA IF NOT EXISTS $DBT_TARGET_SCHEMA;"
 echo "Seeding done"
 
-echo 'Running cst-to-postgres' && meltano schedule run csv-to-postgres
+echo 'Running csv-to-postgres' && meltano schedule run csv-to-postgres
 
 if [ -z "$NO_AIRFLOW" ]; then
   if ! meltano invoke airflow users list | grep admin > /dev/null; then
