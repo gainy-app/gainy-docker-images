@@ -3,7 +3,7 @@
 sed -i "s/schema: public\w*$/schema: $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME/" metadata/*
 
 MIGRATION_DIRS=()
-find shared_views -iname '*.sql' | sort | while read -r i; do
+while read -r i; do
   FILENAME=$(basename "$i")
   MIGRATION_NAME="$(date '+%s')${FILENAME%.sql}"
   MIGRATION_DIR="migrations/$MIGRATION_NAME"
@@ -18,10 +18,10 @@ find shared_views -iname '*.sql' | sort | while read -r i; do
 #  VERSIONED_CREATE_VIEW_STATEMENT="${ORIGINAL_CREATE_VIEW_STATEMENT//$ORIGINAL_VIEW_NAME/$VERSIONED_VIEW_NAME}"
 #  sed -e "s/$ORIGINAL_CREATE_VIEW_STATEMENT/$VERSIONED_CREATE_VIEW_STATEMENT/" \
 
-  sed -e "s/public\./$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME./g" "$i" | tee "migrations/$MIGRATION_NAME/up.sql"
+  sed -Ee "s/\"?public\"?\./\"$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME\"./g" "$i" | tee "migrations/$MIGRATION_NAME/up.sql"
 
   echo '*' > "migrations/$MIGRATION_NAME/.gitignore"
-done
+done <<< $(find shared_views -iname '*.sql' | sort)
 
 # starting tmp server for migrations and metadata apply
 LOCKFILE=/run/graphql-engine.pid
