@@ -8,8 +8,10 @@ echo 'Importing seeds'
 find seed -iname '*.sql' | sort | while read -r i; do
   PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -P pager -f "$i"
 done
+PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -c "CREATE SCHEMA IF NOT EXISTS $DBT_TARGET_SCHEMA;"
 echo "Seeding done"
-PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -P pager -c "select count(*) from tickers" &> /dev/null || (echo 'Running cst-to-postgres' && meltano schedule run csv-to-postgres)
+
+echo 'Running csv-to-postgres' && meltano schedule run csv-to-postgres
 
 if [ -z "$NO_AIRFLOW" ]; then
   if ! meltano invoke airflow users list | grep admin > /dev/null; then
