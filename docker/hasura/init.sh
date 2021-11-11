@@ -11,7 +11,7 @@ while read -r i; do
   MIGRATION_DIRS+=( "$MIGRATION_DIR" )
   mkdir -p "$MIGRATION_DIR"
 
-## TODO: views versioning (currently blocked by lambdas)
+## TODO:deployment_v2:versioned hasura views lambdas blocked by versioned lambdas
 #  ORIGINAL_CREATE_VIEW_STATEMENT="$(cat "$i" | tr '\n' ' ' | grep -oiP 'create[a-z ]*view[a-z."_ ]*?as')"
 #  ORIGINAL_VIEW_NAME="$(echo $ORIGINAL_CREATE_VIEW_STATEMENT | grep -io '["a-z_]*\s*as' | awk '{print $1}' | tr -d '"')"
 #  VERSIONED_VIEW_NAME="${HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME//public/}_$ORIGINAL_VIEW_NAME"
