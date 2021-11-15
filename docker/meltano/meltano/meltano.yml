@@ -12,6 +12,9 @@ plugins:
     - name: target-postgres
       variant: transferwise
       pip_url: pipelinewise-target-postgres
+    - name: target-algolia
+      namespace: target-algolia
+      pip_url: /target-algolia
   transformers:
     - name: dbt
       pip_url: dbt==0.20.1
