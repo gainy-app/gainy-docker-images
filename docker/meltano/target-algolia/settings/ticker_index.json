@@ -1,0 +1,12 @@
+{
+  "searchableAttributes": [
+    "symbol",
+    "name",
+    "industries",
+    "categories",
+    "unordered(description)"
+  ],
+  "typoTolerance": "strict",
+  "minWordSizefor1Typo": 4,
+  "minWordSizefor2Typos": 8
+}
