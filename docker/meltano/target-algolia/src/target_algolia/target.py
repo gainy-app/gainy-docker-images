@@ -21,33 +21,15 @@ class TargetAlgolia(Target):
             required=True
         ),
         th.Property(
-            "index_name",
-            th.StringType,
-            description="Algolia index name",
-            required=True
-        ),
-        th.Property(
             "api_key",
             th.StringType,
             description="Algolia API key with following permissions: addObject, deleteObject, editSettings",
             required=True
         ),
         th.Property(
-            "index_settings_file",
+            "index_mapping_file",
             th.StringType,
-            description="JSON file with Algolia index settings",
-            required=False
-        ),
-        th.Property(
-            "attributes",
-            th.ArrayType(th.StringType),
-            description="List of attributes for indexing",
-            required=False
-        ),
-        th.Property(
-            "primary_key",
-            th.ArrayType(th.StringType),
-            description="List of primary key columns",
+            description="YAML file with Algolia index configurations",
             required=True
         )
     ).to_dict()
