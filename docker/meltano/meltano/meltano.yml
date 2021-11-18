@@ -7,7 +7,10 @@ plugins:
       namespace: tap_eodhistoricaldata
       pip_url: /tap-eodhistoricaldata
     - name: tap-csv
-    - name: tap-postgres
+    - name: tap-postgres--sync
+      inherit_from: tap-postgres
+    - name: tap-postgres--search
+      inherit_from: tap-postgres
   loaders:
     - name: target-postgres
       variant: transferwise
