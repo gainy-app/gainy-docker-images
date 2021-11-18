@@ -8,10 +8,17 @@ plugins:
       pip_url: /tap-eodhistoricaldata
     - name: tap-csv
     - name: tap-postgres
+    - name: tap-postgres--sync
+      inherit_from: tap-postgres
+    - name: tap-postgres--search
+      inherit_from: tap-postgres
   loaders:
     - name: target-postgres
       variant: transferwise
       pip_url: pipelinewise-target-postgres
+    - name: target-algolia
+      namespace: target-algolia
+      pip_url: /target-algolia
   transformers:
     - name: dbt
       pip_url: dbt==0.20.1

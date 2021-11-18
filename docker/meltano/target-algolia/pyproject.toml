@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "target-algolia"
+version = "0.0.1"
+description = "Singer Target for Algolia (https://www.algolia.com/), built with the Meltano SDK."
+authors = ["Vasilii Khomutov <vasilii@gainy.app>"]
+
+
+[tool.poetry.dependencies]
+python = "<3.10,>=3.6.2"
+requests = "^2.25.1"
+singer-sdk = "^0.3.13"
+algoliasearch = "^2.6.0"
+PyYAML = "^6.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pipelinewise-singer-python = "^1.2.0"
+pipelinewise-tap-postgres = "^1.8.1"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+# CLI declaration
+target-algolia = 'target_algolia.target:TargetAlgolia.cli'

@@ -7,6 +7,7 @@ WORKDIR /project
 
 COPY meltano /project
 COPY tap-eodhistoricaldata /tap-eodhistoricaldata
+COPY target-algolia /target-algolia
 
 RUN meltano install
 
