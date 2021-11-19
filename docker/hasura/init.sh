@@ -37,7 +37,11 @@ fi
 rm -rf ${MIGRATION_DIRS[@]}
 
 echo hasura metadata apply
-hasura metadata apply || exit 1
+if ! hasura metadata apply; then
+  echo hasura metadata apply failed, sleeping
+  sleep 60
+  exit 1
+fi
 
 kill $(cat $LOCKFILE)
 
