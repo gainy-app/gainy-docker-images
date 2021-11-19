@@ -22,20 +22,15 @@ if [ "$ENV" = "local" ]; then
   echo "Seeding done"
 fi
 
-for (( ATTEMPT=0; ATTEMPT<10; ATTEMPT++ )); do
-  if curl -s http://$MELTANO_AIRFLOW_SCHEDULER_HOST:$MELTANO_AIRFLOW_SCHEDULER_PORT/; then
-    break;
+echo hasura metadata apply
+for (( ATTEMPT=0; ATTEMPT<30; ATTEMPT++ )); do
+  if hasura metadata apply; then
+    break
   fi
 
-  sleep 10;
-done
-
-echo hasura metadata apply
-if ! hasura metadata apply; then
   echo hasura metadata apply failed, sleeping
   sleep 60
-  exit 1
-fi
+done
 
 kill $(cat $LOCKFILE)
 
