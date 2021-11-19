@@ -1,7 +1,6 @@
 FROM hasura/graphql-engine:v2.0.10
 
-RUN apt update
-RUN apt install -y curl
+RUN apt update && apt install -y curl postgresql-client
 RUN curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
 WORKDIR /hasura

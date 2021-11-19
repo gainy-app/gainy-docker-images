@@ -1,5 +1,7 @@
 #!/bin/bash
 
+while ! pg_isready -d $HASURA_GRAPHQL_DATABASE_URL; do sleep 1; done &> /dev/null
+
 sed -i "s/schema: public\w*$/schema: $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME/" metadata/*
 
 MIGRATION_DIRS=()
