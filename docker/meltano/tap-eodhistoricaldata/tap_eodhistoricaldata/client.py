@@ -2,7 +2,7 @@
 import os
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 import datadog.api
 import requests
@@ -28,13 +28,12 @@ class eodhistoricaldataStream(RESTStream):
         params: dict = {"api_token": self.config['api_token']}
         return params
 
-    @cached_property
-    def symbols(self):
-        if "symbols" in self.config:
+    def load_symbols(self, symbols: List[str] = None, exchanges: List[str] = None):
+        if symbols:
             self.logger.info("Using symbols from the config parameter")
-            symbols = self.config["symbols"]
+            symbols = symbols
         else:
-            self.logger.info(f"Loading symbols for exchanges: {self.config['exchanges']}")
+            self.logger.info(f"Loading symbols for exchanges: {exchanges}")
             exchange_url = f"{self.url_base}/exchange-symbol-list"
             symbols = []
             for exchange in self.config["exchanges"]:

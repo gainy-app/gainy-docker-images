@@ -23,7 +23,8 @@ class AbstractEODStream(eodhistoricaldataStream):
 
     @cached_property
     def partitions(self) -> List[dict]:
-        return list(map(lambda x: {'Code': x}, self.symbols))
+        symbols = self.load_symbols(self.config.get("symbols", None), self.config.get("exchanges", None))
+        return list(map(lambda x: {'Code': x}, symbols))
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
         row['Code'] = context['Code']
@@ -180,7 +181,7 @@ class EODPrices(AbstractExchangeStream):
             self.logger.info(f"Loading prices using historical EOD API for exchange: {context['exchange']}")
             context["api"] = "eod"
 
-            for symbol in self.symbols:
+            for symbol in self.load_symbols(self.config.get("symbols", None), [context["exchange"]]):
                 context["object"] = symbol
                 yield from super().get_records(context)
         else:
