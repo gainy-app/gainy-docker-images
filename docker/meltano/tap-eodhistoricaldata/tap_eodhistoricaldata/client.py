@@ -33,16 +33,16 @@ class eodhistoricaldataStream(RESTStream):
 
     def _send_to_datadog(self, metric, types, add_env=True):
         try:
-            datadog.initialize()
-
-            tag_list = []
-            if "tags" in metric:
-                tag_list += [f"{tag[0]}:{tag[1]}" for tag in metric["tags"].items()]
-
-            if add_env and "ENV" in os.environ:
-                tag_list.append(f"env:{os.environ['ENV']}")
-
             if metric["type"] in types:
+                datadog.initialize()
+
+                tag_list = []
+                if "tags" in metric:
+                    tag_list += [f"{tag[0]}:{tag[1]}" for tag in metric["tags"].items()]
+
+                if add_env and "ENV" in os.environ:
+                    tag_list.append(f"env:{os.environ['ENV']}")
+
                 datadog.api.Metric.send(
                     metric=f"data.tap.{self.name}.{metric['metric']}",
                     type="count",
