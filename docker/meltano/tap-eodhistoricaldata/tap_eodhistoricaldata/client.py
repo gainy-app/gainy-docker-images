@@ -1,6 +1,6 @@
 """REST client handling, including eodhistoricaldataStream base class."""
 import os
-from functools import cached_property
+import hashlib
 from pathlib import Path
 from typing import Any, Dict, Optional, List
 
@@ -46,7 +46,18 @@ class eodhistoricaldataStream(RESTStream):
                 exchange_symbols = list(map(lambda record: record["Code"], res.json()))
                 symbols += exchange_symbols
 
-        return symbols
+        return list(filter(lambda s: self.is_within_split(s), sorted(symbols)))
+
+    def split_num(self) -> int:
+        return self.config.get("split-num", 1)
+
+    def split_id(self) -> int:
+        return self.config.get("split-id", 0)
+
+    def is_within_split(self, symbol) -> int:
+        # Use built-in `hashlib` to get consistent hash value
+        symbol_hash = int(hashlib.md5(symbol.encode("UTF-8")).hexdigest(), 16)
+        return symbol_hash % self.split_num() == self.split_id()
 
     def _write_metric_log(self, metric: dict, extra_tags: Optional[dict]) -> None:
         super()._write_metric_log(metric, extra_tags)

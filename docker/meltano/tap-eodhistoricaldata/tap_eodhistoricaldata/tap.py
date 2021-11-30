@@ -34,6 +34,18 @@ class Tapeodhistoricaldata(Tap):
             th.ArrayType(th.StringType),
             required=False,
             description="List of exchanges to load ticker symbols from"
+        ),
+        th.Property(
+            "split-id",
+            th.IntegerType,
+            required=False,
+            description="Tap split index"
+        ),
+        th.Property(
+            "split-num",
+            th.IntegerType,
+            required=False,
+            description="Total number of tap splits"
         )
     ).to_dict()
 
@@ -46,11 +58,27 @@ class Tapeodhistoricaldata(Tap):
     ) -> Tuple[List[str], List[str]]:
         warnings, errors = super()._validate_config(raise_errors, warnings_as_errors)
 
-        if ("symbols" in self.config) == ("exchanges" in self.config):
-            error_msg = "Either `exchanges` or `symbols` property should be specified"
-            if raise_errors:
-                raise ConfigValidationError(error_msg)
-            else:
-                errors.append(error_msg)
+        errors += self._check_exactly_one("exchanges", "symbols", raise_errors)
+        errors += self._check_both_or_nothing("split-id", "split-num", raise_errors)
 
         return warnings, errors
+
+    def _check_exactly_one(self, property1: str, property2: str, raise_errors: bool):
+        if (property1 in self.config) != (property2 in self.config):
+            return []
+
+        error_msg = f"Either `{property1}` or `{property2}` should be specified"
+        if raise_errors:
+            raise ConfigValidationError(error_msg)
+
+        return error_msg
+
+    def _check_both_or_nothing(self, property1: str, property2: str, raise_errors: bool):
+        if (property1 in self.config) == (property2 in self.config):
+            return []
+
+        error_msg = f"Both `{property1}` and `{property2}` should be specified or missed"
+        if raise_errors:
+            raise ConfigValidationError(error_msg)
+
+        return error_msg

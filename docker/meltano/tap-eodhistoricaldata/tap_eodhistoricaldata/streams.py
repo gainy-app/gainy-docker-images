@@ -1,6 +1,4 @@
 """Stream type classes for tap-eodhistoricaldata."""
-import copy
-import os
 from abc import ABC
 from datetime import datetime
 from datetime import timedelta
@@ -78,7 +76,8 @@ class Fundamentals(AbstractEODStream):
     def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization."""
         params = super().get_url_params(context, next_page_token)
-        params["filter"] = "General,Earnings,Highlights,AnalystRatings,Technicals,Valuation,Financials,SplitsDividends,SharesStats"
+        params[
+            "filter"] = "General,Earnings,Highlights,AnalystRatings,Technicals,Valuation,Financials,SplitsDividends,SharesStats"
         return params
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
@@ -88,6 +87,7 @@ class Fundamentals(AbstractEODStream):
             row['UpdatedAt'] = {}
 
         return super().post_process(row, context)
+
 
 class HistoricalDividends(AbstractEODStream):
     name = "eod_dividends"
@@ -106,6 +106,7 @@ class HistoricalDividends(AbstractEODStream):
         if self.get_starting_replication_key_value(context) is not None:
             params['from'] = self.get_starting_replication_key_value(context)
         return params
+
 
 class Options(AbstractEODStream):
     name = "eod_options"
@@ -177,6 +178,10 @@ class EODPrices(AbstractExchangeStream):
         return self.get_starting_replication_key_value(context) is None
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        if not self.is_initial_load(context) and self.split_id() > 0:
+            self.logger.info(f"Skipping bulk load for split: `{self.split_id()}`")
+            return []
+
         if self.is_initial_load(context):
             self.logger.info(f"Loading prices using historical EOD API for exchange: {context['exchange']}")
             context["api"] = "eod"
