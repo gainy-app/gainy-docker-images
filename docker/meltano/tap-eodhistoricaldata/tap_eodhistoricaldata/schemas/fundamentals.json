@@ -6,6 +6,10 @@
     "Code": {
       "type": "string"
     },
+    "Year": {
+      "type": "integer",
+      "description": "Year when a record was updated; needed as a part of primary key for Fundamentals Bulk API"
+    },
     "UpdatedAt": {
       "type": ["string", "null"],
       "format": "date"
