@@ -23,24 +23,7 @@ class AbstractEODStream(eodhistoricaldataStream):
 
     @cached_property
     def partitions(self) -> List[dict]:
-        if "symbols" in self.config:
-            self.logger.info("Using symbols from the config parameter")
-            symbols = self.config["symbols"]
-        else:
-            self.logger.info(f"Loading symbols for exchanges: {self.config['exchanges']}")
-            exchange_url = f"{self.url_base}/exchange-symbol-list"
-            symbols = []
-            for exchange in self.config["exchanges"]:
-                res = requests.get(
-                    url=f"{exchange_url}/{exchange}",
-                    params={"api_token": self.config["api_token"], "fmt": "json"}
-                )
-                self._write_request_duration_log("/exchange-symbol-list", res, None, None)
-
-                exchange_symbols = list(map(lambda record: record["Code"], res.json()))
-                symbols += exchange_symbols
-
-        return list(map(lambda x: {'Code': x}, symbols))
+        return list(map(lambda x: {'Code': x}, self.symbols))
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
         row['Code'] = context['Code']
@@ -123,24 +106,6 @@ class HistoricalDividends(AbstractEODStream):
             params['from'] = self.get_starting_replication_key_value(context)
         return params
 
-class HistoricalPrices(AbstractEODStream):
-    name = "eod_historical_prices"
-    path = "/eod/{Code}?fmt=json&period=d"
-    primary_keys = ["Code", "date"]
-    selected_by_default = True
-
-    STATE_MSG_FREQUENCY = 1000
-
-    replication_key = 'date'
-    schema_filepath = SCHEMAS_DIR / "eod.json"
-
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
-        params = super().get_url_params(context, next_page_token)
-
-        if self.get_starting_replication_key_value(context) is not None:
-            params['from'] = self.get_starting_replication_key_value(context)
-        return params
-
 class Options(AbstractEODStream):
     name = "eod_options"
     path = "/options/{Code}?fmt=json"
@@ -158,9 +123,9 @@ class Options(AbstractEODStream):
                 yield j
 
 
-# ############## BULK STREAMS ################
+# ############## EXCHANGE STREAMS ################
 
-class AbstractBulkStream(eodhistoricaldataStream, ABC):
+class AbstractExchangeStream(eodhistoricaldataStream, ABC):
 
     @cached_property
     def partitions(self) -> List[Dict[str, Any]]:
@@ -169,22 +134,22 @@ class AbstractBulkStream(eodhistoricaldataStream, ABC):
         partitions = []
         exchanges = self.config.get("exchanges", []) or ["US"]
         for exchange in exchanges:
-            if state_partitions:
-                filtered_partitions_for_exchange = [p for p in state_partitions if p["exchange"] == exchange]
-                if filtered_partitions_for_exchange:
-                    partitions.append(filtered_partitions_for_exchange[0])
-                    continue
-
-            partitions.append({"exchange": exchange})
+            exchange_partitions = [p for p in state_partitions or [] if p["exchange"] == exchange]
+            if exchange_partitions:
+                partitions.append(exchange_partitions[0])
+            else:
+                partitions.append({"exchange": exchange})
 
         return partitions
 
 
-class IncrementalPrices(AbstractBulkStream):
-    name = "eod_prices_daily"
+class EODPrices(AbstractExchangeStream):
+    name = "eod_historical_prices"
     schema_filepath = SCHEMAS_DIR / "eod.json"
 
-    path = "/eod-bulk-last-day/{exchange}"
+    path = "/{api}/{object}"
+    # bulk api = "/eod-bulk-last-day/{exchange}"
+    # historical api = "/eod/{Code}"
 
     primary_keys = ["Code", "date"]
     replication_key = "date"
@@ -194,39 +159,56 @@ class IncrementalPrices(AbstractBulkStream):
     def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
 
-        params["date"] = context["date"]
-        params["api_token"] = self.config["api_token"]
         params["fmt"] = "json"
+        params["api_token"] = self.config["api_token"]
 
-        if "symbols" in self.config:
-            params["symbols"] = ",".join(self.config["symbols"])
+        if self.is_initial_load(context):
+            params["period"] = "d"
+        else:
+            params["date"] = context["date"]
+
+            if "symbols" in self.config:
+                params["symbols"] = ",".join(self.config["symbols"])
 
         return params
 
+    def is_initial_load(self, context: dict) -> bool:
+        return self.get_starting_replication_key_value(context) is None
+
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
-        for date in self.loading_dates(context):
-            context["date"] = date
-            yield from super().get_records(context)
+        if self.is_initial_load(context):
+            self.logger.info(f"Loading prices using historical EOD API for exchange: {context['exchange']}")
+            context["api"] = "eod"
+
+            for symbol in self.symbols:
+                context["object"] = symbol
+                yield from super().get_records(context)
+        else:
+            self.logger.info(f"Loading prices using bulk daily EOD API for exchange: {context['exchange']}")
+            context["api"] = "eod-bulk-last-day"
+            context["object"] = context['exchange']
+
+            from_date = datetime.strptime(self.get_starting_replication_key_value(context), "%Y-%m-%d")
+            for date in self.loading_dates(from_date):
+                context["date"] = date
+                yield from super().get_records(context)
+
             del context["date"]
 
-    def loading_dates(self, context: Optional[dict]) -> List[str]:
+        del context["api"], context["object"]
+
+    def loading_dates(self, from_date) -> List[str]:
         to_date = datetime.now()
+        delta_days = to_date - from_date
 
-        if self.get_starting_replication_key_value(context) is not None:
-            from_date = datetime.strptime(self.get_starting_replication_key_value(context), "%Y-%m-%d")
-            delta_days = to_date - from_date
-        else:
-            self.logger.info("Replication key is not found in state, processing the last 3 days")
-            delta_days = timedelta(days=3)
-
-        self.logger.info(f"Loading data from {to_date - delta_days} to {to_date}")
+        self.logger.info(f"Loading daily data from {to_date - delta_days} to {to_date}")
         return [
             datetime.strftime(to_date - timedelta(days=i), "%Y-%m-%d")
             for i in reversed(range(delta_days.days + 1))
         ]
 
 
-class IncrementalFundamentals(AbstractBulkStream):
+class DailyFundamentals(AbstractExchangeStream):
     """
     Incremental Fundamentals stream is based on Fundamentals Bulk API, which doesn't currently include
     all needed data comparing to the full Fundamentals API. For example, `AnalystRatings` is not

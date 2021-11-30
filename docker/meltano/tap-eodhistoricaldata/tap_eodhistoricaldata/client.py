@@ -1,5 +1,6 @@
 """REST client handling, including eodhistoricaldataStream base class."""
 import os
+from functools import cached_property
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -26,6 +27,27 @@ class eodhistoricaldataStream(RESTStream):
         """Return a dictionary of values to be used in URL parameterization."""
         params: dict = {"api_token": self.config['api_token']}
         return params
+
+    @cached_property
+    def symbols(self):
+        if "symbols" in self.config:
+            self.logger.info("Using symbols from the config parameter")
+            symbols = self.config["symbols"]
+        else:
+            self.logger.info(f"Loading symbols for exchanges: {self.config['exchanges']}")
+            exchange_url = f"{self.url_base}/exchange-symbol-list"
+            symbols = []
+            for exchange in self.config["exchanges"]:
+                res = requests.get(
+                    url=f"{exchange_url}/{exchange}",
+                    params={"api_token": self.config["api_token"], "fmt": "json"}
+                )
+                self._write_request_duration_log("/exchange-symbol-list", res, None, None)
+
+                exchange_symbols = list(map(lambda record: record["Code"], res.json()))
+                symbols += exchange_symbols
+
+        return symbols
 
     def _write_metric_log(self, metric: dict, extra_tags: Optional[dict]) -> None:
         super()._write_metric_log(metric, extra_tags)
