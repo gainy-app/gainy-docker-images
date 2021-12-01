@@ -29,6 +29,7 @@
     }
   },
   "required": [
+    "Code",
     "date",
     "open",
     "high",

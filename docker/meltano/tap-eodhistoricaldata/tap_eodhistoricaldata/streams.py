@@ -1,18 +1,16 @@
 """Stream type classes for tap-eodhistoricaldata."""
-
-import datetime
+from abc import ABC
+from datetime import datetime
+from datetime import timedelta
+from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, Optional, Iterator, Iterable
+from typing import Any, Dict, Optional, Iterable, List
 
-
-import pendulum
+import requests
 import singer
 from singer import RecordMessage
 from singer_sdk.helpers._typing import conform_record_data_types
 from singer_sdk.helpers._util import utc_now
-from singer_sdk.helpers._state import (
-    get_state_partitions_list,
-)
 
 from tap_eodhistoricaldata.client import eodhistoricaldataStream
 
@@ -20,21 +18,11 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class AbstractEODStream(eodhistoricaldataStream):
-    @property
-    def is_sorted(self) -> bool:
-        return True
 
-    @property
-    def partitions(self) -> Iterator[Dict[str, Any]]:
-        parts = super().partitions
-
-        start = self.config.get('start_symbol', None)
-        sorted_symbols = sorted(self.config['symbols'])
-
-        if start and start in sorted_symbols:
-            return list(map(lambda x: {'Code': x}, sorted_symbols[sorted_symbols.index(start):]))
-
-        return list(map(lambda x: {'Code': x}, sorted_symbols))
+    @cached_property
+    def partitions(self) -> List[dict]:
+        symbols = self.load_symbols(self.config.get("symbols", None), self.config.get("exchanges", None))
+        return list(map(lambda x: {'Code': x}, symbols))
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
         row['Code'] = context['Code']
@@ -74,6 +62,7 @@ class AbstractEODStream(eodhistoricaldataStream):
             self.logger.error('Error while requesting %s for symbol %s: %s' % (self.name, context['Code'], str(e)))
             pass
 
+
 class Fundamentals(AbstractEODStream):
     name = "eod_fundamentals"
     path = "/fundamentals/{Code}"
@@ -98,6 +87,7 @@ class Fundamentals(AbstractEODStream):
 
         return super().post_process(row, context)
 
+
 class HistoricalDividends(AbstractEODStream):
     name = "eod_dividends"
     path = "/div/{Code}?fmt=json"
@@ -116,23 +106,6 @@ class HistoricalDividends(AbstractEODStream):
             params['from'] = self.get_starting_replication_key_value(context)
         return params
 
-class HistoricalPrices(AbstractEODStream):
-    name = "eod_historical_prices"
-    path = "/eod/{Code}?fmt=json&period=d"
-    primary_keys = ["Code", "date"]
-    selected_by_default = True
-
-    STATE_MSG_FREQUENCY = 1000
-
-    replication_key = 'date'
-    schema_filepath = SCHEMAS_DIR / "eod.json"
-
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
-        params = super().get_url_params(context, next_page_token)
-
-        if self.get_starting_replication_key_value(context) is not None:
-            params['from'] = self.get_starting_replication_key_value(context)
-        return params
 
 class Options(AbstractEODStream):
     name = "eod_options"
@@ -149,3 +122,164 @@ class Options(AbstractEODStream):
             for j in i['data']:
                 del j['options']
                 yield j
+
+
+# ############## EXCHANGE STREAMS ################
+
+class AbstractExchangeStream(eodhistoricaldataStream, ABC):
+
+    @cached_property
+    def partitions(self) -> List[Dict[str, Any]]:
+        state_partitions = super().partitions
+
+        partitions = []
+        exchanges = self.config.get("exchanges", []) or ["US"]
+        for exchange in exchanges:
+            exchange_partitions = [p for p in state_partitions or [] if p["exchange"] == exchange]
+            if exchange_partitions:
+                partitions.append(exchange_partitions[0])
+            else:
+                partitions.append({"exchange": exchange})
+
+        return partitions
+
+
+class EODPrices(AbstractExchangeStream):
+    name = "eod_historical_prices"
+    schema_filepath = SCHEMAS_DIR / "eod.json"
+
+    path = "/{api}/{object}"
+    # bulk api = "/eod-bulk-last-day/{exchange}"
+    # historical api = "/eod/{Code}"
+
+    primary_keys = ["Code", "date"]
+    replication_key = "date"
+
+    STATE_MSG_FREQUENCY = 1000
+
+    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+
+        params["fmt"] = "json"
+        params["api_token"] = self.config["api_token"]
+
+        if self.is_initial_load(context):
+            params["period"] = "d"
+        else:
+            params["date"] = context["date"]
+
+            if "symbols" in self.config:
+                params["symbols"] = ",".join(self.config["symbols"])
+
+        return params
+
+    def is_initial_load(self, context: dict) -> bool:
+        return self.get_starting_replication_key_value(context) is None
+
+    def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        if not self.is_initial_load(context) and self.split_id() > 0:
+            self.logger.info(f"Skipping bulk load for split: `{self.split_id()}`")
+            return []
+
+        if self.is_initial_load(context):
+            self.logger.info(f"Loading prices using historical EOD API for exchange: {context['exchange']}")
+            context["api"] = "eod"
+
+            for symbol in self.load_symbols(self.config.get("symbols", None), [context["exchange"]]):
+                context["object"] = symbol
+                yield from super().get_records(context)
+        else:
+            self.logger.info(f"Loading prices using bulk daily EOD API for exchange: {context['exchange']}")
+            context["api"] = "eod-bulk-last-day"
+            context["object"] = context['exchange']
+
+            from_date = datetime.strptime(self.get_starting_replication_key_value(context), "%Y-%m-%d")
+            for date in self.loading_dates(from_date):
+                context["date"] = date
+                yield from super().get_records(context)
+
+            del context["date"]
+
+        del context["api"], context["object"]
+
+    def loading_dates(self, from_date) -> List[str]:
+        to_date = datetime.now()
+        delta_days = to_date - from_date
+
+        self.logger.info(f"Loading daily data from {to_date - delta_days} to {to_date}")
+        return [
+            datetime.strftime(to_date - timedelta(days=i), "%Y-%m-%d")
+            for i in reversed(range(delta_days.days + 1))
+        ]
+
+    def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
+        if self.is_initial_load(context):
+            row["Code"] = context["object"]
+        else:
+            row["Code"] = row["code"]
+
+        return row
+
+
+class DailyFundamentals(AbstractExchangeStream):
+    """
+    Incremental Fundamentals stream is based on Fundamentals Bulk API, which doesn't currently include
+    all needed data comparing to the full Fundamentals API. For example, `AnalystRatings` is not
+    provided as a part of the bulk version of API.
+
+
+    This is a significant limitation, therefore, this stream is disable for now.
+    """
+
+    name = "fundamentals_daily"
+    schema_filepath = SCHEMAS_DIR / "fundamentals.json"
+
+    path = "/bulk-fundamentals/{exchange}"
+    page_size = 1000
+
+    primary_keys = ["Code", "Year"]
+
+    STATE_MSG_FREQUENCY = 1000
+
+    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+
+        params["api_token"] = self.config["api_token"]
+        params["fmt"] = "json"
+
+        offset = 0 if not next_page_token else next_page_token
+        limit = self.page_size
+
+        if "symbols" in self.config:
+            params["symbols"] = ",".join(self.config["symbols"][offset:(offset + limit)])
+        else:
+            params["offset"] = offset
+            params["limit"] = limit
+
+        return params
+
+    def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        response = list(self.request_records(context))
+        for record in response[0].values():
+            yield self.post_process(record, context)
+
+    def get_next_page_token(self, response: requests.Response, previous_token: Optional[Any]) -> Any:
+        response_length = len(response.json())
+        if response_length < self.page_size:
+            return None
+
+        if not previous_token:
+            # No previous token means that only the first page was loaded
+            return response_length
+
+        return previous_token + response_length
+
+    def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+        row["UpdatedAt"] = row["General"]["UpdatedAt"]
+
+        update_at = datetime.strptime(row["General"]["UpdatedAt"], "%Y-%m-%d")
+        row["Year"] = update_at.year
+
+        row["Code"] = row["General"]["Code"]
+
+        return super().post_process(row, context)
