@@ -11,4 +11,6 @@ WORKDIR /tap-eodhistoricaldata
 COPY . /tap-eodhistoricaldata/
 RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
 
+# Run tests
+WORKDIR /tap-eodhistoricaldata/tests
 CMD [ "poetry", "run", "pytest"]
