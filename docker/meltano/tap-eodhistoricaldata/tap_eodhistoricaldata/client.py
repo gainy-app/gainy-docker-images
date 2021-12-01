@@ -36,7 +36,7 @@ class eodhistoricaldataStream(RESTStream):
             self.logger.info(f"Loading symbols for exchanges: {exchanges}")
             exchange_url = f"{self.url_base}/exchange-symbol-list"
             symbols = []
-            for exchange in self.config["exchanges"]:
+            for exchange in exchanges:
                 res = requests.get(
                     url=f"{exchange_url}/{exchange}",
                     params={"api_token": self.config["api_token"], "fmt": "json"}

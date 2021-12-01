@@ -277,7 +277,7 @@
           "type": "number"
         },
         "EPSEstimateNextQuarter": {
-          "type": "integer"
+          "type": "number"
         },
         "EPSEstimateCurrentQuarter": {
           "type": "number"
@@ -400,19 +400,19 @@
           "type": "number"
         },
         "SharesShort": {
-          "type": "integer"
+          "type": ["integer", "null"]
         },
         "SharesShortPriorMonth": {
-          "type": "integer"
+          "type": ["integer", "null"]
         },
         "ShortRatio": {
-          "type": "number"
+          "type": ["number", "null"]
         },
         "ShortPercentOutstanding": {
-          "type": "number"
+          "type": ["number", "null"]
         },
         "ShortPercentFloat": {
-          "type": "number"
+          "type": ["number", "null"]
         }
       },
       "required": [
@@ -2940,17 +2940,13 @@
   },
   "required": [
     "AnalystRatings",
-    "ESGScores",
     "Earnings",
     "Financials",
     "General",
     "Highlights",
-    "Holders",
-    "InsiderTransactions",
     "SharesStats",
     "SplitsDividends",
     "Technicals",
-    "Valuation",
-    "outstandingShares"
+    "Valuation"
   ]
 }
