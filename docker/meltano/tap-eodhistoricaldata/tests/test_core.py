@@ -32,9 +32,11 @@ SYMBOLS_CONFIG = {
 def test_ci():
     from pathlib import Path
     test_dir = Path(__file__).parent
+    print(f"\n\n\n\n{test_dir}\n\n\n\n")
 
-    print(test_dir)
-
+    with open(test_dir / "cassettes/tap/tap-core.yaml") as f:
+        cassette = f.read()
+        print("\n\n\nDONE\n\n\n")
 
 # @freeze_time("2021-12-01")
 # @vcr.use_cassette("tests/cassettes/tap/tap-core.yaml")
