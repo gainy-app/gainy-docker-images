@@ -34,7 +34,7 @@ def test_ci():
     test_dir = Path(__file__).parent
     print(f"\n\n\n\n{test_dir}\n\n\n\n")
 
-    with open(test_dir / "cassettes1/tap/tap-core.yaml") as f:
+    with open(test_dir / "cassettes/tap/tap-core.yaml") as f:
         cassette = f.read()
         print("\n\n\nDONE\n\n\n")
 
