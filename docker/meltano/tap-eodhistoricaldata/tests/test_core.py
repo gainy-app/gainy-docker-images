@@ -38,20 +38,21 @@ def test_ci():
         cassette = f.read()
         print("\n\n\nDONE\n\n\n")
 
-# @freeze_time("2021-12-01")
-# @vcr.use_cassette("tests/cassettes/tap/tap-core.yaml")
-# def test_standard_tap_tests():
-#     """Run standard tap tests from the SDK."""
-#
-#     tests = get_standard_tap_tests(
-#         Tapeodhistoricaldata,
-#         config=EXCHANGES_CONFIG
-#     )
-#
-#     for test in tests:
-#         test()
-#
-#
+
+@freeze_time("2021-12-01")
+@vcr.use_cassette("tests/cassettes/tap/tap-core.yaml")
+def test_standard_tap_tests():
+    """Run standard tap tests from the SDK."""
+
+    tests = get_standard_tap_tests(
+        Tapeodhistoricaldata,
+        config=EXCHANGES_CONFIG
+    )
+
+    for test in tests:
+        test()
+
+
 # @freeze_time("2021-12-01")
 # @vcr.use_cassette("tests/cassettes/tap/tap-core.yaml")
 # def test_tap_sync_all():
