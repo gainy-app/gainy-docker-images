@@ -16,6 +16,13 @@ IMAGE_TAG ?= "latest"
 all: help;
 default: help;
 
+test:
+	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run test-tap-eodhistoricaldata
+	make test-clean
+
+test-clean:
+	docker-compose -p gainy_test -f docker-compose.test.yml rm -sv
+
 build-meltano:
 	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-meltano:${IMAGE_TAG} docker/meltano
 

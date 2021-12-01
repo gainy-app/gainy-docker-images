@@ -30,7 +30,7 @@ SYMBOLS_CONFIG = {
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml")
+@vcr.use_cassette("tests/cassettes/tap/tap-core.yaml")
 def test_standard_tap_tests():
     """Run standard tap tests from the SDK."""
 
@@ -44,21 +44,21 @@ def test_standard_tap_tests():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml")
+@vcr.use_cassette("tests/cassettes/tap/tap-core.yaml")
 def test_tap_sync_all():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG)
     tap.sync_all()
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette('cassettes/tap/tap-state-sync.yaml')
+@vcr.use_cassette("tests/cassettes/tap/tap-state-sync.yaml")
 def test_tap_with_state_sync_all():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=copy.deepcopy(EXCHANGES_STATE))
     tap.sync_all()
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette('cassettes/tap/tap-state-sync.yaml')
+@vcr.use_cassette("tests/cassettes/tap/tap-state-sync.yaml")
 def test_tap_prices_with_state():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=copy.deepcopy(EXCHANGES_STATE))
 
@@ -93,7 +93,7 @@ def test_tap_prices_with_state():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette('cassettes/tap/tap-state-sync.yaml')
+@vcr.use_cassette("tests/cassettes/tap/tap-state-sync.yaml")
 def test_tap_dividends_with_state():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=EXCHANGES_STATE)
     tap._reset_state_progress_markers()
@@ -117,7 +117,7 @@ def test_tap_dividends_with_state():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette('cassettes/tap/tap-state-sync.yaml')
+@vcr.use_cassette("tests/cassettes/tap/tap-state-sync.yaml")
 def test_tap_splits():
     config1 = copy.deepcopy(EXCHANGES_CONFIG)
     config1["split-id"] = 0
@@ -137,7 +137,7 @@ def test_tap_splits():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette('cassettes/tap/tap-core.yaml')
+@vcr.use_cassette("tests/cassettes/tap/tap-core.yaml")
 def test_tap_symbols_config():
     tap = Tapeodhistoricaldata(config=SYMBOLS_CONFIG)
 
@@ -150,7 +150,7 @@ def test_tap_symbols_config():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml")
+@vcr.use_cassette("tests/cassettes/tap/tap-core.yaml")
 def test_validate_schema():
     _validate_schema({"exchange": "US"}, "eod.json", "eod_historical_prices")
 
@@ -170,7 +170,7 @@ def _validate_schema(context, schema_file, stream_name):
     stream._write_starting_replication_value(context)
     records = list(stream.get_records(context))
 
-    with open(test_data_dir / ("../schemas/%s" % schema_file)) as f:
+    with open(test_data_dir / ("../tap_eodhistoricaldata/schemas/%s" % schema_file)) as f:
         schema = json.load(f)
 
         validator = JSONSchemaValidator(schema)
