@@ -3,5 +3,5 @@ services:
   test-tap-eodhistoricaldata:
     restart: always
     build:
-      context: docker/meltano/tap-eodhistoricaldata
+      context: ./docker/meltano/tap-eodhistoricaldata
       dockerfile: test.Dockerfile
