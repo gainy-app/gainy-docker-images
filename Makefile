@@ -17,6 +17,7 @@ all: help;
 default: help;
 
 test:
+	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml build --force-rm test-tap-eodhistoricaldata
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run test-tap-eodhistoricaldata
 	make test-clean
 
