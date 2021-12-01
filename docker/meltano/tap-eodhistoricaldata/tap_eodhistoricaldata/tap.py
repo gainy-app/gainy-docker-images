@@ -49,6 +49,8 @@ class Tapeodhistoricaldata(Tap):
         )
     ).to_dict()
 
+    parse_env_config = True
+
     def discover_streams(self) -> List[Stream]:
         # """Return a list of discovered streams."""
         return [stream_class(tap=self) for stream_class in STREAM_TYPES]
