@@ -36,14 +36,14 @@ class Tapeodhistoricaldata(Tap):
             description="List of exchanges to load ticker symbols from"
         ),
         th.Property(
-            "split-id",
-            th.IntegerType,
+            "split_id",
+            th.StringType,
             required=False,
             description="Tap split index"
         ),
         th.Property(
-            "split-num",
-            th.IntegerType,
+            "split_num",
+            th.StringType,
             required=False,
             description="Total number of tap splits"
         )
@@ -61,7 +61,7 @@ class Tapeodhistoricaldata(Tap):
         warnings, errors = super()._validate_config(raise_errors, warnings_as_errors)
 
         errors += self._check_exactly_one("exchanges", "symbols", raise_errors)
-        errors += self._check_both_or_nothing("split-id", "split-num", raise_errors)
+        errors += self._check_both_or_nothing("split_id", "split_num", raise_errors)
 
         return warnings, errors
 
