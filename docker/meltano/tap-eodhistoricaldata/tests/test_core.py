@@ -120,13 +120,13 @@ def test_tap_dividends_with_state():
 @vcr.use_cassette("cassettes/tap/tap-state-sync.yaml")
 def test_tap_splits():
     config1 = copy.deepcopy(EXCHANGES_CONFIG)
-    config1["split-id"] = 0
-    config1["split-num"] = 2
+    config1["split_id"] = "0"
+    config1["split_num"] = "2"
     tap1 = Tapeodhistoricaldata(config=config1)
 
     config2 = copy.deepcopy(EXCHANGES_CONFIG)
-    config2["split-id"] = 1
-    config2["split-num"] = 2
+    config2["split_id"] = "1"
+    config2["split_num"] = "2"
     tap2 = Tapeodhistoricaldata(config=config2)
 
     config3 = copy.deepcopy(EXCHANGES_CONFIG)

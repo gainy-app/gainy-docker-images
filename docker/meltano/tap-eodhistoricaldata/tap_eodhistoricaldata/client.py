@@ -49,10 +49,10 @@ class eodhistoricaldataStream(RESTStream):
         return list(filter(lambda s: self.is_within_split(s), sorted(symbols)))
 
     def split_num(self) -> int:
-        return self.config.get("split-num", 1)
+        return int(self.config.get("split_num", "1"))
 
     def split_id(self) -> int:
-        return self.config.get("split-id", 0)
+        return int(self.config.get("split_id", "0"))
 
     def is_within_split(self, symbol) -> int:
         # Use built-in `hashlib` to get consistent hash value
