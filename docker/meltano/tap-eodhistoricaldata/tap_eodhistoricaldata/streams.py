@@ -135,7 +135,7 @@ class AbstractExchangeStream(eodhistoricaldataStream, ABC):
         partitions = []
         exchanges = self.config.get("exchanges", []) or ["US"]
         for exchange in exchanges:
-            exchange_partitions = [p for p in state_partitions or [] if p["exchange"] == exchange]
+            exchange_partitions = [p for p in state_partitions or [] if p.get("exchange", None) == exchange]
             if exchange_partitions:
                 partitions.append(exchange_partitions[0])
             else:
