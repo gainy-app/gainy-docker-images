@@ -43,7 +43,7 @@ class eodhistoricaldataStream(RESTStream):
                 )
                 self._write_request_duration_log("/exchange-symbol-list", res, None, None)
 
-                exchange_symbols = list(map(lambda record: record["Code"], res.json()))
+                exchange_symbols = list(map(lambda record: record["Code"], res.json()))[:10]
                 symbols += exchange_symbols
 
         return list(filter(lambda s: self.is_within_split(s), sorted(symbols)))
