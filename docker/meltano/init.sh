@@ -24,7 +24,10 @@ else
   echo "Skip creating admin"
 fi
 
-meltano invoke dbt docs generate
+if [ "$ENV" == "local" ]; then
+  meltano invoke dbt docs generate
+fi
+
 meltano invoke airflow pools set dbt 1 dbt
 
 meltano "$@"

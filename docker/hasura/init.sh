@@ -32,6 +32,14 @@ for (( ATTEMPT=0; ATTEMPT<30; ATTEMPT++ )); do
   sleep 60
 done
 
+# Dirty hack around an issue with hasura not migrating rest endpoints
+REST_ENDPOINTS_METADATA_FILE=metadata/rest_endpoints.yaml
+
+if test -f "$REST_ENDPOINTS_METADATA_FILE"; then
+  REST_ENDPOINTS_METADATA="$(python3 -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' < "$REST_ENDPOINTS_METADATA_FILE")"
+  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "UPDATE hdb_catalog.hdb_metadata SET metadata = jsonb_insert(metadata::jsonb, '{rest_endpoints}', '$REST_ENDPOINTS_METADATA'::jsonb, false)"
+fi
+
 kill $(cat $LOCKFILE)
 
 graphql-engine serve --server-port 8080
