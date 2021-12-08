@@ -33,6 +33,7 @@ for (( ATTEMPT=0; ATTEMPT<30; ATTEMPT++ )); do
 done
 
 # Dirty hack around an issue with hasura not migrating rest endpoints
+# https://github.com/hasura/graphql-engine/issues/7898
 REST_ENDPOINTS_METADATA_FILE=metadata/rest_endpoints.yaml
 
 if test -f "$REST_ENDPOINTS_METADATA_FILE"; then
