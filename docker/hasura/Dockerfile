@@ -1,6 +1,7 @@
 FROM hasura/graphql-engine:v2.0.10
 
-RUN apt update && apt install -y curl postgresql-client
+RUN apt update && apt install -y curl postgresql-client python3-pip
+RUN pip3 install PyYAML
 RUN curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
 WORKDIR /hasura
