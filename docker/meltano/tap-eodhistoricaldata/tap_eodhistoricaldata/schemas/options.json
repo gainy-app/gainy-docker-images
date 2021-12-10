@@ -139,7 +139,7 @@
           }
         },
         "PUT": {
-          "type": "object",
+          "type": "array",
           "additionalProperties": false,
           "items": {
             "properties": {

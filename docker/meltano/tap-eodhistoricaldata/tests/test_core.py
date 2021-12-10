@@ -173,7 +173,6 @@ def _validate_schema(context, schema_file, stream_name):
     with open(test_data_dir / ("../tap_eodhistoricaldata/schemas/%s" % schema_file)) as f:
         schema = json.load(f)
 
-        print(records[0])
         validator = JSONSchemaValidator(schema)
         validator.validate(records[0])
 
