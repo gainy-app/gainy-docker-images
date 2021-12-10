@@ -120,9 +120,6 @@ class Options(AbstractEODStream):
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
         for i in super().get_records(context):
             for j in i['data']:
-                options = j['options'] if 'options' in j else {}
-                j['options'] = reduce(lambda x, y: x+y, options.values(), [])
-
                 yield j
 
 
