@@ -43,16 +43,16 @@
           "items": {
             "properties": {
             "ask": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "bid": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "change": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "changePercent": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "contractName": {
               "type": "string"
@@ -67,7 +67,7 @@
               "type": "string"
             },
             "daysBeforeExpiration": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "delta": {
               "type": "number"
@@ -80,19 +80,19 @@
               "format": "date"
             },
             "gamma": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "impliedVolatility": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "inTheMoney": {
               "type": "string"
             },
             "intrinsicValue": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "lastPrice": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "lastTradeDateTime": {
               "type": [
@@ -102,22 +102,22 @@
               "format": "date"
             },
             "openInterest": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "rho": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "strike": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "theoretical": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "theta": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "timeValue": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "type": {
               "type": "string"
@@ -130,10 +130,10 @@
               "format": "date"
             },
             "vega": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "volume": {
-              "type": "number"
+              "type": ["number", "null"]
             }
           }
           }
@@ -144,16 +144,16 @@
           "items": {
             "properties": {
               "ask": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "bid": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "change": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "changePercent": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "contractName": {
                 "type": "string"
@@ -168,10 +168,10 @@
                 "type": "string"
               },
               "daysBeforeExpiration": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "delta": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "expirationDate": {
                 "type": [
@@ -181,19 +181,19 @@
                 "format": "date"
               },
               "gamma": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "impliedVolatility": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "inTheMoney": {
                 "type": "string"
               },
               "intrinsicValue": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "lastPrice": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "lastTradeDateTime": {
                 "type": [
@@ -203,22 +203,22 @@
                 "format": "date"
               },
               "openInterest": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "rho": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "strike": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "theoretical": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "theta": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "timeValue": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "type": {
                 "type": "string"
@@ -231,10 +231,10 @@
                 "format": "date"
               },
               "vega": {
-                "type": "number"
+                "type": ["number", "null"]
               },
               "volume": {
-                "type": "number"
+                "type": ["number", "null"]
               }
             }
           }
