@@ -2,7 +2,7 @@
 from abc import ABC
 from datetime import datetime
 from datetime import timedelta
-from functools import cached_property
+from functools import cached_property, reduce
 from pathlib import Path
 from typing import Any, Dict, Optional, Iterable, List
 
@@ -120,7 +120,6 @@ class Options(AbstractEODStream):
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
         for i in super().get_records(context):
             for j in i['data']:
-                del j['options']
                 yield j
 
 
