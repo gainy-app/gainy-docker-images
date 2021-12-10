@@ -32,6 +32,96 @@
     },
     "putVolume": {
       "type": "integer"
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ask": {
+          "type": "number"
+        },
+        "bid": {
+          "type": "number"
+        },
+        "change": {
+          "type": "number"
+        },
+        "changePercent": {
+          "type": "number"
+        },
+        "contractName": {
+          "type": "string"
+        },
+        "contractPeriod": {
+          "type": "string"
+        },
+        "contractSize": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "daysBeforeExpiration": {
+          "type": "number"
+        },
+        "delta": {
+          "type": "number"
+        },
+        "expirationDate": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "gamma": {
+          "type": "number"
+        },
+        "impliedVolatility": {
+          "type": "number"
+        },
+        "inTheMoney": {
+          "type": "string"
+        },
+        "intrinsicValue": {
+          "type": "number"
+        },
+        "lastPrice": {
+          "type": "number"
+        },
+        "lastTradeDateTime": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "openInterest": {
+          "type": "number"
+        },
+        "rho": {
+          "type": "number"
+        },
+        "strike": {
+          "type": "number"
+        },
+        "theoretical": {
+          "type": "number"
+        },
+        "theta": {
+          "type": "number"
+        },
+        "timeValue": {
+          "type": "number"
+        },
+        "type": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "vega": {
+          "type": "number"
+        },
+        "volume": {
+          "type": "number"
+        }
+      }
     }
   },
   "required": [
