@@ -1,6 +1,10 @@
 FROM meltano/meltano:v1.80.1-python3.8
 
-RUN apt update && apt install -y postgresql-client
+
+RUN apt update
+RUN apt install -y postgresql-client
+RUN apt install -y awscli
+
 RUN pip install pyyaml
 
 WORKDIR /project
