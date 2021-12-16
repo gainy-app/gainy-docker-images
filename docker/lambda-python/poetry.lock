@@ -115,6 +115,23 @@ gmpy = ["gmpy"]
 gmpy2 = ["gmpy2"]
 
 [[package]]
+name = "hubspot-api-client"
+version = "4.0.6"
+description = "HubSpot API client"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+certifi = "*"
+python-dateutil = "*"
+six = ">=1.10"
+urllib3 = ">=1.15"
+
+[package.extras]
+dev = ["pytest", "black"]
+
+[[package]]
 name = "idna"
 version = "3.2"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -400,7 +417,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "f52961b0f13419b169dd74a3b47ab7fa234bc78da4fc29478259d8a19f5446db"
+content-hash = "9abd90b2efe7782f97bc080b0927a22a6391870962b3129339ab04e012970a9a"
 
 [metadata.files]
 algoliasearch = [
@@ -509,6 +526,10 @@ datadog = [
 ecdsa = [
     {file = "ecdsa-0.17.0-py2.py3-none-any.whl", hash = "sha256:5cf31d5b33743abe0dfc28999036c849a69d548f994b535e527ee3cb7f3ef676"},
     {file = "ecdsa-0.17.0.tar.gz", hash = "sha256:b9f500bb439e4153d0330610f5d26baaf18d17b8ced1bc54410d189385ea68aa"},
+]
+hubspot-api-client = [
+    {file = "hubspot-api-client-4.0.6.tar.gz", hash = "sha256:621195df4ce231a62bb39739384536441fef0abdede0134b84914b19d3033985"},
+    {file = "hubspot_api_client-4.0.6-py3-none-any.whl", hash = "sha256:45d693b273d5b8fe146f78c80f9aca8191eadf24767269f23a222805196ca539"},
 ]
 idna = [
     {file = "idna-3.2-py3-none-any.whl", hash = "sha256:14475042e284991034cb48e06f6851428fb14c4dc953acd9be9a5e95c7b6dd7a"},
