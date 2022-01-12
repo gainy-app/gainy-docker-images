@@ -6,6 +6,9 @@ plugins:
     - name: tap-eodhistoricaldata
       namespace: tap_eodhistoricaldata
       pip_url: /tap-eodhistoricaldata
+    - name: tap-polygon
+      namespace: tap_polygon
+      pip_url: /tap-polygon
     - name: tap-csv
     - name: tap-postgres
     - name: tap-postgres--sync
