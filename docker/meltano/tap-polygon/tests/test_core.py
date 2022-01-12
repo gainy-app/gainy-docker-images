@@ -13,7 +13,7 @@ CONFIG = {
     "api_key": "fake_key",
 }
 
-STATE = {"bookmarks": {"marketstatus_upcoming": {}}} 
+STATE = {"bookmarks": {"polygon_marketstatus_upcoming": {}}}
 
 @freeze_time("2021-12-01")
 @vcr.use_cassette("cassettes/tap/tap-core.yaml")
@@ -46,7 +46,7 @@ def test_tap_with_state_sync_all():
 @freeze_time("2021-12-01")
 @vcr.use_cassette("cassettes/tap/tap-core.yaml")
 def test_validate_schema():
-    _validate_schema({}, "marketstatus_upcoming.json", "marketstatus_upcoming")
+    _validate_schema({}, "marketstatus_upcoming.json", "polygon_marketstatus_upcoming")
 
 
 def _validate_schema(context, schema_file, stream_name):
