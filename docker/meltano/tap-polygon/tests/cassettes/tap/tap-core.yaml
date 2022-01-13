@@ -1,0 +1,44 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://api.polygon.io/v1/marketstatus/upcoming?apiKey=fake_key
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA72UQUvDMBTHv0rIxUszkmxz2ttwKuoUZANR8ZA1oQ22iSSZOMTv7puCkNlL1uql
+        0Jc/v/5e3qOP71i9FZUwpcI5vrlfnOIMG9Fs366FC9qg+TpUyqErbcoMXboBmokNhKQI2xCnnBPK
+        CJtAzQcR1h6qRW29kvgji/HTxWx6+5cfiPzvhK+AGaw58GilXajkbzAnnKWb94mOnM+tlejM6Rbc
+        iLBxuml3YLwTqrFOi7ptRmMypHssQXdiZHhhpHpR8DCFamNOoPF0y56okelcrKxrgx1D5+mKXXGR
+        2xLKz77Ur7DlOzzGCN/jBnsgphhGHSvh6g35okLZwiCj6JKN8iHNKR1QSh8g8Z2MI0dw/hPp1uv/
+        ukW3dlI57UMj/K4W/KwO04eajHv6BFgrxwpxBgAA
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 11 Jan 2022 08:42:12 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Request-Id:
+      - 0e87b9d0512c8260362e78a234aeb5da
+    status:
+      code: 200
+      message: OK
+version: 1

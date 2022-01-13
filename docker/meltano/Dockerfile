@@ -1,4 +1,4 @@
-FROM meltano/meltano:v1.80.1-python3.8
+FROM meltano/meltano:v1.90.1-python3.8
 
 RUN apt update && apt install -y postgresql-client
 RUN pip install pyyaml
@@ -7,6 +7,7 @@ WORKDIR /project
 
 COPY meltano /project
 COPY tap-eodhistoricaldata /tap-eodhistoricaldata
+COPY tap-polygon /tap-polygon
 COPY target-algolia /target-algolia
 
 RUN meltano install
