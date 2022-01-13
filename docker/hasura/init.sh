@@ -14,14 +14,6 @@ sleep 5
 echo hasura migrate apply
 hasura migrate apply || exit 1
 
-if [ "$ENV" = "local" ]; then
-  echo 'Importing seeds'
-  find seeds -iname '*.sql' | sort | while read -r i; do
-    psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -f "$i"
-  done
-  echo "Seeding done"
-fi
-
 echo hasura metadata apply
 for (( ATTEMPT=0; ATTEMPT<30; ATTEMPT++ )); do
   if hasura metadata apply; then
@@ -39,6 +31,14 @@ REST_ENDPOINTS_METADATA_FILE=metadata/rest_endpoints.yaml
 if test -f "$REST_ENDPOINTS_METADATA_FILE"; then
   REST_ENDPOINTS_METADATA="$(python3 -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' < "$REST_ENDPOINTS_METADATA_FILE")"
   psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "UPDATE hdb_catalog.hdb_metadata SET metadata = jsonb_insert(metadata::jsonb, '{rest_endpoints}', '$REST_ENDPOINTS_METADATA'::jsonb, false)"
+fi
+
+if [ "$ENV" = "local" ]; then
+  echo 'Importing seeds'
+  find seeds -iname '*.sql' | sort | while read -r i; do
+    psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -f "$i"
+  done
+  echo "Seeding done"
 fi
 
 kill $(cat $LOCKFILE)
