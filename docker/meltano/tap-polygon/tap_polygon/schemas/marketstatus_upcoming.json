@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "close": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "exchange": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "open": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "date",
+    "exchange",
+    "name",
+    "status"
+  ]
+}

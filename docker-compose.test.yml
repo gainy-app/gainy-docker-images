@@ -5,3 +5,8 @@ services:
     build:
       context: ./docker/meltano/tap-eodhistoricaldata
       dockerfile: test.Dockerfile
+  test-tap-polygon:
+    restart: always
+    build:
+      context: ./docker/meltano/tap-polygon
+      dockerfile: test.Dockerfile
