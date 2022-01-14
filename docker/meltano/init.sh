@@ -14,7 +14,10 @@ PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATA
 if ! PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -c "select count(*) from $DBT_TARGET_SCHEMA.tickers"; then
   echo 'Running csv-to-postgres' && meltano schedule run csv-to-postgres --force
 else
-  nohup bash -c "sleep 60 && meltano invoke airflow dags trigger deployment" &> /dev/null &
+  RUNNING_DEPLOYMENT_JOBS_COUNT=$(meltano invoke airflow dags list-runs -d deployment --state running | wc -l)
+  if (( RUNNING_DEPLOYMENT_JOBS_COUNT < 3 )); then
+    nohup bash -c "meltano invoke airflow dags trigger deployment" &> /dev/null &
+  fi
 fi
 
 echo "Seeding done"
