@@ -36,4 +36,7 @@ fi
 
 meltano invoke airflow pools set dbt 1 dbt
 
-meltano "$@"
+for (( i=0; i<5; i++ )); do
+  meltano "$@"
+  sleep 5
+done
