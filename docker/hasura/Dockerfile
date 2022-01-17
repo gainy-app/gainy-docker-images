@@ -1,4 +1,4 @@
-FROM hasura/graphql-engine:v2.1.1
+FROM hasura/graphql-engine:v2.0.10
 
 RUN apt update && apt install -y curl postgresql-client python3-pip
 
