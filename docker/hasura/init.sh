@@ -8,11 +8,10 @@ sed -i "s/schema: public\w*$/schema: $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME/" metada
 
 # starting tmp server for migrations and metadata apply
 export HASURA_GRAPHQL_SERVER_PORT=8081
-export HASURA_GRAPHQL_ENDPOINT=http://127.0.0.1:$HASURA_GRAPHQL_SERVER_PORT
+export HASURA_GRAPHQL_ENDPOINT=http://localhost:$HASURA_GRAPHQL_SERVER_PORT
 LOCKFILE=/run/graphql-engine.pid
-graphql-engine serve --log-level debug
 ( nohup graphql-engine serve 2>&1 & echo $! > $LOCKFILE ) > /proc/1/fd/1 &
-sleep 60
+sleep 20
 
 curl -v $HASURA_GRAPHQL_ENDPOINT
 curl -v $HASURA_GRAPHQL_ENDPOINT/healthz
@@ -51,9 +50,5 @@ fi
 kill $(cat $LOCKFILE)
 
 export HASURA_GRAPHQL_SERVER_PORT=8080
-export HASURA_GRAPHQL_ENDPOINT=http://127.0.0.1:$HASURA_GRAPHQL_SERVER_PORT
+export HASURA_GRAPHQL_ENDPOINT=http://localhost:$HASURA_GRAPHQL_SERVER_PORT
 graphql-engine serve
-
-curl -v $HASURA_GRAPHQL_ENDPOINT
-curl -v $HASURA_GRAPHQL_ENDPOINT/healthz
-curl -v $HASURA_GRAPHQL_ENDPOINT/healthz
