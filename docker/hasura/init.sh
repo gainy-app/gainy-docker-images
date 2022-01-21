@@ -15,6 +15,7 @@ sleep 5
 
 curl -v $HASURA_GRAPHQL_ENDPOINT
 curl -v $HASURA_GRAPHQL_ENDPOINT/healthz
+curl -v curl -H "x-hasura-admin-secret: $HASURA_GRAPHQL_ADMIN_SECRET" $HASURA_GRAPHQL_ENDPOINT/healthz
 
 echo hasura migrate apply
 hasura migrate apply || exit 1
@@ -53,4 +54,5 @@ export HASURA_GRAPHQL_ENDPOINT=http://127.0.0.1:$HASURA_GRAPHQL_SERVER_PORT
 graphql-engine serve
 
 curl -v $HASURA_GRAPHQL_ENDPOINT
+curl -v $HASURA_GRAPHQL_ENDPOINT/healthz
 curl -v $HASURA_GRAPHQL_ENDPOINT/healthz
