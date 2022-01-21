@@ -10,12 +10,13 @@ sed -i "s/schema: public\w*$/schema: $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME/" metada
 export HASURA_GRAPHQL_SERVER_PORT=8081
 export HASURA_GRAPHQL_ENDPOINT=http://127.0.0.1:$HASURA_GRAPHQL_SERVER_PORT
 LOCKFILE=/run/graphql-engine.pid
+graphql-engine serve --log-level debug
 ( nohup graphql-engine serve 2>&1 & echo $! > $LOCKFILE ) > /proc/1/fd/1 &
-sleep 5
+sleep 60
 
 curl -v $HASURA_GRAPHQL_ENDPOINT
 curl -v $HASURA_GRAPHQL_ENDPOINT/healthz
-curl -v curl -H "x-hasura-admin-secret: $HASURA_GRAPHQL_ADMIN_SECRET" $HASURA_GRAPHQL_ENDPOINT/healthz
+curl -vH "x-hasura-admin-secret: $HASURA_GRAPHQL_ADMIN_SECRET" $HASURA_GRAPHQL_ENDPOINT/healthz
 
 echo hasura migrate apply
 hasura migrate apply || exit 1
