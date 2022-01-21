@@ -11,10 +11,16 @@ export HASURA_GRAPHQL_SERVER_PORT=8081
 export HASURA_GRAPHQL_ENDPOINT=http://localhost:$HASURA_GRAPHQL_SERVER_PORT
 LOCKFILE=/run/graphql-engine.pid
 ( nohup graphql-engine serve 2>&1 & echo $! > $LOCKFILE ) > /proc/1/fd/1 &
-sleep 5
 
 echo hasura migrate apply
-hasura migrate apply || exit 1
+for (( ATTEMPT=0; ATTEMPT<10; ATTEMPT++ )); do
+  if hasura migrate apply; then
+    break
+  fi
+
+  echo hasura migrate apply failed, sleeping
+  sleep 6
+done
 
 echo hasura metadata apply
 for (( ATTEMPT=0; ATTEMPT<30; ATTEMPT++ )); do
