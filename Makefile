@@ -12,6 +12,8 @@ ifeq (${GITHUB_REF:refs/heads/%=},)
 	IMAGE_TAG ?= ${GITHUB_BRANCH}
 endif
 IMAGE_TAG ?= "latest"
+PLATFORMS ?= "linux/amd64"
+BUILD_FLAGS ?= "--load"
 
 all: help;
 default: help;
@@ -27,32 +29,18 @@ test-clean:
 	docker-compose -p gainy_test -f docker-compose.test.yml rm -sv
 
 build-meltano:
-	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-meltano:${IMAGE_TAG} docker/meltano
-
-publish-meltano:
-	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-meltano:${IMAGE_TAG}
+	docker buildx build --platform="${PLATFORMS}" --rm --no-cache ${BUILD_FLAGS} -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-meltano:${IMAGE_TAG} docker/meltano
 
 build-firebase:
-	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-firebase:${IMAGE_TAG} docker/firebase
-
-publish-firebase:
-	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-firebase:${IMAGE_TAG}
+	docker buildx build --platform="${PLATFORMS}" --rm --no-cache ${BUILD_FLAGS} -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-firebase:${IMAGE_TAG} docker/firebase
 
 build-hasura:
-	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-hasura:${IMAGE_TAG} docker/hasura
-
-publish-hasura:
-	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-hasura:${IMAGE_TAG}
+	docker buildx build --platform="${PLATFORMS}" --rm --no-cache ${BUILD_FLAGS} -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-hasura:${IMAGE_TAG} docker/hasura
 
 build-lambda-python:
-	docker build --rm --no-cache -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-lambda-python:${IMAGE_TAG} docker/lambda-python
-
-publish-lambda-python:
-	docker image push ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-lambda-python:${IMAGE_TAG}
+	docker buildx build --platform="${PLATFORMS}" --rm --no-cache ${BUILD_FLAGS} -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-lambda-python:${IMAGE_TAG} docker/lambda-python
 
 build: build-meltano build-firebase build-hasura build-lambda-python
-
-publish: publish-meltano publish-firebase publish-hasura publish-lambda-python
 
 %:
 	@:
