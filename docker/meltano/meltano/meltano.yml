@@ -13,12 +13,18 @@ plugins:
     - name: tap-postgres
     - name: tap-postgres--sync
       inherit_from: tap-postgres
+    - name: tap-postgres--sync-fundamentals
+      inherit_from: tap-postgres
+    - name: tap-postgres--sync-options
+      inherit_from: tap-postgres
     - name: tap-postgres--search
       inherit_from: tap-postgres
   loaders:
     - name: target-postgres
       variant: transferwise
       pip_url: pipelinewise-target-postgres
+    - name: target-postgres-small-batch
+      inherit_from: target-postgres
     - name: target-algolia
       namespace: target-algolia
       pip_url: /target-algolia
