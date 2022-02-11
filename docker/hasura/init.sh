@@ -2,7 +2,7 @@
 
 while ! pg_isready -d $HASURA_GRAPHQL_DATABASE_URL; do sleep 1; done &> /dev/null
 
-sed -i "s/schema: public\w*$/schema: $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME/" metadata/*
+python3 generate_config.py
 
 ### TODO:deployment_v2:versioned hasura views lambdas blocked by versioned lambdas
 
