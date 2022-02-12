@@ -4,8 +4,6 @@ while ! pg_isready -d $HASURA_GRAPHQL_DATABASE_URL; do sleep 1; done &> /dev/nul
 
 python3 generate_config.py
 
-### TODO:deployment_v2:versioned hasura views lambdas blocked by versioned lambdas
-
 # starting tmp server for migrations and metadata apply
 export HASURA_GRAPHQL_SERVER_PORT=8081
 export HASURA_GRAPHQL_ENDPOINT=http://localhost:$HASURA_GRAPHQL_SERVER_PORT
