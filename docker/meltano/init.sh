@@ -9,9 +9,12 @@ find seed seed/$ENV -maxdepth 1 -iname '*.sql' | sort | while read -r i; do
   PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -P pager -f "$i"
 done
 
+PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -c \
+  "insert into deployment.public_schemas(schema_name, deployed_at) values ('$DBT_TARGET_SCHEMA', now()) on conflict(schema_name) do update set deployed_at = excluded.deployed_at;"
+
 PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -c "CREATE SCHEMA IF NOT EXISTS $DBT_TARGET_SCHEMA;"
 
-if ! PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -c "select count(*) from $DBT_TARGET_SCHEMA.tickers"; then
+if ! PGPASSWORD=$PG_PASSWORD psql -h $PG_ADDRESS -p $PG_PORT -U $PG_USERNAME $PG_DATABASE -c "select count(*) from $DBT_TARGET_SCHEMA.deployment_metadata"; then
   echo 'Running csv-to-postgres' && meltano schedule run csv-to-postgres --force
 else
   RUNNING_DEPLOYMENT_JOBS_COUNT=$(meltano invoke airflow dags list-runs -d deployment --state running | wc -l)
