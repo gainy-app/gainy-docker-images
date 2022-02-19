@@ -11,7 +11,6 @@ COPY tap-polygon /tap-polygon
 COPY target-algolia /target-algolia
 
 RUN meltano install
-RUN pip install markupsafe==2.0.1
 
 COPY init.sh wait.sh /
 RUN chmod +x /init.sh /wait.sh
