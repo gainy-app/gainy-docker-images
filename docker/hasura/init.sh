@@ -39,6 +39,12 @@ if test -f "$REST_ENDPOINTS_METADATA_FILE"; then
   psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "UPDATE hdb_catalog.hdb_metadata SET metadata = jsonb_insert(metadata::jsonb, '{rest_endpoints}', '$REST_ENDPOINTS_METADATA'::jsonb, false)"
 fi
 
+# TODO: install extension for public schema
+if [ "$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME" != "public" ]; then
+  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "CREATE OR REPLACE FUNCTION app.gen_random_uuid() RETURNS uuid AS 'select public.gen_random_uuid();' LANGUAGE SQL IMMUTABLE;"
+  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "CREATE OR REPLACE FUNCTION $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME.gen_random_uuid() RETURNS uuid AS 'select public.gen_random_uuid();' LANGUAGE SQL IMMUTABLE;"
+fi
+
 if [ "$ENV" = "local" ]; then
   echo 'Importing seeds'
   find seeds -iname '*.sql' | sort | while read -r i; do

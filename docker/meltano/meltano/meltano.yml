@@ -30,7 +30,7 @@ plugins:
       pip_url: /target-algolia
   transformers:
     - name: dbt
-      pip_url: dbt==0.21.1
+      pip_url: dbt-postgres==1.0.2
   orchestrators:
     - name: airflow
       pip_url: psycopg2-binary==2.9.1 apache-airflow==2.1.2 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.1.2/constraints-${MELTANO__PYTHON_VERSION}.txt

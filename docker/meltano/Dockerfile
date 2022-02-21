@@ -1,4 +1,4 @@
-FROM meltano/meltano:v1.90.1-python3.8
+FROM meltano/meltano:v1.95.0-python3.8
 
 RUN apt update && apt install -y postgresql-client
 RUN pip install pyyaml
