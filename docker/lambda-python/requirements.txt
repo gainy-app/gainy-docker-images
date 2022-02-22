@@ -1,0 +1,8 @@
+psycopg2-binary==2.9.3
+numpy==1.22.1
+datadog==0.42.0
+plaid-python==8.4.0
+algoliasearch==2.6.0
+python-jose[cryptography]==3.3.0
+hubspot-api-client==4.0.6
+gainy-compute
