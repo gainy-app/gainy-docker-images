@@ -1,6 +1,6 @@
-ARG CODEARTIFACT_PIPY_URL
-
 FROM meltano/meltano:v1.95.0-python3.8
+
+ARG CODEARTIFACT_PIPY_URL
 
 RUN apt update && apt install -y postgresql-client
 RUN pip install pyyaml
