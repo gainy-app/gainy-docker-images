@@ -8,5 +8,5 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 
 #### Build and tag new local image: 
 ```
-TAG=local make build
+IMAGE_TAG=local make build
 ```

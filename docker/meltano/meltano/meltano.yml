@@ -13,18 +13,24 @@ plugins:
     - name: tap-postgres
     - name: tap-postgres--sync
       inherit_from: tap-postgres
+    - name: tap-postgres--sync-fundamentals
+      inherit_from: tap-postgres
+    - name: tap-postgres--sync-options
+      inherit_from: tap-postgres
     - name: tap-postgres--search
       inherit_from: tap-postgres
   loaders:
     - name: target-postgres
       variant: transferwise
       pip_url: pipelinewise-target-postgres
+    - name: target-postgres-small-batch
+      inherit_from: target-postgres
     - name: target-algolia
       namespace: target-algolia
       pip_url: /target-algolia
   transformers:
     - name: dbt
-      pip_url: dbt==0.21.1
+      pip_url: dbt-postgres==1.0.2
   orchestrators:
     - name: airflow
       pip_url: psycopg2-binary==2.9.1 apache-airflow==2.1.2 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.1.2/constraints-${MELTANO__PYTHON_VERSION}.txt

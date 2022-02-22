@@ -2,9 +2,7 @@
 
 while ! pg_isready -d $HASURA_GRAPHQL_DATABASE_URL; do sleep 1; done &> /dev/null
 
-sed -i "s/schema: public\w*$/schema: $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME/" metadata/*
-
-### TODO:deployment_v2:versioned hasura views lambdas blocked by versioned lambdas
+python3 generate_config.py
 
 # starting tmp server for migrations and metadata apply
 export HASURA_GRAPHQL_SERVER_PORT=8081
@@ -39,6 +37,12 @@ REST_ENDPOINTS_METADATA_FILE=metadata/rest_endpoints.yaml
 if test -f "$REST_ENDPOINTS_METADATA_FILE"; then
   REST_ENDPOINTS_METADATA="$(python3 -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' < "$REST_ENDPOINTS_METADATA_FILE")"
   psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "UPDATE hdb_catalog.hdb_metadata SET metadata = jsonb_insert(metadata::jsonb, '{rest_endpoints}', '$REST_ENDPOINTS_METADATA'::jsonb, false)"
+fi
+
+# TODO: install extension for public schema
+if [ "$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME" != "public" ]; then
+  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "CREATE OR REPLACE FUNCTION app.gen_random_uuid() RETURNS uuid AS 'select public.gen_random_uuid();' LANGUAGE SQL IMMUTABLE;"
+  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "CREATE OR REPLACE FUNCTION $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME.gen_random_uuid() RETURNS uuid AS 'select public.gen_random_uuid();' LANGUAGE SQL IMMUTABLE;"
 fi
 
 if [ "$ENV" = "local" ]; then
