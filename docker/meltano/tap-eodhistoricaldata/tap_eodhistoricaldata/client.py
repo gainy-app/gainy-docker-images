@@ -48,6 +48,7 @@ class eodhistoricaldataStream(RESTStream):
                 } for symbol in symbols
             ]
         else:
+            exchange_symbols_limit = self.config.get("exchange_symbols_limit", None)
             if exchange is None:
                 exchanges = self.config.get("exchanges", [])
             else:
@@ -70,6 +71,10 @@ class eodhistoricaldataStream(RESTStream):
                         "Exchange": record["Exchange"],
                     } for record in res.json()
                 ]
+
+                if exchange_symbols_limit is not None:
+                    exchange_symbols = list(sorted(exchange_symbols, key=lambda record: record['Code']))[:exchange_symbols_limit]
+
                 records += exchange_symbols
 
         return list(filter(lambda record: self.is_within_split(record['Code']), sorted(records, key=lambda record: record['Code'])))

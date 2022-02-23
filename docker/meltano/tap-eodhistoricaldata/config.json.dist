@@ -2,5 +2,9 @@
   "symbols": ["AAPL"],
   "symbols_type": "Common Stock",
   "symbols_exchange": "NASDAQ",
+  /* or */
+  "exchanges": ["CC", "INDX"],
+  "exchange_symbols_limit": 10,
+
   "api_token": "INVALID_TOKEN_HERE"
 }

@@ -104,7 +104,6 @@ class HistoricalDividends(AbstractEODStream):
     def partitions(self) -> List[dict]:
         allowed_types = ['Preferred Stock', 'Common Stock']
         records = list(filter(lambda record: record['Type'] in allowed_types, super().partitions))
-        self.logger.info(f"Parsing dividends for {[i['Code'] for i in records]}")
 
         return records
 
