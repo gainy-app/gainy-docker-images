@@ -28,37 +28,6 @@ class PolygonStream(RESTStream):
         params: dict = {"apiKey": self.config['api_key']}
         return params
 
-    def load_symbols(self, symbols: List[str] = None, exchanges: List[str] = None):
-        if symbols:
-            self.logger.info("Using symbols from the config parameter")
-            symbols = symbols
-        else:
-            self.logger.info(f"Loading symbols for exchanges: {exchanges}")
-            exchange_url = f"{self.url_base}/exchange-symbol-list"
-            symbols = []
-            for exchange in exchanges:
-                res = requests.get(
-                    url=f"{exchange_url}/{exchange}",
-                    params={"api_token": self.config["api_token"], "fmt": "json"}
-                )
-                self._write_request_duration_log("/exchange-symbol-list", res, None, None)
-
-                exchange_symbols = list(map(lambda record: record["Code"], res.json()))
-                symbols += exchange_symbols
-
-        return list(filter(lambda s: self.is_within_split(s), sorted(symbols)))
-
-    def split_num(self) -> int:
-        return int(self.config.get("split_num", "1"))
-
-    def split_id(self) -> int:
-        return int(self.config.get("split_id", "0"))
-
-    def is_within_split(self, symbol) -> int:
-        # Use built-in `hashlib` to get consistent hash value
-        symbol_hash = int(hashlib.md5(symbol.encode("UTF-8")).hexdigest(), 16)
-        return symbol_hash % self.split_num() == self.split_id()
-
     def _write_metric_log(self, metric: dict, extra_tags: Optional[dict]) -> None:
         super()._write_metric_log(metric, extra_tags)
         self._send_to_datadog(metric, ["counter"])

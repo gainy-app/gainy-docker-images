@@ -19,7 +19,7 @@ EXCHANGES_STATE = {"bookmarks": {
         {"context": {"exchange": "NYSE"}, "replication_key": "date", "replication_key_value": "2021-11-28"}
     ]},
     "eod_dividends": {"partitions": [
-        {"context": {"Code": "AAPL"}, "replication_key": "date", "replication_key_value": "2021-01-01"}
+        {"context": {"Code": "AAPL", "Type": "Common Stock", "Exchange": "NASDAQ"}, "replication_key": "date", "replication_key_value": "2021-01-01"}
     ]}
 }}
 

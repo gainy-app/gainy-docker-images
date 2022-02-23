@@ -10,6 +10,11 @@ from singer_sdk.streams import RESTStream
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
+EXCHANGE_POSTFIXES = {
+    'CC': '.CC',
+    'INDX': '.INDX'
+}
+
 
 class eodhistoricaldataStream(RESTStream):
     """eodhistoricaldata stream class."""
@@ -28,14 +33,29 @@ class eodhistoricaldataStream(RESTStream):
         params: dict = {"api_token": self.config['api_token']}
         return params
 
-    def load_symbols(self, symbols: List[str] = None, exchanges: List[str] = None):
+    def load_symbols(self, exchange=None) -> List[Dict[str, str]]:
+        symbols = self.config.get("symbols", None)
+
         if symbols:
+            symbols_type = self.config.get("symbols_type", None)
+            symbols_exchange = self.config.get("symbols_exchange", None)
             self.logger.info("Using symbols from the config parameter")
-            symbols = symbols
+            records = [
+                {
+                    "Code": symbol,
+                    "Type": symbols_type,
+                    "Exchange": symbols_exchange,
+                } for symbol in symbols
+            ]
         else:
+            if exchange is None:
+                exchanges = self.config.get("exchanges", [])
+            else:
+                exchanges = [exchange]
+
             self.logger.info(f"Loading symbols for exchanges: {exchanges}")
             exchange_url = f"{self.url_base}/exchange-symbol-list"
-            symbols = []
+            records = []
             for exchange in exchanges:
                 res = requests.get(
                     url=f"{exchange_url}/{exchange}",
@@ -43,10 +63,16 @@ class eodhistoricaldataStream(RESTStream):
                 )
                 self._write_request_duration_log("/exchange-symbol-list", res, None, None)
 
-                exchange_symbols = list(map(lambda record: record["Code"], res.json()))
-                symbols += exchange_symbols
+                exchange_symbols = [
+                    {
+                        "Code": record["Code"] + self.get_ticker_postfix(exchange),
+                        "Type": record["Type"],
+                        "Exchange": record["Exchange"],
+                    } for record in res.json()
+                ]
+                records += exchange_symbols
 
-        return list(filter(lambda s: self.is_within_split(s), sorted(symbols)))
+        return list(filter(lambda record: self.is_within_split(record['Code']), sorted(records, key=lambda record: record['Code'])))
 
     def split_num(self) -> int:
         return int(self.config.get("split_num", "1"))
@@ -58,6 +84,9 @@ class eodhistoricaldataStream(RESTStream):
         # Use built-in `hashlib` to get consistent hash value
         symbol_hash = int(hashlib.md5(symbol.encode("UTF-8")).hexdigest(), 16)
         return symbol_hash % self.split_num() == self.split_id()
+
+    def get_ticker_postfix(self, exchange) -> str:
+        return EXCHANGE_POSTFIXES.get(exchange, '')
 
     def _write_metric_log(self, metric: dict, extra_tags: Optional[dict]) -> None:
         super()._write_metric_log(metric, extra_tags)

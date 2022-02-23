@@ -1,4 +1,6 @@
 {
-"symbols": ["AAPL"],
-"api_token": "INVALID_TOKEN_HERE"
+  "symbols": ["AAPL"],
+  "symbols_type": "Common Stock",
+  "symbols_exchange": "NASDAQ",
+  "api_token": "INVALID_TOKEN_HERE"
 }
