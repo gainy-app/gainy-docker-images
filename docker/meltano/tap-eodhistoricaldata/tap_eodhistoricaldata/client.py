@@ -34,6 +34,7 @@ class eodhistoricaldataStream(RESTStream):
         return params
 
     def load_symbols(self, exchange=None) -> List[Dict[str, str]]:
+        self.logger.info(f"Loading symbols with config: {self.config}")
         symbols = self.config.get("symbols", None)
 
         if symbols:
