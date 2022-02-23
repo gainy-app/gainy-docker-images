@@ -23,7 +23,9 @@ class AbstractEODStream(eodhistoricaldataStream):
         return self.load_symbols()
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
-        row['Code'] = context['Code']
+        symbol = context['Code']
+        symbol = symbol.replace('-USD.CC', '.CC')
+        row['Code'] = symbol
 
         def replace_na(row):
             for k, v in row.items():
