@@ -223,9 +223,12 @@ class EODPrices(AbstractExchangeStream):
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
         if self.is_initial_load(context):
-            row["Code"] = context["object"]
+            symbol = context["object"]
         else:
-            row["Code"] = row["code"]
+            symbol = row["code"]
+
+        symbol = symbol.replace('-USD.CC', '.CC')
+        row['Code'] = symbol
 
         return row
 
