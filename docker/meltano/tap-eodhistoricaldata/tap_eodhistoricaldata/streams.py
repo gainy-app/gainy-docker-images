@@ -127,6 +127,13 @@ class Options(AbstractEODStream):
 
     schema_filepath = SCHEMAS_DIR / "options.json"
 
+    @cached_property
+    def partitions(self) -> List[dict]:
+        allowed_types = ['FUND', 'ETF', 'Preferred Stock', 'Common Stock']
+        records = list(filter(lambda record: record['Type'] in allowed_types, super().partitions))
+
+        return records
+
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
         for i in super().get_records(context):
             for j in i['data']:
