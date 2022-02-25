@@ -104,8 +104,8 @@ class HistoricalDividends(AbstractEODStream):
 
     @cached_property
     def partitions(self) -> List[dict]:
-        allowed_types = ['Preferred Stock', 'Common Stock']
-        records = list(filter(lambda record: record['Type'] in allowed_types, super().partitions))
+        allowed_types = ['fund', 'etf', 'mutual fund', 'preferred stock', 'common stock']
+        records = list(filter(lambda record: (record['Type'] or "").lower() in allowed_types, super().partitions))
 
         return records
 
@@ -129,8 +129,8 @@ class Options(AbstractEODStream):
 
     @cached_property
     def partitions(self) -> List[dict]:
-        allowed_types = ['FUND', 'ETF', 'Preferred Stock', 'Common Stock']
-        records = list(filter(lambda record: record['Type'] in allowed_types, super().partitions))
+        allowed_types = ['fund', 'etf', 'mutual fund', 'preferred stock', 'common stock']
+        records = list(filter(lambda record: (record['Type'] or "").lower() in allowed_types, super().partitions))
 
         return records
 
