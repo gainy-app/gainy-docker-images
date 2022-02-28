@@ -19,6 +19,8 @@ plugins:
       inherit_from: tap-postgres
     - name: tap-postgres--search
       inherit_from: tap-postgres
+    - name: tap-postgres-analytics
+      inherit_from: tap-postgres
   loaders:
     - name: target-postgres
       variant: transferwise
@@ -28,6 +30,8 @@ plugins:
     - name: target-algolia
       namespace: target-algolia
       pip_url: /target-algolia
+    - name: target-postgres-analytics
+      inherit_from: target-postgres
   transformers:
     - name: dbt
       pip_url: dbt-postgres==1.0.2
