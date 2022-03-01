@@ -6,6 +6,9 @@
     "Code": {
       "type": "string"
     },
+    "Type": {
+      "type": "string"
+    },
     "UpdatedAt": {
       "type": ["string", "null"],
       "format": "date"

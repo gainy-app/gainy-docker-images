@@ -11,13 +11,15 @@ plugins:
       pip_url: /tap-polygon
     - name: tap-csv
     - name: tap-postgres
-    - name: tap-postgres--sync
+    - name: tap-postgres-sync
       inherit_from: tap-postgres
-    - name: tap-postgres--sync-fundamentals
+    - name: tap-postgres-sync-fundamentals
       inherit_from: tap-postgres
-    - name: tap-postgres--sync-options
+    - name: tap-postgres-sync-options
       inherit_from: tap-postgres
-    - name: tap-postgres--search
+    - name: tap-postgres-search
+      inherit_from: tap-postgres
+    - name: tap-postgres-analytics
       inherit_from: tap-postgres
   loaders:
     - name: target-postgres
@@ -28,6 +30,8 @@ plugins:
     - name: target-algolia
       namespace: target-algolia
       pip_url: /target-algolia
+    - name: target-postgres-analytics
+      inherit_from: target-postgres
   transformers:
     - name: dbt
       pip_url: dbt-postgres==1.0.2

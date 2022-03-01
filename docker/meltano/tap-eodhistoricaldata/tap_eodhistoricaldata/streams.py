@@ -18,14 +18,14 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class AbstractEODStream(eodhistoricaldataStream):
-
     @cached_property
     def partitions(self) -> List[dict]:
-        symbols = self.load_symbols(self.config.get("symbols", None), self.config.get("exchanges", None))
-        return list(map(lambda x: {'Code': x}, symbols))
+        return self.load_symbols()
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
-        row['Code'] = context['Code']
+        symbol = context['Code']
+        symbol = symbol.replace('-USD.CC', '.CC')
+        row['Code'] = symbol
 
         def replace_na(row):
             for k, v in row.items():
@@ -56,6 +56,9 @@ class AbstractEODStream(eodhistoricaldataStream):
                 singer.write_message(record_message)
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        if context is None:
+            return
+
         try:
             yield from super().get_records(context)
         except Exception as e:
@@ -99,6 +102,13 @@ class HistoricalDividends(AbstractEODStream):
     replication_key = 'date'
     schema_filepath = SCHEMAS_DIR / "dividends.json"
 
+    @cached_property
+    def partitions(self) -> List[dict]:
+        allowed_types = ['fund', 'etf', 'mutual fund', 'preferred stock', 'common stock']
+        records = list(filter(lambda record: (record['Type'] or "").lower() in allowed_types, super().partitions))
+
+        return records
+
     def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
 
@@ -116,6 +126,13 @@ class Options(AbstractEODStream):
     STATE_MSG_FREQUENCY = 1000
 
     schema_filepath = SCHEMAS_DIR / "options.json"
+
+    @cached_property
+    def partitions(self) -> List[dict]:
+        allowed_types = ['fund', 'etf', 'mutual fund', 'preferred stock', 'common stock']
+        records = list(filter(lambda record: (record['Type'] or "").lower() in allowed_types, super().partitions))
+
+        return records
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
         for i in super().get_records(context):
@@ -184,8 +201,8 @@ class EODPrices(AbstractExchangeStream):
             self.logger.info(f"Loading prices using historical EOD API for exchange: {context['exchange']}")
             context["api"] = "eod"
 
-            for symbol in self.load_symbols(self.config.get("symbols", None), [context["exchange"]]):
-                context["object"] = symbol
+            for record in self.load_symbols(exchange=context["exchange"]):
+                context["object"] = record['Code']
                 yield from super().get_records(context)
         else:
             self.logger.info(f"Loading prices using bulk daily EOD API for exchange: {context['exchange']}")
@@ -213,9 +230,12 @@ class EODPrices(AbstractExchangeStream):
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
         if self.is_initial_load(context):
-            row["Code"] = context["object"]
+            symbol = context["object"]
         else:
-            row["Code"] = row["code"]
+            symbol = row["code"]
+
+        symbol = symbol.replace('-USD.CC', '.CC')
+        row['Code'] = symbol
 
         return row
 
