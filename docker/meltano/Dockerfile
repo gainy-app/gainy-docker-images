@@ -1,12 +1,10 @@
 FROM meltano/meltano:v1.95.0-python3.8
 
 ARG CODEARTIFACT_PIPY_URL
+RUN pip install -U --index-url ${CODEARTIFACT_PIPY_URL} gainy-compute
 
 RUN apt update && apt install -y postgresql-client
 RUN pip install pyyaml
-
-COPY requirements.txt /requirements.txt
-RUN pip install --requirement /requirements.txt --index-url ${CODEARTIFACT_PIPY_URL}
 
 WORKDIR /project
 
