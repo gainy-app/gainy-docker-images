@@ -13,7 +13,7 @@ ifeq (${GITHUB_REF:refs/heads/%=},)
 endif
 
 IMAGE_TAG ?= "latest"
-ifneq (${PRERELEASE},)
+ifdef PRERELEASE
 	IMAGE_TAG := ${IMAGE_TAG}-$(shell date '+%s')
 endif
 
