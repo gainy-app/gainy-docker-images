@@ -34,6 +34,7 @@ test-clean:
 	docker-compose -p gainy_test -f docker-compose.test.yml rm -sv
 
 build-meltano:
+	echo ${PRERELEASE}
 	docker buildx build --platform="${PLATFORMS}" --rm --no-cache ${BUILD_FLAGS} -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-meltano:${IMAGE_TAG} --build-arg CODEARTIFACT_PIPY_URL=${CODEARTIFACT_PIPY_URL} docker/meltano
 
 build-firebase:
