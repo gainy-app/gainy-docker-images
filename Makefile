@@ -11,7 +11,12 @@ ifeq (${GITHUB_REF:refs/heads/%=},)
 	GITHUB_BRANCH := ${GITHUB_REF:refs/heads/%=%}
 	IMAGE_TAG ?= ${GITHUB_BRANCH}
 endif
+
 IMAGE_TAG ?= "latest"
+ifneq (${PRERELEASE},)
+	IMAGE_TAG := ${IMAGE_TAG}-$(shell date '+%s')
+endif
+
 PLATFORMS ?= "linux/amd64"
 BUILD_FLAGS ?= "--load"
 
