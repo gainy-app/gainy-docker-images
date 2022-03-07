@@ -33,8 +33,10 @@ test:
 test-clean:
 	docker-compose -p gainy_test -f docker-compose.test.yml rm -sv
 
+build-status:
+	echo "Building tag ${IMAGE_TAG}"
+
 build-meltano:
-	echo ${PRERELEASE}
 	docker buildx build --platform="${PLATFORMS}" --rm --no-cache ${BUILD_FLAGS} -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-meltano:${IMAGE_TAG} --build-arg CODEARTIFACT_PIPY_URL=${CODEARTIFACT_PIPY_URL} docker/meltano
 
 build-firebase:
@@ -46,7 +48,7 @@ build-hasura:
 build-lambda-python:
 	docker buildx build --platform="${PLATFORMS}" --rm --no-cache ${BUILD_FLAGS} -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-lambda-python:${IMAGE_TAG} --build-arg CODEARTIFACT_PIPY_URL=${CODEARTIFACT_PIPY_URL} docker/lambda-python
 
-build: build-meltano build-firebase build-hasura build-lambda-python
+build: build-status build-meltano build-firebase build-hasura build-lambda-python
 
 %:
 	@:
