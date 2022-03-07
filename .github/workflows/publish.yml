@@ -5,6 +5,12 @@ on:
     types:
       - published
       - edited
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Pre-release'
+        required: true
+        type: boolean
 
 jobs:
   publish:
@@ -28,3 +34,7 @@ jobs:
         env:
           PLATFORMS: "linux/amd64,linux/arm64"
           BUILD_FLAGS: "--push"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          PRERELEASE: ${{ github.event.inputs.prerelease }}
