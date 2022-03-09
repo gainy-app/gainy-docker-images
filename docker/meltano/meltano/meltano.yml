@@ -21,6 +21,8 @@ plugins:
       inherit_from: tap-postgres
     - name: tap-postgres-analytics
       inherit_from: tap-postgres
+    - name: tap-postgres-website
+      inherit_from: tap-postgres
   loaders:
     - name: target-postgres
       variant: transferwise
