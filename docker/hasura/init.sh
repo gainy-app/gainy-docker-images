@@ -41,8 +41,8 @@ fi
 
 # TODO: install extension for public schema
 if [ "$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME" != "public" ]; then
-  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "CREATE OR REPLACE FUNCTION app.gen_random_uuid() RETURNS uuid AS 'select public.gen_random_uuid();' LANGUAGE SQL IMMUTABLE;"
-  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "CREATE OR REPLACE FUNCTION $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME.gen_random_uuid() RETURNS uuid AS 'select public.gen_random_uuid();' LANGUAGE SQL IMMUTABLE;"
+  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "CREATE OR REPLACE FUNCTION app.gen_random_uuid() RETURNS uuid AS \$\$ DECLARE id uuid; BEGIN RETURN public.gen_random_uuid(); END; \$\$ LANGUAGE plpgsql;"
+  psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -c "CREATE OR REPLACE FUNCTION $HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME.gen_random_uuid() RETURNS uuid AS \$\$ DECLARE id uuid; BEGIN RETURN public.gen_random_uuid(); END; \$\$ LANGUAGE plpgsql;"
 fi
 
 if [ "$ENV" = "local" ]; then
