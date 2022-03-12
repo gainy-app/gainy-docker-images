@@ -6,6 +6,8 @@ RUN pip install -U --index-url ${CODEARTIFACT_PIPY_URL} gainy-compute
 RUN apt update && apt install -y postgresql-client
 RUN pip install pyyaml
 
+ENV LC_ALL C.UTF-8
+
 WORKDIR /project
 
 COPY meltano /project
