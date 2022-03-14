@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.9-slim-buster
 
 # Install poetry
 ENV POETRY_VERSION=1.1.12
