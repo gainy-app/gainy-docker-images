@@ -3,7 +3,7 @@ FROM python:3.9-slim-buster
 # Install poetry
 ENV POETRY_VERSION=1.1.12
 
-RUN apt update && apt install gcc
+RUN apt update && apt install -y gcc
 
 RUN pip install --upgrade pip
 RUN pip install "poetry==$POETRY_VERSION"
