@@ -1,11 +1,11 @@
 """Stream type classes for tap-eodhistoricaldata."""
 from abc import ABC
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from functools import cached_property, reduce
 from pathlib import Path
 from typing import Any, Dict, Optional, Iterable, List
 
+import re
 import requests
 import singer
 from singer import RecordMessage
@@ -235,6 +235,9 @@ class EODPrices(AbstractExchangeStream):
             symbol = row["code"]
 
         symbol = symbol.replace('-USD.CC', '.CC')
+        if row.get('exchange_short_name') == 'INDX' and re.search(r'\.INDX$', symbol) is None:
+            symbol += '.INDX'
+
         row['Code'] = symbol
 
         return row

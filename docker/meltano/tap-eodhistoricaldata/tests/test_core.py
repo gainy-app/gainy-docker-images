@@ -1,17 +1,19 @@
 """Tests standard tap features using the built-in SDK tests library."""
 
 import copy
-
+import re
 import vcr
+from vcr.record_mode import RecordMode
 from freezegun import freeze_time
 from singer_sdk.plugin_base import JSONSchemaValidator
 from singer_sdk.testing import get_standard_tap_tests
-
 from tap_eodhistoricaldata.tap import Tapeodhistoricaldata
 
+RECORD_MODE = RecordMode.NEW_EPISODES
 EXCHANGES_CONFIG = {
     "api_token": "fake_token",
-    "exchanges": ["NASDAQ", "NYSE"]
+    "exchanges": ["NASDAQ", "NYSE", "INDX", "CC"],
+    "exchange_symbols_limit": 1
 }
 
 EXCHANGES_STATE = {"bookmarks": {
@@ -25,12 +27,12 @@ EXCHANGES_STATE = {"bookmarks": {
 
 SYMBOLS_CONFIG = {
     "api_token": "fake_token",
-    "symbols": ["AAPL", "GOOGL", "TSLA", "IBM", "F"]
+    "symbols": ["AAPL", "GOOGL", "TSLA", "IBM", "F", "000906.INDX", "$ANRX.CC"]
 }
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml")
+@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_standard_tap_tests():
     """Run standard tap tests from the SDK."""
 
@@ -44,35 +46,41 @@ def test_standard_tap_tests():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml")
+@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_tap_sync_all():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG)
     tap.sync_all()
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml")
+@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_tap_with_state_sync_all():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=copy.deepcopy(EXCHANGES_STATE))
     tap.sync_all()
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml")
+@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_tap_prices_with_state():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=copy.deepcopy(EXCHANGES_STATE))
 
     prices_stream = tap.streams["eod_historical_prices"]
     price_stream_partitions = prices_stream.partitions
-    assert len(price_stream_partitions) == 2
+    assert len(price_stream_partitions) == 4
 
     nasdaq_partition = price_stream_partitions[0]
     assert "NASDAQ" == nasdaq_partition["exchange"]
     nyse_partition = price_stream_partitions[1]
     assert "NYSE" == nyse_partition["exchange"]
+    indices_partition = price_stream_partitions[2]
+    assert "INDX" == indices_partition["exchange"]
+    crypto_partition = price_stream_partitions[3]
+    assert "CC" == crypto_partition["exchange"]
 
     prices_stream._write_starting_replication_value(nasdaq_partition)
     prices_stream._write_starting_replication_value(nyse_partition)
+    prices_stream._write_starting_replication_value(indices_partition)
+    prices_stream._write_starting_replication_value(crypto_partition)
 
     nasdaq_replication_key_value = prices_stream.get_starting_replication_key_value(nasdaq_partition)
     assert nasdaq_replication_key_value is None
@@ -91,16 +99,33 @@ def test_tap_prices_with_state():
     nasdaq_avg_days = len(nasdaq_records) / len(nasdaq_tickers)
     assert nasdaq_avg_days > 5
 
+    # Check that historical prices for INDICES are loaded
+    indices_records = list(prices_stream.get_records(indices_partition))
+    indices_tickers = set(map(lambda r: r["Code"], indices_records))
+    indices_avg_days = len(indices_records) / len(indices_tickers)
+    assert indices_avg_days > 5
+    for symbol in indices_tickers:
+        assert re.search(r'\.INDX$', symbol) is not None
+
+    # Check that historical prices for CRYPTO are loaded
+    crypto_records = list(prices_stream.get_records(crypto_partition))
+    crypto_tickers = set(map(lambda r: r["Code"], crypto_records))
+    crypto_avg_days = len(crypto_records) / len(crypto_tickers)
+    assert crypto_avg_days > 5
+    for symbol in crypto_tickers:
+        assert re.search(r'\-USD.CC$', symbol) is None
+        assert re.search(r'\.CC$', symbol) is not None
+
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml")
+@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_tap_dividends_with_state():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=EXCHANGES_STATE)
     tap._reset_state_progress_markers()
 
     div_stream = tap.streams["eod_dividends"]
     div_stream_partitions = div_stream.partitions
-    assert 5 == len(div_stream_partitions)
+    assert 2 == len(div_stream_partitions)
 
     apple_partition = div_stream_partitions[0]
     assert "AAPL" == apple_partition["Code"]
@@ -117,7 +142,7 @@ def test_tap_dividends_with_state():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml")
+@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_tap_splits():
     config1 = copy.deepcopy(EXCHANGES_CONFIG)
     config1["split_id"] = "0"
@@ -137,20 +162,32 @@ def test_tap_splits():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml")
+@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_tap_symbols_config():
     tap = Tapeodhistoricaldata(config=SYMBOLS_CONFIG)
 
     assert 1 == len(tap.streams["eod_historical_prices"].partitions)
     assert "US" == tap.streams["eod_historical_prices"].partitions[0]["exchange"]
 
-    assert 5 == len(tap.streams["eod_fundamentals"].partitions)
+    assert 7 == len(tap.streams["eod_fundamentals"].partitions)
 
     tap.sync_all()
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml")
+@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+def test_tap_prices_with_symbols_config():
+    tap = Tapeodhistoricaldata(config=SYMBOLS_CONFIG)
+
+    prices_stream = tap.streams["eod_historical_prices"]
+    for context in prices_stream.partitions:
+        records = prices_stream.get_records(context)
+        for record in records:
+            assert record["Code"] in SYMBOLS_CONFIG['symbols']
+
+
+@freeze_time("2021-12-01")
+@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_validate_schema():
     _validate_schema({"exchange": "US"}, "eod.json", "eod_historical_prices")
 

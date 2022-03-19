@@ -1,5 +1,6 @@
 """REST client handling, including eodhistoricaldataStream base class."""
 import os
+import re
 import hashlib
 from pathlib import Path
 from typing import Any, Dict, Optional, List
@@ -41,6 +42,7 @@ class eodhistoricaldataStream(RESTStream):
             symbols_type = self.config.get("symbols_type", None)
             symbols_exchange = self.config.get("symbols_exchange", None)
             self.logger.info("Using symbols from the config parameter")
+            symbols = map(lambda symbol: re.sub(r'\.CC$', '-USD.CC', symbol), symbols)
             records = [
                 {
                     "Code": symbol,
