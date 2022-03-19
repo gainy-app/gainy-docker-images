@@ -23,15 +23,18 @@ BUILD_FLAGS ?= "--load"
 all: help;
 default: help;
 
-test:
+test-eod:
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml build --force-rm test-tap-eodhistoricaldata
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run test-tap-eodhistoricaldata
+
+test-polygon:
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml build --force-rm test-tap-polygon
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run test-tap-polygon
-	make test-clean
 
 test-clean:
 	docker-compose -p gainy_test -f docker-compose.test.yml rm -sv
+
+test: test-eod test-polygon test-clean
 
 build-status:
 	echo "Building tag ${IMAGE_TAG}"
