@@ -537,7 +537,7 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://eodhistoricaldata.com/api/fundamentals/AAPL?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data
+    uri: https://eodhistoricaldata.com/api/fundamentals/AAPL?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data%2CMutualFund_Data
   response:
     body:
       string: !!binary |
@@ -1913,7 +1913,7 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://eodhistoricaldata.com/api/fundamentals/F?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data
+    uri: https://eodhistoricaldata.com/api/fundamentals/F?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data%2CMutualFund_Data
   response:
     body:
       string: !!binary |
@@ -3221,7 +3221,7 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://eodhistoricaldata.com/api/fundamentals/GOOGL?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data
+    uri: https://eodhistoricaldata.com/api/fundamentals/GOOGL?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data%2CMutualFund_Data
   response:
     body:
       string: !!binary |
@@ -4110,7 +4110,7 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://eodhistoricaldata.com/api/fundamentals/IBM?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data
+    uri: https://eodhistoricaldata.com/api/fundamentals/IBM?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data%2CMutualFund_Data
   response:
     body:
       string: !!binary |
@@ -5452,7 +5452,7 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://eodhistoricaldata.com/api/fundamentals/TSLA?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data
+    uri: https://eodhistoricaldata.com/api/fundamentals/TSLA?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data%2CMutualFund_Data
   response:
     body:
       string: !!binary |
