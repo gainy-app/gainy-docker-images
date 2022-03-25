@@ -2939,6 +2939,462 @@
         "Income_Statement"
       ],
       "title": "Financials"
+    },
+    "ETF_Data": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+          "ISIN": {
+            "type": "string"
+          },
+          "Yield": {
+            "type": "string"
+          },
+          "ETF_URL": {
+            "type": "string"
+          },
+          "Domicile": {
+            "type": "string"
+          },
+          "Holdings": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "Index_Name": {
+            "type": "string"
+          },
+          "Company_URL": {
+            "type": "string"
+          },
+          "MorningStar": {
+            "type": "object",
+            "properties": {
+              "Ratio": {
+                "type": "string"
+              },
+              "Category_Benchmark": {
+                "type": "string"
+              },
+              "Sustainability_Ratio": {
+                "type": "string"
+              }
+            }
+          },
+          "Performance": {
+            "type": "object",
+            "properties": {
+              "Returns_1Y": {
+                "type": "string"
+              },
+              "Returns_3Y": {
+                "type": "string"
+              },
+              "Returns_5Y": {
+                "type": "string"
+              },
+              "Returns_10Y": {
+                "type": "string"
+              },
+              "Returns_YTD": {
+                "type": "string"
+              },
+              "3y_ExpReturn": {
+                "type": "string"
+              },
+              "1y_Volatility": {
+                "type": "string"
+              },
+              "3y_SharpRatio": {
+                "type": "string"
+              },
+              "3y_Volatility": {
+                "type": "string"
+              }
+            }
+          },
+          "TotalAssets": {
+            "type": "string"
+          },
+          "Company_Name": {
+            "type": "string"
+          },
+          "Fixed_Income": {
+            "type": "object",
+            "properties": {
+              "Price": {
+                "type": "object",
+                "properties": {
+                  "Fund_%": {
+                    "type": "string"
+                  },
+                  "Relative_to_Category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Fund_%",
+                  "Relative_to_Category"
+                ]
+              },
+              "Coupon": {
+                "type": "object",
+                "properties": {
+                  "Fund_%": {
+                    "type": "string"
+                  },
+                  "Relative_to_Category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Fund_%",
+                  "Relative_to_Category"
+                ]
+              },
+              "CreditQuality": {
+                "type": "object",
+                "properties": {
+                  "Fund_%": {
+                    "type": "string"
+                  },
+                  "Relative_to_Category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Fund_%",
+                  "Relative_to_Category"
+                ]
+              },
+              "YieldToMaturity": {
+                "type": "object",
+                "properties": {
+                  "Fund_%": {
+                    "type": "string"
+                  },
+                  "Relative_to_Category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Fund_%",
+                  "Relative_to_Category"
+                ]
+              },
+              "ModifiedDuration": {
+                "type": "object",
+                "properties": {
+                  "Fund_%": {
+                    "type": "string"
+                  },
+                  "Relative_to_Category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Fund_%",
+                  "Relative_to_Category"
+                ]
+              },
+              "EffectiveDuration": {
+                "type": "object",
+                "properties": {
+                  "Fund_%": {
+                    "type": "string"
+                  },
+                  "Relative_to_Category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Fund_%",
+                  "Relative_to_Category"
+                ]
+              },
+              "EffectiveMaturity": {
+                "type": "object",
+                "properties": {
+                  "Fund_%": {
+                    "type": "string"
+                  },
+                  "Relative_to_Category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Fund_%",
+                  "Relative_to_Category"
+                ]
+              }
+            }
+          },
+          "World_Regions": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "Holdings_Count": {
+            "type": "integer"
+          },
+          "Inception_Date": {
+            "type": "string"
+          },
+          "Ongoing_Charge": {
+            "type": "string"
+          },
+          "Sector_Weights": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "NetExpenseRatio": {
+            "type": "string"
+          },
+          "Top_10_Holdings": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "Asset_Allocation": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "Valuations_Growth": {
+            "type": "object",
+            "properties": {
+              "Growth_Rates_Portfolio": {
+                "type": "object",
+                "properties": {
+                  "Sales Growth": {
+                    "type": "string"
+                  },
+                  "Cash-Flow Growth": {
+                    "type": "string"
+                  },
+                  "Book-Value Growth": {
+                    "type": "string"
+                  },
+                  "Historical Earnings Growth": {
+                    "type": "string"
+                  },
+                  "Long-Term Projected Earnings Growth": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Sales Growth",
+                  "Cash-Flow Growth",
+                  "Book-Value Growth",
+                  "Historical Earnings Growth",
+                  "Long-Term Projected Earnings Growth"
+                ]
+              },
+              "Growth_Rates_To_Category": {
+                "type": "object",
+                "properties": {
+                  "Sales Growth": {
+                    "type": "string"
+                  },
+                  "Cash-Flow Growth": {
+                    "type": "string"
+                  },
+                  "Book-Value Growth": {
+                    "type": "string"
+                  },
+                  "Historical Earnings Growth": {
+                    "type": "string"
+                  },
+                  "Long-Term Projected Earnings Growth": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Sales Growth",
+                  "Cash-Flow Growth",
+                  "Book-Value Growth",
+                  "Historical Earnings Growth",
+                  "Long-Term Projected Earnings Growth"
+                ]
+              },
+              "Valuations_Rates_Portfolio": {
+                "type": "object",
+                "properties": {
+                  "Price/Book": {
+                    "type": "string"
+                  },
+                  "Price/Sales": {
+                    "type": "string"
+                  },
+                  "Price/Cash Flow": {
+                    "type": "string"
+                  },
+                  "Dividend-Yield Factor": {
+                    "type": "string"
+                  },
+                  "Price/Prospective Earnings": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Price/Book",
+                  "Price/Sales",
+                  "Price/Cash Flow",
+                  "Dividend-Yield Factor",
+                  "Price/Prospective Earnings"
+                ]
+              },
+              "Valuations_Rates_To_Category": {
+                "type": "object",
+                "properties": {
+                  "Price/Book": {
+                    "type": "string"
+                  },
+                  "Price/Sales": {
+                    "type": "string"
+                  },
+                  "Price/Cash Flow": {
+                    "type": "string"
+                  },
+                  "Dividend-Yield Factor": {
+                    "type": "string"
+                  },
+                  "Price/Prospective Earnings": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Price/Book",
+                  "Price/Sales",
+                  "Price/Cash Flow",
+                  "Dividend-Yield Factor",
+                  "Price/Prospective Earnings"
+                ]
+              }
+            }
+          },
+          "Average_Mkt_Cap_Mil": {
+            "type": "string"
+          },
+          "Date_Ongoing_Charge": {
+            "type": "string"
+          },
+          "Market_Capitalisation": {
+            "type": "object",
+            "properties": {
+              "Big": {
+                "type": "string"
+              },
+              "Mega": {
+                "type": "string"
+              },
+              "Micro": {
+                "type": "string"
+              },
+              "Small": {
+                "type": "string"
+              },
+              "Medium": {
+                "type": "string"
+              }
+            }
+          },
+          "AnnualHoldingsTurnover": {
+            "type": "string"
+          },
+          "Max_Annual_Mgmt_Charge": {
+            "type": "string"
+          },
+          "Dividend_Paying_Frequency": {
+            "type": "string"
+          }
+        },
+      "title": "ETF_Data"
+    },
+    "MutualFund_Data": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "Nav": {
+          "type": "null"
+        },
+        "Yield": {
+          "type": "null"
+        },
+        "Currency": {
+          "type": "null"
+        },
+        "Domicile": {
+          "type": "null"
+        },
+        "Yield_YTD": {
+          "type": "null"
+        },
+        "Fund_Style": {
+          "type": "null"
+        },
+        "Update_Date": {
+          "type": "null"
+        },
+        "Top_Holdings": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "Value_Growth": {
+          "type": "object"
+        },
+        "Expense_Ratio": {
+          "type": "null"
+        },
+        "Fund_Category": {
+          "type": "null"
+        },
+        "Top_Countries": {
+          "type": "object"
+        },
+        "World_Regions": {
+          "type": "object"
+        },
+        "Inception_Date": {
+          "type": "null"
+        },
+        "Sector_Weights": {
+          "type": "object"
+        },
+        "Yield_1Year_YTD": {
+          "type": "null"
+        },
+        "Yield_3Year_YTD": {
+          "type": "null"
+        },
+        "Yield_5Year_YTD": {
+          "type": "null"
+        },
+        "Asset_Allocation": {
+          "type": "object"
+        },
+        "Prev_Close_Price": {
+          "type": "string"
+        },
+        "Expense_Ratio_Date": {
+          "type": "null"
+        },
+        "Morning_Star_Rating": {
+          "type": "null"
+        },
+        "Portfolio_Net_Assets": {
+          "type": "null"
+        },
+        "Market_Capitalization": {
+          "type": "object"
+        },
+        "Morning_Star_Category": {
+          "type": "null"
+        },
+        "Share_Class_Net_Assets": {
+          "type": "null"
+        },
+        "Morning_Star_Risk_Rating": {
+          "type": "null"
+        }
+      },
+      "title": "MutualFund_Data"
     }
   },
   "required": [
