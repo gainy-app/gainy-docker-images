@@ -234,10 +234,11 @@ class EODPrices(AbstractExchangeStream):
         else:
             symbol = row["code"]
 
-        if context["exchange"] == 'CC':
+        exchange_name = context.get("exchange") or row.get('exchange_short_name')
+        if exchange_name == 'CC':
             symbol = re.sub(r'-USD(\.CC)?$', '.CC', symbol)
 
-        if context["exchange"] == 'INDX' and re.search(r'\.INDX$', symbol) is None:
+        if exchange_name == 'INDX' and re.search(r'\.INDX$', symbol) is None:
             symbol += '.INDX'
 
         row['Code'] = symbol
