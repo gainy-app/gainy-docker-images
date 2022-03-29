@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python scripts/generate_meltano_config.py $ENV
+python scripts/generate_meltano_config.py
 ( cd scripts && python3 generate_rules_sql.py )
 
 while ! PGPASSWORD=$PG_PASSWORD pg_isready -h $PG_HOST -p $PG_PORT -U $PG_USERNAME; do sleep 1; done
