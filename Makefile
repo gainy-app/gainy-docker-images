@@ -25,11 +25,11 @@ default: help;
 
 test-eod:
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml build --force-rm test-tap-eodhistoricaldata
-	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run test-tap-eodhistoricaldata
+	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run --rm test-tap-eodhistoricaldata
 
 test-polygon:
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml build --force-rm test-tap-polygon
-	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run test-tap-polygon
+	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run --rm test-tap-polygon
 
 test-clean:
 	docker-compose -p gainy_test -f docker-compose.test.yml rm -sv
