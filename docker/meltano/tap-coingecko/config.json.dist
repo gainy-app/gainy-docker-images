@@ -1,0 +1,4 @@
+{
+  "coins": ["bitcoin"],
+  "coins_limit": 10
+}

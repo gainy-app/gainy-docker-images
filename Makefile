@@ -31,10 +31,14 @@ test-polygon:
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml build --force-rm test-tap-polygon
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run --rm test-tap-polygon
 
+test-coingecko:
+	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml build --force-rm test-tap-coingecko
+	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run --rm test-tap-coingecko
+
 test-clean:
 	docker-compose -p gainy_test -f docker-compose.test.yml rm -sv
 
-test: test-eod test-polygon test-clean
+test: test-eod test-polygon test-coingecko test-clean
 
 build-status:
 	echo "Building tag ${IMAGE_TAG}"

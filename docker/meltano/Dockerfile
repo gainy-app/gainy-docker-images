@@ -1,4 +1,4 @@
-FROM meltano/meltano:v1.98.0-python3.9
+FROM meltano/meltano:v1.99.0-python3.9
 
 ARG CODEARTIFACT_PIPY_URL
 RUN pip install -U --index-url ${CODEARTIFACT_PIPY_URL} gainy-compute
@@ -13,6 +13,7 @@ WORKDIR /project
 COPY meltano /project
 COPY tap-eodhistoricaldata /tap-eodhistoricaldata
 COPY tap-polygon /tap-polygon
+COPY tap-coingecko /tap-coingecko
 COPY target-algolia /target-algolia
 
 RUN meltano install

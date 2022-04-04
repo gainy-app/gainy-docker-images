@@ -9,6 +9,9 @@ plugins:
     - name: tap-polygon
       namespace: tap_polygon
       pip_url: /tap-polygon
+    - name: tap-coingecko
+      namespace: tap_coingecko
+      pip_url: /tap-coingecko
     - name: tap-csv
     - name: tap-postgres
     - name: tap-postgres-sync
