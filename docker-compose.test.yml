@@ -12,3 +12,8 @@ services:
     build:
       context: ./docker/meltano/tap-polygon
       dockerfile: test.Dockerfile
+  test-tap-coingecko:
+    restart: always
+    build:
+      context: ./docker/meltano/tap-coingecko
+      dockerfile: test.Dockerfile
