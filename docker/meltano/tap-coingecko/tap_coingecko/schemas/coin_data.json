@@ -1,0 +1,375 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "symbol": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "asset_platform_id": {
+      "type": "null"
+    },
+    "platforms": {
+      "type": "object",
+      "properties": {
+        "": {
+          "type": "string"
+        }
+      },
+      "required": [
+        ""
+      ]
+    },
+    "block_time_in_minutes": {
+      "type": "integer"
+    },
+    "hashing_algorithm": {
+      "type": "string"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "public_notice": {
+      "type": "null"
+    },
+    "additional_notices": {
+      "type": "array",
+      "items": {}
+    },
+    "description": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "country_origin": {
+      "type": "string"
+    },
+    "genesis_date": {
+      "type": "string"
+    },
+    "contract_address": {
+      "type": "string"
+    },
+    "sentiment_votes_up_percentage": {
+      "type": "number"
+    },
+    "sentiment_votes_down_percentage": {
+      "type": "number"
+    },
+    "ico_data": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "market_cap_rank": {
+      "type": "integer"
+    },
+    "coingecko_rank": {
+      "type": "integer"
+    },
+    "coingecko_score": {
+      "type": "number"
+    },
+    "developer_score": {
+      "type": "number"
+    },
+    "community_score": {
+      "type": "number"
+    },
+    "liquidity_score": {
+      "type": "number"
+    },
+    "public_interest_score": {
+      "type": "number"
+    },
+    "market_data": {
+      "type": "object",
+      "properties": {
+        "current_price": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "total_value_locked": {
+          "type": "null"
+        },
+        "mcap_to_tvl_ratio": {
+          "type": "null"
+        },
+        "fdv_to_tvl_ratio": {
+          "type": "null"
+        },
+        "roi": {
+          "type": "null"
+        },
+        "ath": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "ath_change_percentage": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "ath_date": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "atl": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "atl_change_percentage": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "atl_date": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "market_cap": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "market_cap_rank": {
+          "type": "integer"
+        },
+        "fully_diluted_valuation": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "total_volume": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "high_24h": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "low_24h": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_24h": {
+          "type": "number"
+        },
+        "price_change_percentage_24h": {
+          "type": "number"
+        },
+        "price_change_percentage_7d": {
+          "type": "number"
+        },
+        "price_change_percentage_14d": {
+          "type": "number"
+        },
+        "price_change_percentage_30d": {
+          "type": "number"
+        },
+        "price_change_percentage_60d": {
+          "type": "number"
+        },
+        "price_change_percentage_200d": {
+          "type": "number"
+        },
+        "price_change_percentage_1y": {
+          "type": "number"
+        },
+        "market_cap_change_24h": {
+          "type": "number"
+        },
+        "market_cap_change_percentage_24h": {
+          "type": "number"
+        },
+        "price_change_24h_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_percentage_1h_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_percentage_24h_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_percentage_7d_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_percentage_14d_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_percentage_30d_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_percentage_60d_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_percentage_200d_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "price_change_percentage_1y_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "market_cap_change_24h_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "market_cap_change_percentage_24h_in_currency": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "total_supply": {
+          "type": "number"
+        },
+        "max_supply": {
+          "type": "number"
+        },
+        "circulating_supply": {
+          "type": "number"
+        },
+        "last_updated": {
+          "type": "string"
+        }
+      }
+    },
+    "community_data": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "developer_data": {
+      "type": "object",
+      "properties": {
+        "forks": {
+          "type": "integer"
+        },
+        "stars": {
+          "type": "integer"
+        },
+        "subscribers": {
+          "type": "integer"
+        },
+        "total_issues": {
+          "type": "integer"
+        },
+        "closed_issues": {
+          "type": "integer"
+        },
+        "pull_requests_merged": {
+          "type": "integer"
+        },
+        "pull_request_contributors": {
+          "type": "integer"
+        },
+        "code_additions_deletions_4_weeks": {
+          "type": "object",
+          "properties": {
+            "additions": {
+              "type": "integer"
+            },
+            "deletions": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "additions",
+            "deletions"
+          ]
+        },
+        "commit_count_4_weeks": {
+          "type": "integer"
+        },
+        "last_4_weeks_commit_activity_series": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "forks",
+        "stars",
+        "subscribers",
+        "total_issues",
+        "closed_issues",
+        "pull_requests_merged",
+        "pull_request_contributors",
+        "code_additions_deletions_4_weeks",
+        "commit_count_4_weeks",
+        "last_4_weeks_commit_activity_series"
+      ]
+    },
+    "public_interest_stats": {
+      "type": "object",
+      "properties": {
+        "alexa_rank": {
+          "type": "integer"
+        },
+        "bing_matches": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "alexa_rank",
+        "bing_matches"
+      ]
+    },
+    "status_updates": {
+      "type": "array",
+      "items": {}
+    },
+    "last_updated": {
+      "type": ["string", "null"],
+      "format": "date"
+    }
+  },
+  "required": [
+    "id",
+    "symbol",
+    "name",
+    "asset_platform_id",
+    "platforms",
+    "block_time_in_minutes",
+    "hashing_algorithm",
+    "categories",
+    "public_notice",
+    "additional_notices",
+    "description",
+    "links",
+    "image",
+    "country_origin",
+    "genesis_date",
+    "sentiment_votes_up_percentage",
+    "sentiment_votes_down_percentage",
+    "market_cap_rank",
+    "coingecko_rank",
+    "coingecko_score",
+    "developer_score",
+    "community_score",
+    "liquidity_score",
+    "public_interest_score",
+    "market_data",
+    "community_data",
+    "developer_data",
+    "public_interest_stats",
+    "status_updates",
+    "last_updated"
+  ]
+}

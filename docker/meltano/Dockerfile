@@ -1,4 +1,4 @@
-FROM meltano/meltano:v1.98.0-python3.9
+FROM meltano/meltano:v1.99.0-python3.9
 
 ARG CODEARTIFACT_PIPY_URL
 RUN pip install -U --index-url ${CODEARTIFACT_PIPY_URL} gainy-compute
@@ -7,12 +7,14 @@ RUN apt update && apt install -y postgresql-client
 RUN pip install pyyaml
 
 ENV LC_ALL C.UTF-8
+ENV DOWNSTREAM_POOL_SIZE 1
 
 WORKDIR /project
 
 COPY meltano /project
 COPY tap-eodhistoricaldata /tap-eodhistoricaldata
 COPY tap-polygon /tap-polygon
+COPY tap-coingecko /tap-coingecko
 COPY target-algolia /target-algolia
 
 RUN meltano install

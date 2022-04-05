@@ -41,6 +41,7 @@ if [ "$ENV" == "local" ]; then
 fi
 
 meltano invoke airflow pools set dbt 1 dbt
+meltano invoke airflow pools set downstream $DOWNSTREAM_POOL_SIZE downstream
 
 export TAP_POSTGRES_SYNC_FUNDAMENTALS_HOST="$TAP_POSTGRES_SYNC_HOST"
 export TAP_POSTGRES_SYNC_FUNDAMENTALS_PORT="$TAP_POSTGRES_SYNC_PORT"
