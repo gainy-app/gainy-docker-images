@@ -1,4 +1,5 @@
 {
+  "api_key": "",
   "coins": ["bitcoin"],
   "coins_limit": 10
 }

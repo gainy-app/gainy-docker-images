@@ -19,7 +19,22 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 class CoingeckoStream(RESTStream):
     """coingecko stream class."""
 
-    url_base = "https://api.coingecko.com/api"
+    @property
+    def url_base(self) -> str:
+        if self.config.get("api_key"):
+            return "https://pro-api.coingecko.com/api"
+        else:
+            return "https://api.coingecko.com/api"
+
+    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+
+        api_key = self.config.get("api_key")
+        if api_key:
+            params["x_cg_pro_api_key"] = api_key
+
+        return params
+
 
     def get_next_page_token(
             self, response: requests.Response, previous_token: Optional[Any]
