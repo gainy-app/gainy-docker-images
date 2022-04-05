@@ -62,11 +62,18 @@
     "genesis_date": {
       "type": "string"
     },
+    "contract_address": {
+      "type": "string"
+    },
     "sentiment_votes_up_percentage": {
       "type": "number"
     },
     "sentiment_votes_down_percentage": {
       "type": "number"
+    },
+    "ico_data": {
+      "type": "object",
+      "additionalProperties": true
     },
     "market_cap_rank": {
       "type": "integer"

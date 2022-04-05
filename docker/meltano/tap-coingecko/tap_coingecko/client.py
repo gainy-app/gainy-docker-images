@@ -35,7 +35,6 @@ class CoingeckoStream(RESTStream):
 
         return params
 
-
     def get_next_page_token(
             self, response: requests.Response, previous_token: Optional[Any]
     ) -> Optional[Any]:
@@ -118,4 +117,3 @@ class CoingeckoStream(RESTStream):
 
         except Exception as e:
             self.logger.warning(f"Metric was not sent due to an error: '{str(e)}'")
-

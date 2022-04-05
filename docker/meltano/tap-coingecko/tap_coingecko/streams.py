@@ -43,18 +43,19 @@ class CoinData(CoingeckoStream):
             coins_limit = self.config.get("coins_limit", None)
 
             self.logger.info(f"Loading coins")
+            params = super().get_url_params(None, None)
+            params["include_platform"] = 'false'
             res = requests.get(
                 url=f"{self.url_base}/v3/coins/list",
-                params={"include_platform": 'false'}
+                params=params,
             )
             self._write_request_duration_log("/v3/coins/list", res, None, None)
-
             coins = [ {"id": coin['id']} for coin in res.json() ]
 
             if coins_limit is not None:
                 coins = list(sorted(coins, key=lambda record: record['id']))[:coins_limit]
 
-        return list(filter(lambda coin: self.is_within_split(coin['id']), sorted(coins)))
+        return list(filter(lambda coin: self.is_within_split(coin['id']), sorted(coins, key=lambda coin: coin['id'])))
 
     def is_within_split(self, symbol) -> int:
         split_num = int(self.config.get("split_num", 1))
