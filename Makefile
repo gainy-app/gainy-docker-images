@@ -38,7 +38,7 @@ build-hasura:
 build-lambda-python:
 	docker buildx build --platform="${PLATFORMS}" --rm --no-cache ${BUILD_FLAGS} -t ${BASE_IMAGE_REGISTRY_ADDRESS}/gainy-lambda-python:${IMAGE_TAG} --build-arg CODEARTIFACT_PIPY_URL=${CODEARTIFACT_PIPY_URL} docker/lambda-python
 
-build: build-status #build-meltano build-hasura build-lambda-python
+build: build-status build-meltano build-hasura build-lambda-python
 
 %:
 	@:
