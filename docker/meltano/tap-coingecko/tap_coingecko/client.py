@@ -1,8 +1,10 @@
 """REST client handling, including coingeckoStream base class."""
 import os
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Iterable
+from typing import Any, Callable, Dict, Optional, List
+from abc import ABC, abstractmethod
 
+import hashlib
 import datadog.api
 import requests
 import backoff
@@ -16,8 +18,13 @@ from singer_sdk.exceptions import RetriableAPIError
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
-class CoingeckoStream(RESTStream):
+class CoingeckoStream(RESTStream, ABC):
     """coingecko stream class."""
+
+    @property
+    @abstractmethod
+    def is_realtime(self) -> bool:
+        pass
 
     @property
     def url_base(self) -> str:
@@ -40,13 +47,6 @@ class CoingeckoStream(RESTStream):
     ) -> Optional[Any]:
         return None
 
-    def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
-        try:
-            yield from super().get_records(context)
-        except Exception as e:
-            self.logger.error('Error while requesting %s for coin %s: %s' % (self.name, context['id'], str(e)))
-            pass
-
     def validate_response(self, response: requests.Response) -> None:
         if response.status_code == 429:
             msg = (
@@ -56,7 +56,6 @@ class CoingeckoStream(RESTStream):
             raise RetriableAPIError(msg)
 
         super().validate_response(response)
-
 
     def request_decorator(self, func: Callable) -> Callable:
         decorator: Callable = backoff.on_exception(
@@ -69,6 +68,37 @@ class CoingeckoStream(RESTStream):
             factor=5,
         )(func)
         return decorator
+
+    def load_coins(self) -> List[Dict[str, str]]:
+        coins = self.config.get("coins", None)
+
+        if coins:
+            self.logger.info(f"Using coins {coins} from the config parameter")
+            coins = [ {"id": symbol} for coin in coins ]
+        else:
+            coins_limit = self.config.get("coins_limit", None)
+
+            self.logger.info(f"Loading coins")
+            params = super().get_url_params(None, None)
+            params["include_platform"] = 'false'
+            res = requests.get(
+                url=f"{self.url_base}/v3/coins/list",
+                params=params,
+            )
+            self._write_request_duration_log("/v3/coins/list", res, None, None)
+            coins = [ {"id": coin['id']} for coin in res.json() ]
+
+            if coins_limit is not None:
+                coins = list(sorted(coins, key=lambda record: record['id']))[:coins_limit]
+
+        return list(filter(lambda coin: self.is_within_split(coin['id']), sorted(coins, key=lambda coin: coin['id'])))
+
+    def is_within_split(self, symbol) -> int:
+        split_num = int(self.config.get("split_num", 1))
+        split_id = int(self.config.get("split_id", 0))
+        # Use built-in `hashlib` to get consistent hash value
+        symbol_hash = int(hashlib.md5(symbol.encode("UTF-8")).hexdigest(), 16)
+        return symbol_hash % split_num == split_id
 
     def _write_record_message(self, record: dict) -> None:
         """Write out a RECORD message."""

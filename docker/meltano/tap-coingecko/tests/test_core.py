@@ -12,7 +12,9 @@ from tap_coingecko.tap import Tapcoingecko
 
 RECORD_MODE = RecordMode.NEW_EPISODES
 CONFIG = {}
+CONFIG_REALTIME = {"realtime": True}
 CONTEXT = {"id": "bitcoin"}
+CONTEXT_REALTIME = {"ids": "bitcoin"}
 STATE = {"coingecko_coin": {"partitions": [{"context": CONTEXT}]}}
 
 @freeze_time("2021-12-01")
@@ -46,15 +48,16 @@ def test_tap_with_state_sync_all():
 @freeze_time("2021-12-01")
 @vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
 def test_validate_schema():
-    _validate_schema(CONTEXT, "coin_data.json", "coingecko_coin")
+    _validate_schema(CONFIG, CONTEXT, "coin_data.json", "coingecko_coin")
+    _validate_schema(CONFIG_REALTIME, CONTEXT_REALTIME, "coin_market_realtime.json", "coingecko_market_realtime")
 
 
-def _validate_schema(context, schema_file, stream_name):
+def _validate_schema(config, context, schema_file, stream_name):
     from pathlib import Path
     test_data_dir = Path(__file__).parent
     import json
 
-    tap = Tapcoingecko(config=CONFIG)
+    tap = Tapcoingecko(config=config)
 
     stream = tap.streams[stream_name]
     stream._write_starting_replication_value(context)
