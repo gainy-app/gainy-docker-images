@@ -87,11 +87,13 @@ def test_tap_prices_with_state():
     nyse_replication_key_value = prices_stream.get_starting_replication_key_value(nyse_partition)
     assert "2021-11-28" == nyse_replication_key_value
 
-    # Check that historical prices for NASDAQ are loaded for a couple of days since previous replication
+    # Check that historical prices for NYSE are loaded for a couple of days since previous replication
     nyse_records = list(prices_stream.get_records(nyse_partition))
     nyse_tickers = set(map(lambda r: r["Code"], nyse_records))
     nyse_avg_days = len(nyse_records) / len(nyse_tickers)
     assert nyse_avg_days <= 4
+    # JDD is loaded because it has recent split
+    assert 'JDD' in nyse_tickers
 
     # Check that historical prices for NASDAQ are loaded for longer period
     nasdaq_records = list(prices_stream.get_records(nasdaq_partition))

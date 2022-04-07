@@ -82,6 +82,26 @@ class eodhistoricaldataStream(RESTStream):
 
         return list(filter(lambda record: self.is_within_split(record['Code']), sorted(records, key=lambda record: record['Code'])))
 
+    def load_split_symbols(self, exchange: str, dates: List[str]) -> List[Dict[str, str]]:
+        self.logger.info(f"Loading symbols' splits for exchange: {exchange}")
+
+        url = f"{self.url_base}/eod-bulk-last-day/{exchange}"
+        symbols = set()
+        params = {"api_token": self.config["api_token"], "type": "splits", "fmt": "json"}
+        for date in dates:
+            params["date"] = date
+            res = requests.get(url=url, params=params)
+            self._write_request_duration_log("/eod-bulk-last-day?type=splits", res, None, None)
+
+            for record in res.json():
+                symbols.add(record["code"] + self.get_ticker_postfix(exchange))
+
+        exchange_symbols_limit = self.config.get("exchange_symbols_limit", None)
+        if exchange_symbols_limit is not None:
+            symbols = list(sorted(symbols))[:exchange_symbols_limit]
+
+        return list(filter(lambda symbol: self.is_within_split(symbol), sorted(symbols)))
+
     def split_num(self) -> int:
         return int(self.config.get("split_num", "1"))
 
