@@ -60,7 +60,8 @@
       "type": "string"
     },
     "genesis_date": {
-      "type": "string"
+      "type": ["string", "null"],
+      "format": "date"
     },
     "contract_address": {
       "type": "string"
@@ -246,7 +247,8 @@
           "type": "number"
         },
         "last_updated": {
-          "type": "string"
+          "type": "string",
+          "format": "date"
         }
       }
     },

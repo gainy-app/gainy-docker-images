@@ -5,10 +5,11 @@ from singer_sdk import Tap, Stream
 from singer_sdk import typing as th  # JSON schema typing helpers
 from singer_sdk.exceptions import ConfigValidationError
 
-from tap_coingecko.streams import CoinData
+from tap_coingecko.streams import CoinData, CoinMarketRealtimeData
 
 STREAM_TYPES = [
     CoinData,
+    CoinMarketRealtimeData,
 ]
 
 
@@ -22,13 +23,18 @@ class Tapcoingecko(Tap):
         th.Property("coins_limit", th.IntegerType, required=False),
         th.Property("split_id", th.StringType, required=False, description="Tap split index"),
         th.Property("split_num", th.StringType, required=False, description="Total number of tap splits"),
+        th.Property("realtime", th.BooleanType, required=False, description="Filter by `realtime` stream flag"),
     ).to_dict()
 
     parse_env_config = True
 
     def discover_streams(self) -> List[Stream]:
-        # """Return a list of discovered streams."""
-        return [stream_class(tap=self) for stream_class in STREAM_TYPES]
+        streams = [stream_class(tap=self) for stream_class in STREAM_TYPES]
+
+        realtime = self.config.get("realtime", False)
+        streams = list(filter(lambda stream: stream.is_realtime == realtime, streams))
+
+        return streams
 
     def _validate_config(
             self, raise_errors: bool = True, warnings_as_errors: bool = False
