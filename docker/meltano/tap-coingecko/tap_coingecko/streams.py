@@ -50,11 +50,15 @@ class CoinMarketRealtimeData(CoingeckoStream):
     STATE_MSG_FREQUENCY = 100
     schema_filepath = SCHEMAS_DIR / "coin_market_realtime.json"
 
-    per_page = 100
+    per_page = 500
 
     @property
     def is_realtime(self) -> bool:
         return True
+
+    @property
+    def url_base(self) -> str:
+        return "https://api.coingecko.com/api"
 
     @cached_property
     def partitions(self) -> List[dict]:

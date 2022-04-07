@@ -12,6 +12,8 @@ plugins:
     - name: tap-coingecko
       namespace: tap_coingecko
       pip_url: /tap-coingecko
+    - name: tap-coingecko-realtime
+      inherit_from: tap-coingecko
     - name: tap-csv
     - name: tap-postgres
     - name: tap-postgres-sync
