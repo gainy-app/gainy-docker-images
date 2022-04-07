@@ -23214,14 +23214,14 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://eodhistoricaldata.com/api/fundamentals/$ANRX-USD.CC?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats
+    uri: https://eodhistoricaldata.com/api/fundamentals/$ANRX-USD.CC?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data%2CMutualFund_Data
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA03NPQ+CQAyA4b9iOhvZ2Qh+JRoG/BxYKjbQcPbIXTVejP/dcwAdOvTJ2/QFKxJy
-        aCB9QYE3ghQyKTcUJmeYwj70X8ld6NXGPUelxroQTW1HEulEl0O5jdCq9j6tkipBcR2F54xtlcB7
-        Cgt0wtL4GBVZPFlz05o4OkomaILXEvW/21PdCtdoRjmiucfGygBLFpSa/5Jdb1j9nB98Jbn+uEVH
-        fqc4PH1/AB7GBLn7AAAA
+        H4sIAAAAAAAAA03NsW7CQAyA4VdBnlGzZ4sgAamUIUkLQyTkJlZicfVFd07FCfHuHAOQwYM//Zav
+        sCEhhwbSK+zxjyCFTMpPCosjLKEO40NWLoxq475Cpd66EE3tmSTSgX6/y12EQXX0aZM0CYo7U7h8
+        sG0SuC0hRycsvY/RPosnW+4HE0dfkgma4LVEnXc1tYNwi+YlP2im2Fh5QsGC0vIsqUbD6tf8zx1J
+        9+YBHflK8f00r4vTGhWf+9ekE5pikm7GtzvlTUd5IgEAAA==
     headers:
       Access-Control-Allow-Credentials:
       - 'true'
@@ -23266,14 +23266,15 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://eodhistoricaldata.com/api/fundamentals/000906.INDX?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats
+    uri: https://eodhistoricaldata.com/api/fundamentals/000906.INDX?api_token=fake_token&filter=General%2CEarnings%2CHighlights%2CAnalystRatings%2CTechnicals%2CValuation%2CFinancials%2CSplitsDividends%2CSharesStats%2CETF_Data%2CMutualFund_Data
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA02OsW7CMBCGXyWyOnbwhFo2lABlSSUMVdfDOcUnmTOyHVQL8e61pQAePPzffb7/
-        bmKLjB6sWN5E6wYUSyGl/JQL8S4O6VLyru/Wvzn2cC6xNcTQKNSTp0gYmg8p83T9pw3wOH8ofjt5
-        j6zTvPaougrOy46q6Zy14KuRSueTyweJtwLdxNGnuvtFd+q7wF7ccz94Jh5DBv0qK180GptffJIV
-        g00h7iHW3gG1YdJgn+QH7JQdxw+wyaWsqVLUxVIMHV1pQB5e2IDHoCI8Su//j2gGk2ABAAA=
+        H4sIAAAAAAAAA02OPWvDMBCG/4oRHTNoKm22YNlNhjpQOaVbucrCEiinoI9SEfLfK4ETa9DwPvfo
+        3ruSN4nSgSHbK2ntJMmWUEpf6TPZkDFdSj4MrPvKcYBzia3SCA2XIjodtPTNC6V52v0JBTgvH4rf
+        RuckirSsPXFWwWXZiTfMGgOuGvF0/rH5IPJUoI0YXKq7V3rgxwIHcsv94FDj7DMYdlnZ61mZ/MKD
+        7BBM8uEDQu2NUijUAsyDfIKJ2bF4B30uRaErhV+MDp7pXz1JnFaswEnPA6yl3dh/Mwhwz+8xRDB9
+        xKnCt38E8YsxhwEAAA==
     headers:
       Access-Control-Allow-Credentials:
       - 'true'
@@ -24957,8 +24958,6 @@ interactions:
       - Sat, 19 Mar 2022 06:55:16 GMT
       Server:
       - nginx/1.19.10
-      Transfer-Encoding:
-      - chunked
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
@@ -25286,8 +25285,6 @@ interactions:
       - Sat, 19 Mar 2022 06:55:20 GMT
       Server:
       - nginx/1.19.10
-      Transfer-Encoding:
-      - chunked
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:

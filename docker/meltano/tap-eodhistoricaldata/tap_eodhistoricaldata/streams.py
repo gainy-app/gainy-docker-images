@@ -179,7 +179,7 @@ class EODPrices(AbstractExchangeStream):
         params["fmt"] = "json"
         params["api_token"] = self.config["api_token"]
 
-        if self.is_initial_load(context):
+        if context["api"] == "eod":
             params["period"] = "d"
         else:
             params["date"] = context["date"]
@@ -213,8 +213,13 @@ class EODPrices(AbstractExchangeStream):
             for date in self.loading_dates(from_date):
                 context["date"] = date
                 yield from super().get_records(context)
-
             del context["date"]
+
+            context["api"] = "eod"
+            dates = self.loading_dates(from_date - timedelta(days=7))
+            for symbol in self.load_split_symbols(exchange=context["exchange"], dates=dates):
+                context["object"] = symbol
+                yield from super().get_records(context)
 
         del context["api"], context["object"]
 
@@ -229,7 +234,7 @@ class EODPrices(AbstractExchangeStream):
         ]
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
-        if self.is_initial_load(context):
+        if context["api"] == "eod":
             symbol = context["object"]
         else:
             symbol = row["code"]
