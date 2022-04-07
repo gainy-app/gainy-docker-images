@@ -15,25 +15,25 @@
       "type": "string"
     },
     "current_price": {
-      "type": "integer"
+      "type": "number"
     },
     "market_cap": {
-      "type": "integer"
+      "type": "number"
     },
     "market_cap_rank": {
       "type": "integer"
     },
     "fully_diluted_valuation": {
-      "type": "integer"
+      "type": "number"
     },
     "total_volume": {
-      "type": "integer"
+      "type": "number"
     },
     "high_24h": {
-      "type": "integer"
+      "type": "number"
     },
     "low_24h": {
-      "type": "integer"
+      "type": "number"
     },
     "price_change_24h": {
       "type": "number"
@@ -48,16 +48,16 @@
       "type": "number"
     },
     "circulating_supply": {
-      "type": "integer"
+      "type": "number"
     },
     "total_supply": {
-      "type": "integer"
+      "type": "number"
     },
     "max_supply": {
-      "type": "integer"
+      "type": "number"
     },
     "ath": {
-      "type": "integer"
+      "type": "number"
     },
     "ath_change_percentage": {
       "type": "number"

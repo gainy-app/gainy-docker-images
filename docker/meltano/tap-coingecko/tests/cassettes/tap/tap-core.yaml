@@ -516,14 +516,80 @@ interactions:
       - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
       Server:
       - cloudflare
-      Transfer-Encoding:
-      - chunked
       Vary:
       - Accept-Encoding, Origin
       X-Request-Id:
       - 948c567b-153e-429a-8702-48e06693ba81
       X-Runtime:
       - '0.058250'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin&sparkline=false
+  response:
+    body:
+      string: !!binary |
+        H4sIAPmhTmIAA2xSyY7bMAz9F50dm9QuXQboN+Q0RWFoHNcxIi+w5WmDov9eypkEnTaGDiTf4+Ni
+        fv3F+hPz7K1PzdSPrGDrdXibYg6lhtwxDC05Xx54P4QuR84pzauvqrCubVrLjHZtc5nIGqrsrdVO
+        XSusYli6tvqoUc5j94JKGhBCGUeSzbYs7ZjqeekbkpZCSV6wISyXNtVNmJm33KB2CEpw+TdSL2G8
+        MI8F+77FeK1PfdxSe6rfQ9xC6qeReYfCOUkCwlBqmlKI9fsUtzyW4CiVEhqcKti57841l2dqQElh
+        CxanHx8+t9oUbG+vbs6BBr0BBzRalqiVNlIqtCD/Yc3t0tBk4ZEgSuuENZ9m+KQoBFrDLRdalNw4
+        Y9Uz7jNdZYSjXfZLs0WafezqdZvneKX1OAAF1pRwX8Ad4Qj7l5Eh/HwaD4kKaAdS7fb/LeTypA0a
+        7I1xCilfCAeOB6QHR5SeS49YWuleWWbRhWlTWtztZ5pagsTSSbxzHqooDmAOoI8Afn9UG7LqMvXM
+        j3QI9O/CmuptzjmnWyv8AJLyjmC9QC8pyepX9vvbHwAAAP//AwBJeACJAgMAAA==
+    headers:
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Access-Control-Allow-Methods:
+      - POST, PUT, DELETE, GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - link, per-page, total
+      Access-Control-Request-Method:
+      - '*'
+      Alternate-Protocol:
+      - 443:npn-spdy/2
+      CF-Cache-Status:
+      - MISS
+      CF-RAY:
+      - 6f816bf83d10853d-BOM
+      Cache-Control:
+      - max-age=30, public, must-revalidate, s-maxage=30
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 07 Apr 2022 08:34:01 GMT
+      ETag:
+      - W/"801e7e56c2a076a39dc4369593eeeaad"
+      Expect-CT:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding, Origin
+      X-Request-Id:
+      - 1a0526f9-1a2d-4ed5-80ca-53e14a4d2fd2
+      X-Runtime:
+      - '0.004225'
     status:
       code: 200
       message: OK
