@@ -21,7 +21,7 @@ for (( ATTEMPT=0; ATTEMPT<10; ATTEMPT++ )); do
 done
 
 echo hasura metadata apply
-for (( ATTEMPT=0; ATTEMPT<30; ATTEMPT++ )); do
+for (( ATTEMPT=0; ATTEMPT<60; ATTEMPT++ )); do
   if hasura metadata apply; then
     break
   fi
