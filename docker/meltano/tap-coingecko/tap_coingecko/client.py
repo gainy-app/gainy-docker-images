@@ -86,7 +86,13 @@ class CoingeckoStream(RESTStream, ABC):
                 params=params,
             )
             self._write_request_duration_log("/v3/coins/list", res, None, None)
-            coins = [ {"id": coin['id']} for coin in res.json() ]
+
+            res_data = res.json()
+            if not isinstance(res_data, list):
+                self.logger.error(f"Error while loading coins: {res_data}")
+                return []
+
+            coins = [ {"id": coin['id']} for coin in res_data ]
 
             if coins_limit is not None:
                 coins = list(sorted(coins, key=lambda record: record['id']))[:coins_limit]

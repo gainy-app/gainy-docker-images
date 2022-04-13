@@ -49,6 +49,15 @@ class eodhistoricaldataStream(RESTStream):
         )(func)
         return decorator
 
+    def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
+        def replace_na(row):
+            for k, v in row.items():
+                if v == 'NA' or v == '"NA"':
+                    row[k] = {}
+            return row
+
+        return replace_na(row)
+
     def load_symbols(self, exchange=None) -> List[Dict[str, str]]:
         self.logger.info(f"Loading symbols with config: {self.config}")
         symbols = self.config.get("symbols", None)
