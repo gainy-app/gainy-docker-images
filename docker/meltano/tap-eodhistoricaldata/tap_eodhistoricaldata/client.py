@@ -3,11 +3,13 @@ import os
 import re
 import hashlib
 from pathlib import Path
-from typing import Any, Dict, Optional, List
+from typing import Any, Callable, Dict, Optional, List
 
 import datadog.api
 import requests
+import backoff
 from singer_sdk.streams import RESTStream
+from singer_sdk.exceptions import RetriableAPIError
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
@@ -33,6 +35,19 @@ class eodhistoricaldataStream(RESTStream):
         """Return a dictionary of values to be used in URL parameterization."""
         params: dict = {"api_token": self.config['api_token']}
         return params
+
+    def request_decorator(self, func: Callable) -> Callable:
+        decorator: Callable = backoff.on_exception(
+            backoff.expo,
+            (
+                RetriableAPIError,
+                requests.exceptions.ConnectionError,
+                requests.exceptions.ReadTimeout,
+            ),
+            max_tries=5,
+            factor=2,
+        )(func)
+        return decorator
 
     def load_symbols(self, exchange=None) -> List[Dict[str, str]]:
         self.logger.info(f"Loading symbols with config: {self.config}")

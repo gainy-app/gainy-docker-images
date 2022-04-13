@@ -202,8 +202,11 @@ class EODPrices(AbstractExchangeStream):
             context["api"] = "eod"
 
             for record in self.load_symbols(exchange=context["exchange"]):
-                context["object"] = record['Code']
-                yield from super().get_records(context)
+                try:
+                    context["object"] = record['Code']
+                    yield from super().get_records(context)
+                except requests.exceptions.RequestException as e:
+                    self.logger.exception(e)
         else:
             self.logger.info(f"Loading prices using bulk daily EOD API for exchange: {context['exchange']}")
             context["api"] = "eod-bulk-last-day"
