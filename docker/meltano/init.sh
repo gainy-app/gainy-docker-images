@@ -42,6 +42,7 @@ fi
 
 meltano invoke airflow pools set dbt 1 dbt
 meltano invoke airflow pools set downstream $DOWNSTREAM_POOL_SIZE downstream
+meltano invoke airflow pools set gainy_recommendation 1 gainy_recommendation
 
 export TAP_POSTGRES_SYNC_FUNDAMENTALS_HOST="$TAP_POSTGRES_SYNC_HOST"
 export TAP_POSTGRES_SYNC_FUNDAMENTALS_PORT="$TAP_POSTGRES_SYNC_PORT"
