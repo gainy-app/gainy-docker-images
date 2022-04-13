@@ -6,15 +6,21 @@ plugins:
     - name: tap-eodhistoricaldata
       namespace: tap_eodhistoricaldata
       pip_url: /tap-eodhistoricaldata
+    - name: tap-eodhistoricaldata-prices
+      inherit_from: tap-eodhistoricaldata
+
     - name: tap-polygon
       namespace: tap_polygon
       pip_url: /tap-polygon
+
     - name: tap-coingecko
       namespace: tap_coingecko
       pip_url: /tap-coingecko
     - name: tap-coingecko-realtime
       inherit_from: tap-coingecko
+
     - name: tap-csv
+
     - name: tap-postgres
     - name: tap-postgres-sync
       inherit_from: tap-postgres
@@ -22,10 +28,13 @@ plugins:
       inherit_from: tap-postgres
     - name: tap-postgres-sync-options
       inherit_from: tap-postgres
+
     - name: tap-postgres-search
       inherit_from: tap-postgres
+
     - name: tap-postgres-analytics
       inherit_from: tap-postgres
+
     - name: tap-postgres-website
       inherit_from: tap-postgres
   loaders:
@@ -34,11 +43,12 @@ plugins:
       pip_url: pipelinewise-target-postgres
     - name: target-postgres-small-batch
       inherit_from: target-postgres
+    - name: target-postgres-analytics
+      inherit_from: target-postgres
+
     - name: target-algolia
       namespace: target-algolia
       pip_url: /target-algolia
-    - name: target-postgres-analytics
-      inherit_from: target-postgres
   transformers:
     - name: dbt
       pip_url: dbt-postgres==1.0.2

@@ -27,13 +27,7 @@ class AbstractEODStream(eodhistoricaldataStream):
         symbol = symbol.replace('-USD.CC', '.CC')
         row['Code'] = symbol
 
-        def replace_na(row):
-            for k, v in row.items():
-                if v == 'NA' or v == '"NA"':
-                    row[k] = {}
-            return row
-
-        return replace_na(row)
+        return super().post_process(row, context)
 
     def _write_record_message(self, record: dict) -> None:
         """Write out a RECORD message."""
@@ -252,8 +246,7 @@ class EODPrices(AbstractExchangeStream):
 
         row['Code'] = symbol
 
-        return row
-
+        return super().post_process(row, context)
 
 class DailyFundamentals(AbstractExchangeStream):
     """
