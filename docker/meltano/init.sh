@@ -41,8 +41,7 @@ if [ "$ENV" == "local" ]; then
 fi
 
 for i in /init.d/*; do
-  chmod +x $i
-  $i
+  source $i
 done
 
 meltano "$@"
