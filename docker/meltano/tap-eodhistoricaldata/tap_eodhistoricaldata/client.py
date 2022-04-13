@@ -9,6 +9,7 @@ import datadog.api
 import requests
 import backoff
 from singer_sdk.streams import RESTStream
+from singer_sdk.exceptions import RetriableAPIError
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
