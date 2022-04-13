@@ -40,8 +40,10 @@ if [ "$ENV" == "local" ]; then
   meltano invoke dbt docs generate
 fi
 
+set -a
 for i in /init.d/*; do
   source $i
 done
+set +a
 
 meltano "$@"
