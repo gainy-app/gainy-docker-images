@@ -19,5 +19,6 @@ COPY target-algolia /target-algolia
 
 RUN meltano install
 
+RUN mkdir /init.d
 COPY init.sh wait.sh /
 RUN chmod +x /init.sh /wait.sh
