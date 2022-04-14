@@ -27,7 +27,9 @@ echo "Seeding done"
 
 find /init.d -maxdepth 1 -type f | sort | while read -r i; do
   chmod +x $i
-  $i
+  set -a
+    source $i
+  set +a
 done
 
 meltano "$@"
