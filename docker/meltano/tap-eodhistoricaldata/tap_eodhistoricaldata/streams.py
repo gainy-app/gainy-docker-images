@@ -18,6 +18,7 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class AbstractEODStream(eodhistoricaldataStream):
+
     @cached_property
     def partitions(self) -> List[dict]:
         return self.load_symbols()
@@ -56,7 +57,8 @@ class AbstractEODStream(eodhistoricaldataStream):
         try:
             yield from super().get_records(context)
         except Exception as e:
-            self.logger.error('Error while requesting %s for symbol %s: %s' % (self.name, context['Code'], str(e)))
+            self.logger.error('Error while requesting %s for symbol %s: %s' %
+                              (self.name, context['Code'], str(e)))
             pass
 
 
@@ -70,10 +72,12 @@ class Fundamentals(AbstractEODStream):
 
     schema_filepath = SCHEMAS_DIR / "fundamentals.json"
 
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict],
+                       next_page_token: Optional[Any]) -> Dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization."""
         params = super().get_url_params(context, next_page_token)
-        params["filter"] = "General,Earnings,Highlights,AnalystRatings,Technicals,Valuation,Financials,SplitsDividends,SharesStats,ETF_Data,MutualFund_Data"
+        params[
+            "filter"] = "General,Earnings,Highlights,AnalystRatings,Technicals,Valuation,Financials,SplitsDividends,SharesStats,ETF_Data,MutualFund_Data"
         return params
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
@@ -98,12 +102,18 @@ class HistoricalDividends(AbstractEODStream):
 
     @cached_property
     def partitions(self) -> List[dict]:
-        allowed_types = ['fund', 'etf', 'mutual fund', 'preferred stock', 'common stock']
-        records = list(filter(lambda record: (record['Type'] or "").lower() in allowed_types, super().partitions))
+        allowed_types = [
+            'fund', 'etf', 'mutual fund', 'preferred stock', 'common stock'
+        ]
+        records = list(
+            filter(
+                lambda record: (record['Type'] or "").lower() in allowed_types,
+                super().partitions))
 
         return records
 
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict],
+                       next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
 
         if self.get_starting_replication_key_value(context) is not None:
@@ -123,8 +133,13 @@ class Options(AbstractEODStream):
 
     @cached_property
     def partitions(self) -> List[dict]:
-        allowed_types = ['fund', 'etf', 'mutual fund', 'preferred stock', 'common stock']
-        records = list(filter(lambda record: (record['Type'] or "").lower() in allowed_types, super().partitions))
+        allowed_types = [
+            'fund', 'etf', 'mutual fund', 'preferred stock', 'common stock'
+        ]
+        records = list(
+            filter(
+                lambda record: (record['Type'] or "").lower() in allowed_types,
+                super().partitions))
 
         return records
 
@@ -136,6 +151,7 @@ class Options(AbstractEODStream):
 
 # ############## EXCHANGE STREAMS ################
 
+
 class AbstractExchangeStream(eodhistoricaldataStream, ABC):
 
     @cached_property
@@ -145,7 +161,10 @@ class AbstractExchangeStream(eodhistoricaldataStream, ABC):
         partitions = []
         exchanges = self.config.get("exchanges", []) or ["US"]
         for exchange in exchanges:
-            exchange_partitions = [p for p in state_partitions or [] if p.get("exchange", None) == exchange]
+            exchange_partitions = [
+                p for p in state_partitions or []
+                if p.get("exchange", None) == exchange
+            ]
             if exchange_partitions:
                 partitions.append(exchange_partitions[0])
             else:
@@ -167,7 +186,8 @@ class EODPrices(AbstractExchangeStream):
 
     STATE_MSG_FREQUENCY = 1000
 
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict],
+                       next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
 
         params["fmt"] = "json"
@@ -188,11 +208,14 @@ class EODPrices(AbstractExchangeStream):
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
         if not self.is_initial_load(context) and self.split_id() > 0:
-            self.logger.info(f"Skipping bulk load for split: `{self.split_id()}`")
+            self.logger.info(
+                f"Skipping bulk load for split: `{self.split_id()}`")
             return []
 
         if self.is_initial_load(context):
-            self.logger.info(f"Loading prices using historical EOD API for exchange: {context['exchange']}")
+            self.logger.info(
+                f"Loading prices using historical EOD API for exchange: {context['exchange']}"
+            )
             context["api"] = "eod"
 
             for record in self.load_symbols(exchange=context["exchange"]):
@@ -202,11 +225,14 @@ class EODPrices(AbstractExchangeStream):
                 except requests.exceptions.RequestException as e:
                     self.logger.exception(e)
         else:
-            self.logger.info(f"Loading prices using bulk daily EOD API for exchange: {context['exchange']}")
+            self.logger.info(
+                f"Loading prices using bulk daily EOD API for exchange: {context['exchange']}"
+            )
             context["api"] = "eod-bulk-last-day"
             context["object"] = context['exchange']
 
-            from_date = datetime.strptime(self.get_starting_replication_key_value(context), "%Y-%m-%d")
+            from_date = datetime.strptime(
+                self.get_starting_replication_key_value(context), "%Y-%m-%d")
             for date in self.loading_dates(from_date):
                 context["date"] = date
                 yield from super().get_records(context)
@@ -214,7 +240,8 @@ class EODPrices(AbstractExchangeStream):
 
             context["api"] = "eod"
             dates = self.loading_dates(from_date - timedelta(days=7))
-            for symbol in self.load_split_symbols(exchange=context["exchange"], dates=dates):
+            for symbol in self.load_split_symbols(exchange=context["exchange"],
+                                                  dates=dates):
                 context["object"] = symbol
                 yield from super().get_records(context)
 
@@ -224,7 +251,8 @@ class EODPrices(AbstractExchangeStream):
         to_date = datetime.now()
         delta_days = to_date - from_date
 
-        self.logger.info(f"Loading daily data from {to_date - delta_days} to {to_date}")
+        self.logger.info(
+            f"Loading daily data from {to_date - delta_days} to {to_date}")
         return [
             datetime.strftime(to_date - timedelta(days=i), "%Y-%m-%d")
             for i in reversed(range(delta_days.days + 1))
@@ -237,7 +265,8 @@ class EODPrices(AbstractExchangeStream):
             symbol = row["code"]
 
         symbol = symbol.replace('-USD.CC', '.CC')
-        exchange_name = context.get("exchange") or row.get('exchange_short_name')
+        exchange_name = context.get("exchange") or row.get(
+            'exchange_short_name')
         if exchange_name == 'CC':
             symbol = re.sub(r'-USD$', '.CC', symbol)
 
@@ -247,6 +276,7 @@ class EODPrices(AbstractExchangeStream):
         row['Code'] = symbol
 
         return super().post_process(row, context)
+
 
 class DailyFundamentals(AbstractExchangeStream):
     """
@@ -268,7 +298,8 @@ class DailyFundamentals(AbstractExchangeStream):
 
     STATE_MSG_FREQUENCY = 1000
 
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict],
+                       next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
 
         params["api_token"] = self.config["api_token"]
@@ -278,7 +309,8 @@ class DailyFundamentals(AbstractExchangeStream):
         limit = self.page_size
 
         if "symbols" in self.config:
-            params["symbols"] = ",".join(self.config["symbols"][offset:(offset + limit)])
+            params["symbols"] = ",".join(
+                self.config["symbols"][offset:(offset + limit)])
         else:
             params["offset"] = offset
             params["limit"] = limit
@@ -290,7 +322,8 @@ class DailyFundamentals(AbstractExchangeStream):
         for record in response[0].values():
             yield self.post_process(record, context)
 
-    def get_next_page_token(self, response: requests.Response, previous_token: Optional[Any]) -> Any:
+    def get_next_page_token(self, response: requests.Response,
+                            previous_token: Optional[Any]) -> Any:
         response_length = len(response.json())
         if response_length < self.page_size:
             return None
@@ -301,7 +334,9 @@ class DailyFundamentals(AbstractExchangeStream):
 
         return previous_token + response_length
 
-    def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+    def post_process(self,
+                     row: dict,
+                     context: Optional[dict] = None) -> Optional[dict]:
         row["UpdatedAt"] = row["General"]["UpdatedAt"]
 
         update_at = datetime.strptime(row["General"]["UpdatedAt"], "%Y-%m-%d")

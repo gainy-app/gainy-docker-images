@@ -11,7 +11,7 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://api.coingecko.com/api/v3/coins/list?include_platform=false
+    uri: https://api.coingecko.com/api/v3/coins/list?localization=false&tickers=false&include_platform=false
   response:
     body:
       string: !!binary |
@@ -239,8 +239,6 @@ interactions:
       - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
       Server:
       - cloudflare
-      Transfer-Encoding:
-      - chunked
       Vary:
       - Accept-Encoding, Origin
       X-Request-Id:

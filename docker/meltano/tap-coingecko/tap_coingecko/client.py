@@ -33,7 +33,8 @@ class CoingeckoStream(RESTStream, ABC):
         else:
             return "https://api.coingecko.com/api"
 
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict],
+                       next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
 
         api_key = self.config.get("api_key")
@@ -42,17 +43,14 @@ class CoingeckoStream(RESTStream, ABC):
 
         return params
 
-    def get_next_page_token(
-            self, response: requests.Response, previous_token: Optional[Any]
-    ) -> Optional[Any]:
+    def get_next_page_token(self, response: requests.Response,
+                            previous_token: Optional[Any]) -> Optional[Any]:
         return None
 
     def validate_response(self, response: requests.Response) -> None:
         if response.status_code == 429:
-            msg = (
-                f"{response.status_code} Client Error: "
-                f"{response.reason} for path: {self.path}"
-            )
+            msg = (f"{response.status_code} Client Error: "
+                   f"{response.reason} for path: {self.path}")
             raise RetriableAPIError(msg)
 
         super().validate_response(response)
@@ -74,12 +72,17 @@ class CoingeckoStream(RESTStream, ABC):
 
         if coins:
             self.logger.info(f"Using coins {coins} from the config parameter")
-            coins = [ {"id": symbol} for coin in coins ]
+            coins = [{"id": symbol} for coin in coins]
         else:
             coins_limit = self.config.get("coins_limit", None)
 
-            self.logger.info(f"Loading coins")
-            params = super().get_url_params(None, None)
+            params = self.get_url_params(None, None)
+            self.logger.info(
+                "Loading coins from %s %s api key, %s api key in config",
+                self.url_base,
+                'with' if 'x_cg_pro_api_key' in params else 'without',
+                'with' if 'api_key' in self.config else 'without')
+
             params["include_platform"] = 'false'
             res = requests.get(
                 url=f"{self.url_base}/v3/coins/list",
@@ -92,12 +95,15 @@ class CoingeckoStream(RESTStream, ABC):
                 self.logger.error(f"Error while loading coins: {res_data}")
                 return []
 
-            coins = [ {"id": coin['id']} for coin in res_data ]
+            coins = [{"id": coin['id']} for coin in res_data]
 
             if coins_limit is not None:
-                coins = list(sorted(coins, key=lambda record: record['id']))[:coins_limit]
+                coins = list(sorted(
+                    coins, key=lambda record: record['id']))[:coins_limit]
 
-        return list(filter(lambda coin: self.is_within_split(coin['id']), sorted(coins, key=lambda coin: coin['id'])))
+        return list(
+            filter(lambda coin: self.is_within_split(coin['id']),
+                   sorted(coins, key=lambda coin: coin['id'])))
 
     def is_within_split(self, symbol) -> int:
         split_num = int(self.config.get("split_num", 1))
@@ -126,7 +132,8 @@ class CoingeckoStream(RESTStream, ABC):
                 )
                 singer.write_message(record_message)
 
-    def _write_metric_log(self, metric: dict, extra_tags: Optional[dict]) -> None:
+    def _write_metric_log(self, metric: dict,
+                          extra_tags: Optional[dict]) -> None:
         super()._write_metric_log(metric, extra_tags)
         self._send_to_datadog(metric, ["counter"])
 
@@ -137,7 +144,9 @@ class CoingeckoStream(RESTStream, ABC):
 
                 tag_list = []
                 if "tags" in metric:
-                    tag_list += [f"{tag[0]}:{tag[1]}" for tag in metric["tags"].items()]
+                    tag_list += [
+                        f"{tag[0]}:{tag[1]}" for tag in metric["tags"].items()
+                    ]
 
                 if add_env and "ENV" in os.environ:
                     tag_list.append(f"env:{os.environ['ENV']}")
@@ -146,10 +155,10 @@ class CoingeckoStream(RESTStream, ABC):
                     metric=f"data.tap.{self.name}.{metric['metric']}",
                     type="count",
                     points=metric["value"],
-                    tags=tag_list
-                )
+                    tags=tag_list)
             else:
                 self.logger.debug(f"Skipping metric: {metric['metric']}")
 
         except Exception as e:
-            self.logger.warning(f"Metric was not sent due to an error: '{str(e)}'")
+            self.logger.warning(
+                f"Metric was not sent due to an error: '{str(e)}'")

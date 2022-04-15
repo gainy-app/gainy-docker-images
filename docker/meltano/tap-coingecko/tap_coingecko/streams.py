@@ -26,7 +26,8 @@ class CoinData(CoingeckoStream):
     def partitions(self) -> List[dict]:
         return self.load_coins()
 
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict],
+                       next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
 
         params["localization"] = "false"
@@ -38,7 +39,10 @@ class CoinData(CoingeckoStream):
         try:
             yield from super().get_records(context)
         except Exception as e:
-            self.logger.error('Error while requesting %s for coin %s: %s' % (self.name, context['id'], str(e)))
+            self.logger.error(
+                'Error while requesting %s for coin %s: %s' %
+                (self.name,
+                 context['id'] if context and 'id' in context else '', str(e)))
             pass
 
 
@@ -65,12 +69,14 @@ class CoinMarketRealtimeData(CoingeckoStream):
         records = self.load_coins()
         partitions = []
         for page_start in range(0, len(records), self.per_page):
-            batch = records[page_start:min(len(records), page_start + self.per_page)]
+            batch = records[page_start:min(len(records), page_start +
+                                           self.per_page)]
             batch_coin_ids = [record["id"] for record in batch]
             partitions.append({"ids": ",".join(batch_coin_ids)})
         return partitions
 
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict],
+                       next_page_token: Optional[Any]) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
 
         params["vs_currency"] = "usd"
@@ -83,5 +89,6 @@ class CoinMarketRealtimeData(CoingeckoStream):
         try:
             yield from super().get_records(context)
         except Exception as e:
-            self.logger.error('Error while requesting %s for coins %s: %s' % (self.name, context['ids'], str(e)))
+            self.logger.error('Error while requesting %s for coins %s: %s' %
+                              (self.name, context['ids'], str(e)))
             pass

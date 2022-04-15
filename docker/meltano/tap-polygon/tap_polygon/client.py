@@ -16,19 +16,18 @@ class PolygonStream(RESTStream):
 
     url_base = "https://api.polygon.io"
 
-    def get_next_page_token(
-            self, response: requests.Response, previous_token: Optional[Any]
-    ) -> Optional[Any]:
+    def get_next_page_token(self, response: requests.Response,
+                            previous_token: Optional[Any]) -> Optional[Any]:
         return None
 
-    def get_url_params(
-            self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
+    def get_url_params(self, context: Optional[dict],
+                       next_page_token: Optional[Any]) -> Dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization."""
         params: dict = {"apiKey": self.config['api_key']}
         return params
 
-    def _write_metric_log(self, metric: dict, extra_tags: Optional[dict]) -> None:
+    def _write_metric_log(self, metric: dict,
+                          extra_tags: Optional[dict]) -> None:
         super()._write_metric_log(metric, extra_tags)
         self._send_to_datadog(metric, ["counter"])
 
@@ -39,7 +38,9 @@ class PolygonStream(RESTStream):
 
                 tag_list = []
                 if "tags" in metric:
-                    tag_list += [f"{tag[0]}:{tag[1]}" for tag in metric["tags"].items()]
+                    tag_list += [
+                        f"{tag[0]}:{tag[1]}" for tag in metric["tags"].items()
+                    ]
 
                 if add_env and "ENV" in os.environ:
                     tag_list.append(f"env:{os.environ['ENV']}")
@@ -48,10 +49,10 @@ class PolygonStream(RESTStream):
                     metric=f"data.tap.{self.name}.{metric['metric']}",
                     type="count",
                     points=metric["value"],
-                    tags=tag_list
-                )
+                    tags=tag_list)
             else:
                 self.logger.debug(f"Skipping metric: {metric['metric']}")
 
         except Exception as e:
-            self.logger.warning(f"Metric was not sent due to an error: '{str(e)}'")
+            self.logger.warning(
+                f"Metric was not sent due to an error: '{str(e)}'")
