@@ -47,9 +47,8 @@ def test_tap_sync_all():
                   allow_playback_repeats=True)
 def test_tap_api_key():
     tap = Tapcoingecko(config=CONFIG_WITH_KEY)
-    streams = tap.discover_stream()
-    for stream in streams:
-        assert 'x_cg_pro_api_key' in stream.get_url_params()
+    for stream in tap.discover_streams():
+        assert 'x_cg_pro_api_key' in stream.get_url_params(None, None)
         assert 'https://pro-api.coingecko.com/api' == stream.url_base
 
 
