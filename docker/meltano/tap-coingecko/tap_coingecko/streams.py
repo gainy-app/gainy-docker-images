@@ -41,8 +41,7 @@ class CoinData(CoingeckoStream):
         except Exception as e:
             self.logger.error(
                 'Error while requesting %s for coin %s: %s' %
-                (self.name,
-                 context['id'] if context and 'id' in context else '', str(e)))
+                (self.name, context.get('id', '') if context else '', str(e)))
             pass
 
 
@@ -80,7 +79,7 @@ class CoinMarketRealtimeData(CoingeckoStream):
         params = super().get_url_params(context, next_page_token)
 
         params["vs_currency"] = "usd"
-        params["ids"] = context["ids"]
+        params["ids"] = context.get("ids")
         params["sparkline"] = "false"
 
         return params
@@ -89,6 +88,7 @@ class CoinMarketRealtimeData(CoingeckoStream):
         try:
             yield from super().get_records(context)
         except Exception as e:
-            self.logger.error('Error while requesting %s for coins %s: %s' %
-                              (self.name, context['ids'], str(e)))
+            self.logger.error(
+                'Error while requesting %s for coins %s: %s' %
+                (self.name, context.get('ids', '') if context else '', str(e)))
             pass

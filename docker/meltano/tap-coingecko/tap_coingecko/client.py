@@ -16,6 +16,8 @@ from singer_sdk.helpers._util import utc_now
 from singer_sdk.exceptions import RetriableAPIError
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
+BASE_URL_PRO = "https://pro-api.coingecko.com/api"
+BASE_URL_FREE = "https://api.coingecko.com/api"
 
 
 class CoingeckoStream(RESTStream, ABC):
@@ -29,9 +31,9 @@ class CoingeckoStream(RESTStream, ABC):
     @property
     def url_base(self) -> str:
         if self.config.get("api_key"):
-            return "https://pro-api.coingecko.com/api"
+            return BASE_URL_PRO
         else:
-            return "https://api.coingecko.com/api"
+            return BASE_URL_FREE
 
     def get_url_params(self, context: Optional[dict],
                        next_page_token: Optional[Any]) -> Dict[str, Any]:
@@ -75,17 +77,11 @@ class CoingeckoStream(RESTStream, ABC):
             coins = [{"id": symbol} for coin in coins]
         else:
             coins_limit = self.config.get("coins_limit", None)
+            self.logger.info("Loading coins")
 
-            params = self.get_url_params(None, None)
-            self.logger.info(
-                "Loading coins from %s %s api key, %s api key in config",
-                self.url_base,
-                'with' if 'x_cg_pro_api_key' in params else 'without',
-                'with' if 'api_key' in self.config else 'without')
-
-            params["include_platform"] = 'false'
+            params = {"include_platform": "false"}
             res = requests.get(
-                url=f"{self.url_base}/v3/coins/list",
+                url=f"{BASE_URL_FREE}/v3/coins/list",
                 params=params,
             )
             self._write_request_duration_log("/v3/coins/list", res, None, None)
