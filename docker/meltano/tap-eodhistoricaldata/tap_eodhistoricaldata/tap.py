@@ -5,16 +5,10 @@ from singer_sdk import Tap, Stream
 from singer_sdk import typing as th  # JSON schema typing helpers
 from singer_sdk.exceptions import ConfigValidationError
 
-from tap_eodhistoricaldata.streams import (
-    EODPrices, Fundamentals, HistoricalDividends, Options
-)
+from tap_eodhistoricaldata.streams import (EODPrices, Fundamentals,
+                                           HistoricalDividends, Options)
 
-STREAM_TYPES = [
-    Fundamentals,
-    HistoricalDividends,
-    Options,
-    EODPrices
-]
+STREAM_TYPES = [Fundamentals, HistoricalDividends, Options, EODPrices]
 
 
 class Tapeodhistoricaldata(Tap):
@@ -23,37 +17,27 @@ class Tapeodhistoricaldata(Tap):
 
     config_jsonschema = th.PropertiesList(
         th.Property("api_token", th.StringType, required=True),
-        th.Property(
-            "streams",
-            th.ArrayType(th.StringType),
-            required=False,
-            description="List of streams to run"
-        ),
-        th.Property(
-            "symbols",
-            th.ArrayType(th.StringType),
-            required=False,
-            description="List of ticker symbols to load"
-        ),
+        th.Property("streams",
+                    th.ArrayType(th.StringType),
+                    required=False,
+                    description="List of streams to run"),
+        th.Property("symbols",
+                    th.ArrayType(th.StringType),
+                    required=False,
+                    description="List of ticker symbols to load"),
         th.Property(
             "exchanges",
             th.ArrayType(th.StringType),
             required=False,
-            description="List of exchanges to load ticker symbols from"
-        ),
-        th.Property(
-            "split_id",
-            th.StringType,
-            required=False,
-            description="Tap split index"
-        ),
-        th.Property(
-            "split_num",
-            th.StringType,
-            required=False,
-            description="Total number of tap splits"
-        )
-    ).to_dict()
+            description="List of exchanges to load ticker symbols from"),
+        th.Property("split_id",
+                    th.StringType,
+                    required=False,
+                    description="Tap split index"),
+        th.Property("split_num",
+                    th.StringType,
+                    required=False,
+                    description="Total number of tap splits")).to_dict()
 
     parse_env_config = True
 
@@ -62,21 +46,27 @@ class Tapeodhistoricaldata(Tap):
 
         configured_streams = self.config.get("streams")
         if configured_streams:
-            streams = list(filter(lambda stream: stream.name in configured_streams, streams))
+            streams = list(
+                filter(lambda stream: stream.name in configured_streams,
+                       streams))
 
         return streams
 
     def _validate_config(
-            self, raise_errors: bool = True, warnings_as_errors: bool = False
-    ) -> Tuple[List[str], List[str]]:
-        warnings, errors = super()._validate_config(raise_errors, warnings_as_errors)
+            self,
+            raise_errors: bool = True,
+            warnings_as_errors: bool = False) -> Tuple[List[str], List[str]]:
+        warnings, errors = super()._validate_config(raise_errors,
+                                                    warnings_as_errors)
 
         errors += self._check_exactly_one("exchanges", "symbols", raise_errors)
-        errors += self._check_both_or_nothing("split_id", "split_num", raise_errors)
+        errors += self._check_both_or_nothing("split_id", "split_num",
+                                              raise_errors)
 
         return warnings, errors
 
-    def _check_exactly_one(self, property1: str, property2: str, raise_errors: bool):
+    def _check_exactly_one(self, property1: str, property2: str,
+                           raise_errors: bool):
         if (property1 in self.config) != (property2 in self.config):
             return []
 
@@ -86,7 +76,8 @@ class Tapeodhistoricaldata(Tap):
 
         return error_msg
 
-    def _check_both_or_nothing(self, property1: str, property2: str, raise_errors: bool):
+    def _check_both_or_nothing(self, property1: str, property2: str,
+                               raise_errors: bool):
         if (property1 in self.config) == (property2 in self.config):
             return []
 

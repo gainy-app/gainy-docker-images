@@ -17,8 +17,7 @@ class Tappolygon(Tap):
     name = "tap-polygon"
 
     config_jsonschema = th.PropertiesList(
-        th.Property("api_key", th.StringType, required=True)
-    ).to_dict()
+        th.Property("api_key", th.StringType, required=True)).to_dict()
 
     parse_env_config = True
 

@@ -18,6 +18,7 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class AbstractPolygonStream(PolygonStream):
+
     def _write_record_message(self, record: dict) -> None:
         """Write out a RECORD message."""
         record = conform_record_data_types(
@@ -42,7 +43,8 @@ class AbstractPolygonStream(PolygonStream):
         try:
             yield from super().get_records(context)
         except Exception as e:
-            self.logger.error('Error while requesting %s for symbol %s: %s' % (self.name, context['Code'], str(e)))
+            self.logger.error('Error while requesting %s for symbol %s: %s' %
+                              (self.name, context['Code'], str(e)))
             pass
 
 

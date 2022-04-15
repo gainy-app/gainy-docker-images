@@ -15,15 +15,13 @@ CONFIG = {
 
 STATE = {"bookmarks": {"polygon_marketstatus_upcoming": {}}}
 
+
 @freeze_time("2021-12-01")
 @vcr.use_cassette("cassettes/tap/tap-core.yaml")
 def test_standard_tap_tests():
     """Run standard tap tests from the SDK."""
 
-    tests = get_standard_tap_tests(
-        Tappolygon,
-        config=CONFIG
-    )
+    tests = get_standard_tap_tests(Tappolygon, config=CONFIG)
 
     for test in tests:
         test()
@@ -46,7 +44,8 @@ def test_tap_with_state_sync_all():
 @freeze_time("2021-12-01")
 @vcr.use_cassette("cassettes/tap/tap-core.yaml")
 def test_validate_schema():
-    _validate_schema({}, "marketstatus_upcoming.json", "polygon_marketstatus_upcoming")
+    _validate_schema({}, "marketstatus_upcoming.json",
+                     "polygon_marketstatus_upcoming")
 
 
 def _validate_schema(context, schema_file, stream_name):
@@ -60,9 +59,9 @@ def _validate_schema(context, schema_file, stream_name):
     stream._write_starting_replication_value(context)
     records = list(stream.get_records(context))
 
-    with open(test_data_dir / ("../tap_polygon/schemas/%s" % schema_file)) as f:
+    with open(test_data_dir /
+              ("../tap_polygon/schemas/%s" % schema_file)) as f:
         schema = json.load(f)
 
         validator = JSONSchemaValidator(schema)
         validator.validate(records[0])
-

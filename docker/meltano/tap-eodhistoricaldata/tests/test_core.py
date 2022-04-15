@@ -16,53 +16,78 @@ EXCHANGES_CONFIG = {
     "exchange_symbols_limit": 1
 }
 
-EXCHANGES_STATE = {"bookmarks": {
-    "eod_historical_prices": {"partitions": [
-        {"context": {"exchange": "NYSE"}, "replication_key": "date", "replication_key_value": "2021-11-28"}
-    ]},
-    "eod_dividends": {"partitions": [
-        {"context": {"Code": "AAPL", "Type": "Common Stock", "Exchange": "NASDAQ"}, "replication_key": "date", "replication_key_value": "2021-01-01"}
-    ]}
-}}
+EXCHANGES_STATE = {
+    "bookmarks": {
+        "eod_historical_prices": {
+            "partitions": [{
+                "context": {
+                    "exchange": "NYSE"
+                },
+                "replication_key": "date",
+                "replication_key_value": "2021-11-28"
+            }]
+        },
+        "eod_dividends": {
+            "partitions": [{
+                "context": {
+                    "Code": "AAPL",
+                    "Type": "Common Stock",
+                    "Exchange": "NASDAQ"
+                },
+                "replication_key": "date",
+                "replication_key_value": "2021-01-01"
+            }]
+        }
+    }
+}
 
 SYMBOLS_CONFIG = {
     "api_token": "fake_token",
-    "symbols": ["AAPL", "GOOGL", "TSLA", "IBM", "F", "000906.INDX", "$ANRX.CC"]
+    "symbols":
+    ["AAPL", "GOOGL", "TSLA", "IBM", "F", "000906.INDX", "$ANRX.CC"]
 }
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-core.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_standard_tap_tests():
     """Run standard tap tests from the SDK."""
 
-    tests = get_standard_tap_tests(
-        Tapeodhistoricaldata,
-        config=EXCHANGES_CONFIG
-    )
+    tests = get_standard_tap_tests(Tapeodhistoricaldata,
+                                   config=EXCHANGES_CONFIG)
 
     for test in tests:
         test()
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-core.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_tap_sync_all():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG)
     tap.sync_all()
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_tap_with_state_sync_all():
-    tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=copy.deepcopy(EXCHANGES_STATE))
+    tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG,
+                               state=copy.deepcopy(EXCHANGES_STATE))
     tap.sync_all()
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_tap_prices_with_state():
-    tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=copy.deepcopy(EXCHANGES_STATE))
+    tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG,
+                               state=copy.deepcopy(EXCHANGES_STATE))
 
     prices_stream = tap.streams["eod_historical_prices"]
     price_stream_partitions = prices_stream.partitions
@@ -82,9 +107,11 @@ def test_tap_prices_with_state():
     prices_stream._write_starting_replication_value(indices_partition)
     prices_stream._write_starting_replication_value(crypto_partition)
 
-    nasdaq_replication_key_value = prices_stream.get_starting_replication_key_value(nasdaq_partition)
+    nasdaq_replication_key_value = prices_stream.get_starting_replication_key_value(
+        nasdaq_partition)
     assert nasdaq_replication_key_value is None
-    nyse_replication_key_value = prices_stream.get_starting_replication_key_value(nyse_partition)
+    nyse_replication_key_value = prices_stream.get_starting_replication_key_value(
+        nyse_partition)
     assert "2021-11-28" == nyse_replication_key_value
 
     # Check that historical prices for NYSE are loaded for a couple of days since previous replication
@@ -120,7 +147,9 @@ def test_tap_prices_with_state():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_tap_dividends_with_state():
     tap = Tapeodhistoricaldata(config=EXCHANGES_CONFIG, state=EXCHANGES_STATE)
     tap._reset_state_progress_markers()
@@ -137,14 +166,18 @@ def test_tap_dividends_with_state():
     div_stream._write_starting_replication_value(apple_partition)
     div_stream._write_starting_replication_value(ford_partition)
 
-    apple_replication_key_value = div_stream.get_starting_replication_key_value(apple_partition)
+    apple_replication_key_value = div_stream.get_starting_replication_key_value(
+        apple_partition)
     assert "2021-01-01" == apple_replication_key_value
-    ford_replication_key_value = div_stream.get_starting_replication_key_value(ford_partition)
+    ford_replication_key_value = div_stream.get_starting_replication_key_value(
+        ford_partition)
     assert ford_replication_key_value is None
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-state-sync.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_tap_splits():
     config1 = copy.deepcopy(EXCHANGES_CONFIG)
     config1["split_id"] = "0"
@@ -164,12 +197,15 @@ def test_tap_splits():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-core.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_tap_symbols_config():
     tap = Tapeodhistoricaldata(config=SYMBOLS_CONFIG)
 
     assert 1 == len(tap.streams["eod_historical_prices"].partitions)
-    assert "US" == tap.streams["eod_historical_prices"].partitions[0]["exchange"]
+    assert "US" == tap.streams["eod_historical_prices"].partitions[0][
+        "exchange"]
 
     assert 7 == len(tap.streams["eod_fundamentals"].partitions)
 
@@ -177,7 +213,9 @@ def test_tap_symbols_config():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-core.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_tap_prices_with_symbols_config():
     tap = Tapeodhistoricaldata(config=SYMBOLS_CONFIG)
 
@@ -189,7 +227,9 @@ def test_tap_prices_with_symbols_config():
 
 
 @freeze_time("2021-12-01")
-@vcr.use_cassette("cassettes/tap/tap-core.yaml", record_mode=RECORD_MODE, allow_playback_repeats=True)
+@vcr.use_cassette("cassettes/tap/tap-core.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
 def test_validate_schema():
     _validate_schema({"exchange": "US"}, "eod.json", "eod_historical_prices")
 
@@ -209,9 +249,9 @@ def _validate_schema(context, schema_file, stream_name):
     stream._write_starting_replication_value(context)
     records = list(stream.get_records(context))
 
-    with open(test_data_dir / ("../tap_eodhistoricaldata/schemas/%s" % schema_file)) as f:
+    with open(test_data_dir /
+              ("../tap_eodhistoricaldata/schemas/%s" % schema_file)) as f:
         schema = json.load(f)
 
         validator = JSONSchemaValidator(schema)
         validator.validate(records[0])
-

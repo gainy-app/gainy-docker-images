@@ -9,6 +9,12 @@ BUILD_FLAGS ?= "--load"
 all: help;
 default: help;
 
+style-check:
+	yapf --diff -r docker
+
+style-fix:
+	yapf -i -r docker
+
 test-eod:
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml build --force-rm test-tap-eodhistoricaldata
 	docker-compose -p gainy-docker-images-test -f docker-compose.test.yml run --rm test-tap-eodhistoricaldata

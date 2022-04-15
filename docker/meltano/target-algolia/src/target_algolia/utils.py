@@ -19,7 +19,8 @@ def parse_config(path, tag='!ENV') -> Dict:
         if match:
             full_value = value
             for var in match:
-                full_value = full_value.replace(f"${{{var}}}", os.environ.get(var, var))
+                full_value = full_value.replace(f"${{{var}}}",
+                                                os.environ.get(var, var))
             return full_value
 
         return value
