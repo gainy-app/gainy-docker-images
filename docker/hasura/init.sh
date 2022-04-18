@@ -48,7 +48,7 @@ fi
 if [ "$ENV" = "local" ]; then
   echo 'Importing seeds'
   find seeds -iname '*.sql' | sort | while read -r i; do
-    psql -d $HASURA_GRAPHQL_DATABASE_URL -P pager -f "$i"
+    psql -d "$HASURA_GRAPHQL_DATABASE_URL?options=-csearch_path%3D$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME" -P pager -f "$i"
   done
   echo "Seeding done"
 fi
