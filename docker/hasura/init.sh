@@ -12,6 +12,11 @@ LOCKFILE=/run/graphql-engine.pid
 
 echo hasura migrate apply
 for (( ATTEMPT=0; ATTEMPT<10; ATTEMPT++ )); do
+  if ! curl -s "$HASURA_GRAPHQL_ENDPOINT/healthz" | grep OK > /dev/null; then
+    sleep 6;
+    continue;
+  fi
+
   if hasura migrate apply; then
     break
   fi
