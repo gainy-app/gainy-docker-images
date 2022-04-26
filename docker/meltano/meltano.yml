@@ -34,6 +34,8 @@ plugins:
 
     - name: tap-postgres-analytics
       inherit_from: tap-postgres
+    - name: tap-postgres-analytics-small-batch
+      inherit_from: tap-postgres-analytics
 
     - name: tap-postgres-website
       inherit_from: tap-postgres
@@ -43,8 +45,11 @@ plugins:
       pip_url: pipelinewise-target-postgres
     - name: target-postgres-small-batch
       inherit_from: target-postgres
+
     - name: target-postgres-analytics
       inherit_from: target-postgres
+    - name: target-postgres-analytics-small-batch
+      inherit_from: target-postgres-small-batch
 
     - name: target-algolia
       namespace: target-algolia
