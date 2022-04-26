@@ -11,7 +11,7 @@ ENV DOWNSTREAM_POOL_SIZE 1
 
 WORKDIR /project
 
-COPY meltano /project
+COPY meltano.yml /project
 COPY tap-eodhistoricaldata /tap-eodhistoricaldata
 COPY tap-polygon /tap-polygon
 COPY tap-coingecko /tap-coingecko
