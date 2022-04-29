@@ -1,5 +1,9 @@
 #!/bin/bash
 
+for i in /usr/lib/postgresql/*/bin; do
+  export PATH=$PATH:$i
+done
+
 while ! pg_isready -d $HASURA_GRAPHQL_DATABASE_URL; do sleep 1; done &> /dev/null
 
 python3 generate_config.py
