@@ -17,7 +17,7 @@ for (( ATTEMPT=0; ATTEMPT<10; ATTEMPT++ )); do
     continue;
   fi
 
-  if hasura migrate apply; then
+  if hasura migrate apply --skip-update-check; then
     break
   fi
 
@@ -27,7 +27,7 @@ done
 
 echo hasura metadata apply
 for (( ATTEMPT=0; ATTEMPT<60; ATTEMPT++ )); do
-  if hasura metadata apply; then
+  if hasura metadata apply --skip-update-check; then
     break
   fi
 
