@@ -1,5 +1,9 @@
 #!/bin/bash
 
+for i in /usr/lib/postgresql/*/bin; do
+  export PATH=$PATH:$i
+done
+
 python scripts/generate_meltano_config.py
 
 while ! PGPASSWORD=$PG_PASSWORD pg_isready -h $PG_HOST -p $PG_PORT -U $PG_USERNAME; do sleep 1; done &> /dev/null

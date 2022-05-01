@@ -64,8 +64,9 @@ class CoingeckoStream(RESTStream, ABC):
                 RetriableAPIError,
                 requests.exceptions.ReadTimeout,
             ),
-            max_tries=5,
+            max_tries=10,
             factor=5,
+            jitter=lambda w: w / 2 + backoff.full_jitter(w / 2),
         )(func)
         return decorator
 
