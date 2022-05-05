@@ -13,7 +13,7 @@ from tap_polygon.tap import Tappolygon
 RECORD_MODE = RecordMode.NEW_EPISODES
 CONFIG = {
     "api_key": "fake_key",
-    "option_contract_names": ["TSLA240621C01090000", "TSLA240621C00250000"],
+    "option_contract_names": "TSLA240621C01090000,TSLA240621C00250000",
 }
 
 STATE = {

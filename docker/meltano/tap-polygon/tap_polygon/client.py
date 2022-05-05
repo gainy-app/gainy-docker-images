@@ -26,12 +26,15 @@ class PolygonStream(RESTStream):
         params: dict = {"apiKey": self.config['api_key']}
         return params
 
+    @property
+    def split_id(self):
+        return int(self.config.get("split_id", 0))
+
     def is_within_split(self, symbol) -> int:
         split_num = int(self.config.get("split_num", 1))
-        split_id = int(self.config.get("split_id", 0))
         # Use built-in `hashlib` to get consistent hash value
         symbol_hash = int(hashlib.md5(symbol.encode("UTF-8")).hexdigest(), 16)
-        return symbol_hash % split_num == split_id
+        return symbol_hash % split_num == self.split_id
 
     def _write_metric_log(self, metric: dict,
                           extra_tags: Optional[dict]) -> None:

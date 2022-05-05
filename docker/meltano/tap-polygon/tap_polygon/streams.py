@@ -50,6 +50,9 @@ class MarketStatusUpcoming(AbstractPolygonStream):
     schema_filepath = SCHEMAS_DIR / "marketstatus_upcoming.json"
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        if self.split_id:
+            return []
+
         try:
             yield from super().get_records(context)
         except Exception as e:
@@ -85,9 +88,11 @@ class OptionsHistoricalPrices(AbstractPolygonStream):
                 "date_to": default_context["date_to"],
             }
 
-        option_contract_names = self.config.get("option_contract_names", [])
+        option_contract_names = self.config.get("option_contract_names",
+                                                "").split(",")
         for contract_name in option_contract_names:
-            if contract_name in state_contract_names:
+            contract_name = contract_name.strip()
+            if not contract_name or contract_name in state_contract_names:
                 continue
             if not self.is_within_split(contract_name):
                 continue

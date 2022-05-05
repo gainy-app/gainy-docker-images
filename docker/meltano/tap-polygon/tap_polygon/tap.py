@@ -20,9 +20,9 @@ class Tappolygon(Tap):
     config_jsonschema = th.PropertiesList(
         th.Property("api_key", th.StringType, required=True),
         th.Property("option_contract_names",
-                    th.ArrayType(th.StringType),
+                    th.StringType,
                     required=False,
-                    description="List of option contracts to load"),
+                    description="Option contracts to load (comma separated)"),
         th.Property("split_id",
                     th.StringType,
                     required=False,
