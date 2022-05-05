@@ -1,4 +1,0 @@
-Enter docker container with tap: 
-- EODHistoricalData: `docker run --rm -v "$(pwd)/tap-eodhistoricaldata:/tap-eodhistoricaldata" --entrypoint /bin/bash -w /tap-eodhistoricaldata -it $(docker build --build-arg CODEARTIFACT_PIPY_URL=${CODEARTIFACT_PIPY_URL} -q .)`
-- Polygon: `docker run --rm -v "$(pwd)/tap-polygon:/tap-polygon" --entrypoint /bin/bash -w /tap-polygon -it $(docker build --build-arg CODEARTIFACT_PIPY_URL=${CODEARTIFACT_PIPY_URL} -q .)`
-- Coingecko: `docker run --rm -v "$(pwd)/tap-coingecko:/tap-coingecko" --entrypoint /bin/bash -w /tap-coingecko -it $(docker build --build-arg CODEARTIFACT_PIPY_URL=${CODEARTIFACT_PIPY_URL} -q .)`

@@ -5,10 +5,11 @@ from singer_sdk import Tap, Stream
 from singer_sdk import typing as th  # JSON schema typing helpers
 from singer_sdk.exceptions import ConfigValidationError
 
-from tap_polygon.streams import MarketStatusUpcoming
+from tap_polygon.streams import MarketStatusUpcoming, OptionsHistoricalPrices
 
 STREAM_TYPES = [
     MarketStatusUpcoming,
+    OptionsHistoricalPrices,
 ]
 
 
@@ -17,7 +18,19 @@ class Tappolygon(Tap):
     name = "tap-polygon"
 
     config_jsonschema = th.PropertiesList(
-        th.Property("api_key", th.StringType, required=True)).to_dict()
+        th.Property("api_key", th.StringType, required=True),
+        th.Property("option_contract_names",
+                    th.ArrayType(th.StringType),
+                    required=False,
+                    description="List of option contracts to load"),
+        th.Property("split_id",
+                    th.StringType,
+                    required=False,
+                    description="Tap split index"),
+        th.Property("split_num",
+                    th.StringType,
+                    required=False,
+                    description="Total number of tap splits")).to_dict()
 
     parse_env_config = True
 

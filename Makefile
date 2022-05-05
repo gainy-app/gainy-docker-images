@@ -9,6 +9,10 @@ BUILD_FLAGS ?= "--load"
 all: help;
 default: help;
 
+shell:
+	@echo 'Choose service: tap-eodhistoricaldata tap-polygon tap-coingecko'
+	@echo -n 'Service: ' && read service && echo $${service} && docker-compose run --use-aliases --rm $${service} /bin/bash
+
 style-check:
 	yapf --diff -r docker
 
