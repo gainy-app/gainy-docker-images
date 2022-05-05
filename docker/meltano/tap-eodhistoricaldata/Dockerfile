@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-buster as dev
 
 # Install poetry
 ENV POETRY_VERSION=1.1.12
@@ -13,6 +13,7 @@ COPY . /tap-eodhistoricaldata/
 WORKDIR /tap-eodhistoricaldata/
 RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
 
+FROM dev as test
 # Run tests
 WORKDIR /tap-eodhistoricaldata/tests/
 CMD [ "poetry", "run", "pytest"]
