@@ -3395,6 +3395,28 @@
         }
       },
       "title": "MutualFund_Data"
+    },
+    "Components": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "Code": {
+          "type": "string"
+        },
+        "Exchange": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Sector": {
+          "type": "string"
+        },
+        "Industry": {
+          "type": "string"
+        }
+      },
+      "title": "Components"
     }
   },
   "required": [

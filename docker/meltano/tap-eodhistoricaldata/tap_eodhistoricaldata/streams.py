@@ -77,7 +77,7 @@ class Fundamentals(AbstractEODStream):
         """Return a dictionary of values to be used in URL parameterization."""
         params = super().get_url_params(context, next_page_token)
         params[
-            "filter"] = "General,Earnings,Highlights,AnalystRatings,Technicals,Valuation,Financials,SplitsDividends,SharesStats,ETF_Data,MutualFund_Data"
+            "filter"] = "General,Earnings,Highlights,AnalystRatings,Technicals,Valuation,Financials,SplitsDividends,SharesStats,ETF_Data,MutualFund_Data,Components"
         return params
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
