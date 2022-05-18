@@ -1,26 +1,26 @@
 version: '3.8'
 services:
-  test-tap-eodhistoricaldata:
+  tap-eodhistoricaldata:
     restart: always
     build:
       context: ./docker/meltano/tap-eodhistoricaldata
       dockerfile: Dockerfile
-      target: test
+      target: dev
     volumes:
       - ./docker/meltano/tap-eodhistoricaldata:/tap-eodhistoricaldata
-  test-tap-polygon:
+  tap-polygon:
     restart: always
     build:
       context: ./docker/meltano/tap-polygon
       dockerfile: Dockerfile
-      target: test
+      target: dev
     volumes:
       - ./docker/meltano/tap-polygon:/tap-polygon
-  test-tap-coingecko:
+  tap-coingecko:
     restart: always
     build:
       context: ./docker/meltano/tap-coingecko
       dockerfile: Dockerfile
-      target: test
+      target: dev
     volumes:
       - ./docker/meltano/tap-coingecko:/tap-coingecko
