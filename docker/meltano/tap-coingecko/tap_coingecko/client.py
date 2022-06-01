@@ -77,7 +77,7 @@ class CoingeckoStream(RESTStream, ABC):
             self.logger.info(f"Using coins {coins} from the config parameter")
             coins = [{"id": symbol} for coin in coins]
         else:
-            return self.request_decorator(self.fetch_coins)
+            return self.request_decorator(self.fetch_coins)()
 
     def fetch_coins(self) -> List[Dict[str, str]]:
         coins_limit = self.config.get("coins_limit", None)
