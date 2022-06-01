@@ -8,6 +8,7 @@ import hashlib
 import datadog.api
 import requests
 import backoff
+import simplejson
 import singer
 from singer import RecordMessage
 from singer_sdk.streams import RESTStream
@@ -63,6 +64,7 @@ class CoingeckoStream(RESTStream, ABC):
             (
                 RetriableAPIError,
                 requests.exceptions.ReadTimeout,
+                simplejson.scanner.JSONDecodeError,
             ),
             max_tries=6,
             factor=5,
