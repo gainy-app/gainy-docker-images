@@ -77,30 +77,38 @@ class CoingeckoStream(RESTStream, ABC):
             self.logger.info(f"Using coins {coins} from the config parameter")
             coins = [{"id": symbol} for coin in coins]
         else:
-            coins_limit = self.config.get("coins_limit", None)
-            self.logger.info("Loading coins")
+            return self.request_decorator(self.fetch_coins)
 
-            params = {"include_platform": "false"}
-            res = requests.get(
-                url=f"{BASE_URL_FREE}/v3/coins/list",
-                params=params,
-            )
-            self._write_request_duration_log("/v3/coins/list", res, None, None)
+    def fetch_coins(self) -> List[Dict[str, str]]:
+        coins_limit = self.config.get("coins_limit", None)
+        self.logger.info("Loading coins")
 
+        params = {"include_platform": "false"}
+        res = requests.get(
+            url=f"{BASE_URL_FREE}/v3/coins/list",
+            params=params,
+        )
+        self._write_request_duration_log("/v3/coins/list", res, None, None)
+
+        try:
             res_data = res.json()
-            if not isinstance(res_data, list):
-                self.logger.error(f"Error while loading coins: {res_data}")
-                return []
+        except simplejson.scanner.JSONDecodeError as e:
+            self.logger.error(f"Error while loading coins : {res.text}")
+            raise e
 
-            coins = [{"id": coin['id']} for coin in res_data]
+        if not isinstance(res_data, list):
+            self.logger.error(f"Error while loading coins: {res_data}")
+            return []
 
-            if coins_limit is not None:
-                coins = list(sorted(
-                    coins, key=lambda record: record['id']))[:coins_limit]
+        coins = [{"id": coin['id']} for coin in res_data]
+        coins = sorted(coins, key=lambda record: record['id'])
 
-        return list(
-            filter(lambda coin: self.is_within_split(coin['id']),
-                   sorted(coins, key=lambda coin: coin['id'])))
+        if coins_limit is not None:
+            coins = coins[:coins_limit]
+
+        coins = filter(lambda coin: self.is_within_split(coin['id']), coins)
+
+        return list(coins)
 
     def is_within_split(self, symbol) -> int:
         split_num = int(self.config.get("split_num", 1))
