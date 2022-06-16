@@ -39,6 +39,16 @@ plugins:
 
     - name: tap-postgres-website
       inherit_from: tap-postgres
+
+    - name: tap-postgres-history
+      inherit_from: tap-postgres
+    - name: tap-postgres-history-reused
+      inherit_from: tap-postgres-history
+    - name: tap-postgres-history-daily
+      inherit_from: tap-postgres-history
+    - name: tap-postgres-history-weekly
+      inherit_from: tap-postgres-history
+
   loaders:
     - name: target-postgres
       variant: transferwise
@@ -54,9 +64,17 @@ plugins:
     - name: target-algolia
       namespace: target-algolia
       pip_url: /target-algolia
+
+    - name: target-s3-csv
+      pip_url: pipelinewise-target-s3-csv
+      namespace: pipelinewise-target-s3-csv
+      executable: target-s3-csv
+    - name: target-s3-csv-history
+      inherit_from: target-s3-csv
+
   transformers:
     - name: dbt
-      pip_url: dbt-postgres==1.1.0
+      pip_url: dbt-postgres==1.1.1
   orchestrators:
     - name: airflow
-      pip_url: psycopg2-binary==2.9.3 apache-airflow==2.2.5 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.2.5/constraints-${MELTANO__PYTHON_VERSION}.txt
+      pip_url: psycopg2-binary==2.9.3 apache-airflow==2.3.2 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.3.2/constraints-${MELTANO__PYTHON_VERSION}.txt
