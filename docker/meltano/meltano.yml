@@ -40,12 +40,14 @@ plugins:
     - name: tap-postgres-website
       inherit_from: tap-postgres
 
+    - name: tap-postgres-history
+      inherit_from: tap-postgres
     - name: tap-postgres-history-reused
-      inherit_from: tap-postgres
+      inherit_from: tap-postgres-history
     - name: tap-postgres-history-daily
-      inherit_from: tap-postgres
+      inherit_from: tap-postgres-history
     - name: tap-postgres-history-weekly
-      inherit_from: tap-postgres
+      inherit_from: tap-postgres-history
 
   loaders:
     - name: target-postgres
