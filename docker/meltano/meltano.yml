@@ -39,6 +39,12 @@ plugins:
 
     - name: tap-postgres-website
       inherit_from: tap-postgres
+
+    - name: tap-postgres-history-reused
+      inherit_from: tap-postgres
+    - name: tap-postgres-history-all
+      inherit_from: tap-postgres
+
   loaders:
     - name: target-postgres
       variant: transferwise
@@ -54,6 +60,14 @@ plugins:
     - name: target-algolia
       namespace: target-algolia
       pip_url: /target-algolia
+
+    - name: target-s3-csv
+      pip_url: pipelinewise-target-s3-csv
+      namespace: pipelinewise-target-s3-csv
+      executable: target-s3-csv
+    - name: target-s3-csv-history
+      inherit_from: target-s3-csv
+
   transformers:
     - name: dbt
       pip_url: dbt-postgres==1.1.0
