@@ -25,9 +25,9 @@ plugins:
     - name: tap-postgres-sync
       inherit_from: tap-postgres
     - name: tap-postgres-sync-fundamentals
-      inherit_from: tap-postgres
+      inherit_from: tap-postgres-sync
     - name: tap-postgres-sync-options
-      inherit_from: tap-postgres
+      inherit_from: tap-postgres-sync
 
     - name: tap-postgres-search
       inherit_from: tap-postgres
