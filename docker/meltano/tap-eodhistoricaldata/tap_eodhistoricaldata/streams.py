@@ -249,6 +249,8 @@ class EODPrices(AbstractExchangeStream):
             # load all prices for full_refresh_symbols
             full_refresh_symbols = self.config.get("full_refresh_symbols", "")
             for symbol in full_refresh_symbols.split(","):
+                if not symbol:
+                    continue
                 context["object"] = symbol
                 yield from super().get_records(context)
 
