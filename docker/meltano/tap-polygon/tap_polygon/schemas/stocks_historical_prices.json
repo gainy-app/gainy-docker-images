@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "symbol": {
+      "type": "string"
+    },
+    "v": {
+      "type": "number"
+    },
+    "vw": {
+      "type": "number"
+    },
+    "o": {
+      "type": "number"
+    },
+    "c": {
+      "type": "number"
+    },
+    "h": {
+      "type": "number"
+    },
+    "l": {
+      "type": "number"
+    },
+    "t": {
+      "type": "integer"
+    },
+    "n": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "v",
+    "vw",
+    "o",
+    "c",
+    "h",
+    "l",
+    "t",
+    "n"
+  ]
+}

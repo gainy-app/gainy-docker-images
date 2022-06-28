@@ -10,10 +10,13 @@ from singer_sdk.testing import get_standard_tap_tests
 
 from tap_polygon.tap import Tappolygon
 
-RECORD_MODE = RecordMode.NEW_EPISODES
+RECORD_MODE = RecordMode.NONE
+# RECORD_MODE = RecordMode.NEW_EPISODES
 CONFIG = {
     "api_key": "fake_key",
     "option_contract_names": "TSLA240621C01090000,TSLA240621C00250000",
+    "crypto_symbols": "BTCUSD",
+    "stock_symbols": "AAPL",
 }
 
 STATE = {
@@ -27,7 +30,25 @@ STATE = {
                     "date_to": "2022-05-05"
                 }
             }]
-        }
+        },
+        "polygon_crypto_historical_prices": {
+            "partitions": [{
+                "context": {
+                    "symbol": "BTCUSD",
+                    "date_from": "1980-01-01",
+                    "date_to": "2022-05-05"
+                }
+            }]
+        },
+        "polygon_stocks_historical_prices": {
+            "partitions": [{
+                "context": {
+                    "symbol": "AAPL",
+                    "date_from": "1980-01-01",
+                    "date_to": "2022-05-05"
+                }
+            }]
+        },
     }
 }
 
@@ -74,6 +95,14 @@ def test_validate_schema():
         STATE["bookmarks"]["polygon_options_historical_prices"]["partitions"]
         [0]["context"], "options_historical_prices.json",
         "polygon_options_historical_prices")
+    _validate_schema(
+        STATE["bookmarks"]["polygon_stocks_historical_prices"]["partitions"][0]
+        ["context"], "stocks_historical_prices.json",
+        "polygon_stocks_historical_prices")
+    _validate_schema(
+        STATE["bookmarks"]["polygon_crypto_historical_prices"]["partitions"][0]
+        ["context"], "crypto_historical_prices.json",
+        "polygon_crypto_historical_prices")
 
 
 def _validate_schema(context, schema_file, stream_name):
