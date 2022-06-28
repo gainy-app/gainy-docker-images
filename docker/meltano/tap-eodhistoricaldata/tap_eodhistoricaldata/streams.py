@@ -238,10 +238,17 @@ class EODPrices(AbstractExchangeStream):
                 yield from super().get_records(context)
             del context["date"]
 
+            # load all prices for recently split symbols
             context["api"] = "eod"
             dates = self.loading_dates(from_date - timedelta(days=7))
             for symbol in self.load_split_symbols(exchange=context["exchange"],
                                                   dates=dates):
+                context["object"] = symbol
+                yield from super().get_records(context)
+
+            # load all prices for full_refresh_symbols
+            full_refresh_symbols = self.config.get("full_refresh_symbols", "")
+            for symbol in full_refresh_symbols.split(","):
                 context["object"] = symbol
                 yield from super().get_records(context)
 
