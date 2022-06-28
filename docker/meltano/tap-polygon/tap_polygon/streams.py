@@ -101,16 +101,32 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
             'date_to': datetime.now().strftime('%Y-%m-%d')
         }
 
+        # 1. load from state
         state_partitions = super().partitions or []
-        loaded_symbols = set()
+        state_symbols = set()
         for context in state_partitions:
-            loaded_symbols.add(context["symbol"])
+            state_symbols.add(context["symbol"])
             yield {
                 "symbol": context["symbol"],
                 "date_from": context["date_to"],
                 "date_to": default_context["date_to"],
             }
 
+        # 2. load from config
+        stock_symbols = self.config.get("stock_symbols")
+        if stock_symbols:
+            stock_symbols = stock_symbols.split(",")
+            for symbol in stock_symbols:
+                symbol = symbol.strip()
+                if not symbol or symbol in state_symbols or not self.is_within_split(
+                        symbol):
+                    continue
+
+                yield {"symbol": symbol, **default_context}
+
+            return
+
+        # 3. load all
         url = "/v2/snapshot/locale/us/markets/stocks/tickers"
         res = requests.get(url=self.url_base + url,
                            params={
@@ -118,26 +134,16 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                            })
         self._write_request_duration_log(url, res, None, None)
         data = res.json()
+
         if not data or "status" not in data or data['status'] != "OK":
             self.logger.error('Error while requesting %s: %s' %
                               (url, json.dumps(data)))
         else:
             for record in res.json().get('tickers', []):
                 symbol = re.sub(r'^X:', '', record['ticker'])
-                if not symbol or symbol in loaded_symbols:
+                if not symbol or symbol in state_symbols:
                     continue
-                loaded_symbols.add(symbol)
                 yield {"symbol": symbol, **default_context}
-
-        stock_symbols = self.config.get("stock_symbols", "").split(",")
-        for symbol in stock_symbols:
-            symbol = symbol.strip()
-            if not symbol or symbol in loaded_symbols:
-                continue
-            if not self.is_within_split(symbol):
-                continue
-
-            yield {"symbol": symbol, **default_context}
 
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
@@ -153,6 +159,7 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
             'date_to': datetime.now().strftime('%Y-%m-%d')
         }
 
+        # 1. load from state
         state_partitions = super().partitions or []
         state_contract_names = set()
         for context in state_partitions:
@@ -163,6 +170,7 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
                 "date_to": default_context["date_to"],
             }
 
+        # 2. load from config
         option_contract_names = self.config.get("option_contract_names",
                                                 "").split(",")
         for contract_name in option_contract_names:
@@ -188,16 +196,32 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
             'date_to': datetime.now().strftime('%Y-%m-%d')
         }
 
+        # 1. load from state
         state_partitions = super().partitions or []
-        loaded_symbols = set()
+        state_symbols = set()
         for context in state_partitions:
-            loaded_symbols.add(context["symbol"])
+            state_symbols.add(context["symbol"])
             yield {
                 "symbol": context["symbol"],
                 "date_from": context["date_to"],
                 "date_to": default_context["date_to"],
             }
 
+        # 2. load from config
+        crypto_symbols = self.config.get("crypto_symbols")
+        if crypto_symbols:
+            crypto_symbols = crypto_symbols.split(",")
+            for symbol in crypto_symbols:
+                symbol = symbol.strip()
+                if not symbol or symbol in state_symbols:
+                    continue
+                if not self.is_within_split(symbol):
+                    continue
+
+                yield {"symbol": symbol, **default_context}
+            return
+
+        # 3. load all
         url = "/v2/snapshot/locale/global/markets/crypto/tickers"
         res = requests.get(url=self.url_base + url,
                            params={
@@ -205,23 +229,16 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
                            })
         self._write_request_duration_log(url, res, None, None)
         data = res.json()
+
         if not data or "status" not in data or data['status'] != "OK":
             self.logger.error('Error while requesting %s: %s' %
                               (url, json.dumps(data)))
         else:
             for record in res.json().get('tickers', []):
                 symbol = re.sub(r'^X:', '', record['ticker'])
-                if not symbol or symbol in loaded_symbols:
+                if not symbol or symbol in state_symbols:
                     continue
-                loaded_symbols.add(symbol)
+                if not self.is_within_split(symbol):
+                    continue
+
                 yield {"symbol": symbol, **default_context}
-
-        crypto_symbols = self.config.get("crypto_symbols", "").split(",")
-        for symbol in crypto_symbols:
-            symbol = symbol.strip()
-            if not symbol or symbol in loaded_symbols:
-                continue
-            if not self.is_within_split(symbol):
-                continue
-
-            yield {"symbol": symbol, **default_context}
