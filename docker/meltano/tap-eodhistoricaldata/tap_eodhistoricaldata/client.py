@@ -49,7 +49,7 @@ class eodhistoricaldataStream(RESTStream):
         def replace_na(row):
             for k, v in row.items():
                 if v == 'NA' or v == '"NA"':
-                    row[k] = {}
+                    row[k] = None
             return row
 
         return replace_na(row)

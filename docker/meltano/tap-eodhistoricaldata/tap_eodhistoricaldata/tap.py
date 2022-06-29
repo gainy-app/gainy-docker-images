@@ -27,9 +27,10 @@ class Tapeodhistoricaldata(Tap):
                     description="List of ticker symbols to load"),
         th.Property(
             "full_refresh_symbols",
-            th.ArrayType(th.StringType),
+            th.StringType,
             required=False,
-            description="List of ticker symbols to load without state"),
+            description=
+            "List of ticker symbols to load without state (comma separated)"),
         th.Property(
             "exchanges",
             th.ArrayType(th.StringType),

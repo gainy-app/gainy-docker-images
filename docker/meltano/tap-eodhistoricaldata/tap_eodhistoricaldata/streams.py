@@ -5,6 +5,7 @@ from functools import cached_property, reduce
 from pathlib import Path
 from typing import Any, Dict, Optional, Iterable, List
 
+import json
 import re
 import requests
 import singer
@@ -206,6 +207,31 @@ class EODPrices(AbstractExchangeStream):
     def is_initial_load(self, context: dict) -> bool:
         return self.get_starting_replication_key_value(context) is None
 
+    def get_records_all(self, symbols: Iterable[str],
+                        context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        context["api"] = "eod"
+
+        for symbol in symbols:
+            if not symbol:
+                continue
+            try:
+                context["object"] = symbol
+                yield from super().get_records(context)
+            except requests.exceptions.RequestException as e:
+                self.logger.exception(e)
+
+    def get_records_partial(
+            self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        context["api"] = "eod-bulk-last-day"
+        context["object"] = context['exchange']
+
+        from_date = datetime.strptime(
+            self.get_starting_replication_key_value(context), "%Y-%m-%d")
+        for date in self.loading_dates(from_date):
+            context["date"] = date
+            yield from super().get_records(context)
+        del context["date"]
+
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
         if not self.is_initial_load(context) and self.split_id() > 0:
             self.logger.info(
@@ -216,43 +242,36 @@ class EODPrices(AbstractExchangeStream):
             self.logger.info(
                 f"Loading prices using historical EOD API for exchange: {context['exchange']}"
             )
-            context["api"] = "eod"
-
-            for record in self.load_symbols(exchange=context["exchange"]):
-                try:
-                    context["object"] = record['Code']
-                    yield from super().get_records(context)
-                except requests.exceptions.RequestException as e:
-                    self.logger.exception(e)
+            symbols = [
+                record['Code']
+                for record in self.load_symbols(exchange=context["exchange"])
+            ]
+            yield from self.get_records_all(symbols, context)
         else:
             self.logger.info(
                 f"Loading prices using bulk daily EOD API for exchange: {context['exchange']}"
             )
-            context["api"] = "eod-bulk-last-day"
-            context["object"] = context['exchange']
-
-            from_date = datetime.strptime(
-                self.get_starting_replication_key_value(context), "%Y-%m-%d")
-            for date in self.loading_dates(from_date):
-                context["date"] = date
-                yield from super().get_records(context)
-            del context["date"]
+            yield from self.get_records_partial(context)
 
             # load all prices for recently split symbols
-            context["api"] = "eod"
+            from_date = datetime.strptime(
+                self.get_starting_replication_key_value(context), "%Y-%m-%d")
             dates = self.loading_dates(from_date - timedelta(days=7))
-            for symbol in self.load_split_symbols(exchange=context["exchange"],
-                                                  dates=dates):
-                context["object"] = symbol
-                yield from super().get_records(context)
+            full_refresh_symbols = self.load_split_symbols(
+                exchange=context["exchange"], dates=dates)
+            self.logger.info(
+                f"Loading all prices for recently split symbols: {json.dumps(full_refresh_symbols)}"
+            )
+            yield from self.get_records_all(full_refresh_symbols, context)
 
             # load all prices for full_refresh_symbols
-            full_refresh_symbols = self.config.get("full_refresh_symbols", "")
-            for symbol in full_refresh_symbols.split(","):
-                if not symbol:
-                    continue
-                context["object"] = symbol
-                yield from super().get_records(context)
+            full_refresh_symbols = self.config.get("full_refresh_symbols")
+            if full_refresh_symbols:
+                full_refresh_symbols = full_refresh_symbols.split(",")
+                self.logger.info(
+                    f"Loading all prices (config): {json.dumps(full_refresh_symbols)}"
+                )
+                yield from self.get_records_all(full_refresh_symbols, context)
 
         del context["api"], context["object"]
 
@@ -284,7 +303,13 @@ class EODPrices(AbstractExchangeStream):
 
         row['Code'] = symbol
 
-        return super().post_process(row, context)
+        row = super().post_process(row, context)
+
+        if row['date'] is None:
+            return None
+
+        self.logger.info(f"Loading row {json.dumps(row)}")
+        return row
 
 
 class DailyFundamentals(AbstractExchangeStream):
