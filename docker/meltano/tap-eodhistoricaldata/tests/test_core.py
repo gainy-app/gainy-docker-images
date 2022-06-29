@@ -9,7 +9,8 @@ from singer_sdk.plugin_base import JSONSchemaValidator
 from singer_sdk.testing import get_standard_tap_tests
 from tap_eodhistoricaldata.tap import Tapeodhistoricaldata
 
-RECORD_MODE = RecordMode.NEW_EPISODES
+# RECORD_MODE = RecordMode.NEW_EPISODES
+RECORD_MODE = RecordMode.NONE
 EXCHANGES_CONFIG = {
     "api_token": "fake_token",
     "exchanges": ["NASDAQ", "NYSE", "INDX", "CC"],
