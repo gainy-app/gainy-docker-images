@@ -51,6 +51,43 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
+    uri: https://api.polygon.io/v3/reference/splits?apiKey=fake_key
+  response:
+    body:
+      string: !!binary |
+        H4sIAEixvWIC/6tWKkotLs0pKVayUoiuVkqtSE0uLcnMz4tPSSxJBYopGRkYGekaWOgaGCrpKCgV
+        F+RklsSnFeXnAuUM4QIl+UCuMZBbkpmcnVoE0hfkGqFUq6OA20hzXUMLQkYaGaCY6e7v7+6jVBtb
+        CwBj37zetgAAAA==
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 11 Jan 2022 08:42:12 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 0e87b9d0512c8260362e78a234aeb5da
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
     uri: https://api.polygon.io/v2/aggs/ticker/O:TSLA240621C01090000/range/1/day/1980-01-01/2022-05-05?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
   response:
     body:

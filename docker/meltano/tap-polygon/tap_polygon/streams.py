@@ -17,6 +17,8 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class AbstractPolygonStream(PolygonStream):
+    selected_by_default = True
+    STATE_MSG_FREQUENCY = 100
 
     def _write_record_message(self, record: dict) -> None:
         """Write out a RECORD message."""
@@ -43,10 +45,6 @@ class MarketStatusUpcoming(AbstractPolygonStream):
     name = "polygon_marketstatus_upcoming"
     path = "/v1/marketstatus/upcoming"
     primary_keys = ["date", "exchange"]
-    selected_by_default = True
-
-    STATE_MSG_FREQUENCY = 100
-
     schema_filepath = SCHEMAS_DIR / "marketstatus_upcoming.json"
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
@@ -61,14 +59,29 @@ class MarketStatusUpcoming(AbstractPolygonStream):
             pass
 
 
+class StockSplits(AbstractPolygonStream):
+    name = "polygon_stock_splits"
+    path = "/v3/reference/splits"
+    primary_keys = ["execution_date", "ticker"]
+    schema_filepath = SCHEMAS_DIR / "stock_splits.json"
+
+    def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        if self.split_id:
+            return []
+
+        try:
+            for i in super().get_records(context):
+                yield from i.get('results', [])
+        except Exception as e:
+            self.logger.error('Error while requesting %s: %s' %
+                              (self.name, str(e)))
+            pass
+
+
 class OptionsHistoricalPrices(AbstractPolygonStream):
     name = "polygon_options_historical_prices"
     path = "/v2/aggs/ticker/O:{contract_name}/range/1/day/{date_from}/{date_to}"
     primary_keys = ["t", "contract_name"]
-    selected_by_default = True
-
-    STATE_MSG_FREQUENCY = 100
-
     schema_filepath = SCHEMAS_DIR / "options_historical_prices.json"
 
     @cached_property

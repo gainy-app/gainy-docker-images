@@ -19,6 +19,7 @@ CONFIG = {
 STATE = {
     "bookmarks": {
         "polygon_marketstatus_upcoming": {},
+        "polygon_stock_splits": {},
         "polygon_options_historical_prices": {
             "partitions": [{
                 "context": {
@@ -70,6 +71,8 @@ def test_tap_with_state_sync_all():
 def test_validate_schema():
     _validate_schema({}, "marketstatus_upcoming.json",
                      "polygon_marketstatus_upcoming")
+    _validate_schema({}, "stock_splits.json",
+                     "polygon_stock_splits")
     _validate_schema(
         STATE["bookmarks"]["polygon_options_historical_prices"]["partitions"]
         [0]["context"], "options_historical_prices.json",

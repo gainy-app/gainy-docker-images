@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "execution_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "ticker": {
+      "type": "string"
+    },
+    "split_from": {
+      "type": "number"
+    },
+    "split_to": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "execution_date",
+    "ticker",
+    "split_from",
+    "split_to"
+  ]
+}
