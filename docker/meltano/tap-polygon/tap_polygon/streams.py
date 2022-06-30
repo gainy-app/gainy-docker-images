@@ -59,7 +59,7 @@ class MarketStatusUpcoming(AbstractPolygonStream):
             pass
 
 
-class StockSplits(AbstractPolygonStream):
+class StockSplitsUpcoming(AbstractPolygonStream):
     name = "polygon_stock_splits"
     path = "/v3/reference/splits"
     primary_keys = ["execution_date", "ticker"]
