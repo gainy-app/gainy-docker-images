@@ -209,4 +209,329 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?apiKey=fake_key
+  response:
+    body:
+      string: !!binary |
+        H4sIADHJumIC/51Qyw6CMBD8FdOzMeVRYrwR4eYBotEY46GBRogIhLY+Qvh3d7E1XjzopbOd7exO
+        pydZo2tFFhPmOu50QqTiSku4kyhehfs4IkCqMjuLDtlDT3L+gKInGZwUmoXBymBj8GrxhsWAL7hU
+        qW6UGPUJ0jPPg8Ya9wO2RiINoi8nYIFPPZdSOnd9FjDm2Fmbjufi7aXWVQWNEr2TL8MQ79bOpaxH
+        MbdOf/9R24lr9Hcer1jR73YTprsx6QbilcuC1ydhfX9QiejsGt3mXIl8nHUcnmMpxtHIAQAA
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '422'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 May 2022 04:53:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Request-Id:
+      - d0c00cc6c90f9e841fe720385fec2bcf
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1980-01-01/2022-05-05?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '422'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 May 2022 04:53:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Request-Id:
+      - d0c00cc6c90f9e841fe720385fec2bcf
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2022-05-05/2022-05-05?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
+  response:
+    body:
+      string: !!binary |
+        H4sIAFvHumIC/02PywoCMQxFf0WyltJHOp1xJy4VdC8itVZ8oThtFRH/3aQg2t0594YmL8iHcIo9
+        jAYwHi9mMBzArcT+ObmWSyarSPQxlXNO/8pvjyXluCXMfYm/EonlC+5cMxJVp40UkuL7g5VthUJD
+        eGVqjGgtQahRI5wj2NcEhWwJzjVB0XGt/t1Y5bTRkh+5CzuqO2zeK+KUfS68BMynULeia1JeH3hT
+        QOODjzJ2xsnOotPSYtjZjVatNuh3PBG+V74/t9tDjhwBAAA=
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '150'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 May 2022 04:53:43 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Request-Id:
+      - 98e3dec928ffd04255790cf0a53a6684
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://api.polygon.io/v2/snapshot/locale/global/markets/crypto/tickers?apiKey=fake_key
+  response:
+    body:
+      string: !!binary |
+        H4sIAKDDumIC/41RwWrDMAz9leLzMHLsyFaPa287bLAOBqUH04Q1bGtD4nYbIf8+KQkZHQyGjXl6
+        kqzHU6faFNO5VcuFur9TNwuVqv1r2Qix7VQRvxh0as8v6IyQCw4Dzskbx9HbmLEeJHcao8DwwtAB
+        eSTSOZIhuVYSH1LUS29s06aJRTnP2Jod85W0GsuHg3oaLa2iyliNhiSTJELIM8owIBhg7lM4L5+/
+        V8c/pI94Ek7uR/bAi26TWe0C4pXauikv62s/gvmfH376F8GD8UH7gCZ33DEP0A489rP9so7n5e1m
+        9fS4HpZy4k20q0M8vpRDOZjsF/1QNqLK8TRwKG6d6yKmsphcshYAAhH1u/4bu5jelvYBAAA=
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '422'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 May 2022 04:53:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Request-Id:
+      - d0c00cc6c90f9e841fe720385fec2bcf
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://api.polygon.io/v2/aggs/ticker/X:BTCUSD/range/1/day/1980-01-01/2022-05-05?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
+  response:
+    body:
+      string: !!binary |
+        H4sIACG/umIC/4WUW0vEMBCF/8rSZwmZJJMmvnl7800FRUQ0m6VqUOxFEfG/m3Y301FXtk/nTNPz
+        JdMwn1X/EJ5iW+0vqsv9w/Oji7Pjam9RvQ6x/Th6GZ77/AYgV9rYDanvftTulo9D18dl9n07xHlV
+        Llx/Vm/jujpX396zMqAE2uxeuAncNNwkbiakNc4YuX5y7Xmsfe0t1iA7c1A4nLgTSYGwSCQsmFJe
+        Y0AoYBhU1nCMIQwwDJ1lSzzM2ciCLSi3ff8UrL0XpmSTCdw03CRuNhwvjdnJAVcgkwqkGlKJVAn2
+        0u0Opt1TZzR1RlNnNOsMSoXGbA9W9Gu1QwFujnd1idde1KoQpnLi5QJB0JZD1N/dK/Sb+LUKpBpS
+        iVQJ9gbtjraoWgtTojc6MN0wnZjeIEBq9c/Vx5lha5HbCnQCI7D0aHw3mYabxJcVFIAz29uEcj4O
+        CkugYgI3DTeJmwJS8vc1vcmq6+/6YZwh1fHJ6cHVyTSR2phnUtffPozTplrKIGUINni58tEZWMVa
+        yXw/VjGo+7Aavwg0qr6+AbAitNrnBAAA
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '422'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 May 2022 04:53:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Request-Id:
+      - d0c00cc6c90f9e841fe720385fec2bcf
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://api.polygon.io/v2/aggs/ticker/X:BTCUSD/range/1/day/2022-05-05/2022-05-05?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
+  response:
+    body:
+      string: !!binary |
+        H4sIAFq/umIC/02MMQ+CMBBG/wq52aEBii2bAhubmuhkmvaagEZD724wxv9ucXL83vfy3sCTv2GC
+        toBzuz92p0MPmwIWwfTqnvLg/KgMEpLcmf6RC7MQY8iTk2AmxI6F1lY/jLvL8EslzDHi67SKYA1W
+        Ab0tTYxB1aXWW6t8VE5XrmlMDZ8vonG6i5MAAAA=
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '150'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 May 2022 04:53:43 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Request-Id:
+      - 98e3dec928ffd04255790cf0a53a6684
+    status:
+      code: 200
+      message: OK
 version: 1

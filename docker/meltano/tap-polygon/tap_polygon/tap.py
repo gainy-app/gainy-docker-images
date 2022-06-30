@@ -5,12 +5,14 @@ from singer_sdk import Tap, Stream
 from singer_sdk import typing as th  # JSON schema typing helpers
 from singer_sdk.exceptions import ConfigValidationError
 
-from tap_polygon.streams import MarketStatusUpcoming, StockSplitsUpcoming, OptionsHistoricalPrices
+from tap_polygon.streams import MarketStatusUpcoming, StockSplitsUpcoming, OptionsHistoricalPrices, CryptoHistoricalPrices, StocksHistoricalPrices
 
 STREAM_TYPES = [
     MarketStatusUpcoming,
     StockSplitsUpcoming,
     OptionsHistoricalPrices,
+    CryptoHistoricalPrices,
+    StocksHistoricalPrices,
 ]
 
 
@@ -24,6 +26,14 @@ class Tappolygon(Tap):
                     th.StringType,
                     required=False,
                     description="Option contracts to load (comma separated)"),
+        th.Property("crypto_symbols",
+                    th.StringType,
+                    required=False,
+                    description="Crypto symbols to load (comma separated)"),
+        th.Property("stock_symbols",
+                    th.StringType,
+                    required=False,
+                    description="Stock symbols to load (comma separated)"),
         th.Property("split_id",
                     th.StringType,
                     required=False,
