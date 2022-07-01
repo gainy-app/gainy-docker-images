@@ -19,6 +19,8 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class AbstractPolygonStream(PolygonStream):
+    selected_by_default = True
+    STATE_MSG_FREQUENCY = 100
 
     def _write_record_message(self, record: dict) -> None:
         """Write out a RECORD message."""
@@ -45,10 +47,6 @@ class MarketStatusUpcoming(AbstractPolygonStream):
     name = "polygon_marketstatus_upcoming"
     path = "/v1/marketstatus/upcoming"
     primary_keys = ["date", "exchange"]
-    selected_by_default = True
-
-    STATE_MSG_FREQUENCY = 100
-
     schema_filepath = SCHEMAS_DIR / "marketstatus_upcoming.json"
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
@@ -57,6 +55,25 @@ class MarketStatusUpcoming(AbstractPolygonStream):
 
         try:
             yield from super().get_records(context)
+        except Exception as e:
+            self.logger.error('Error while requesting %s: %s' %
+                              (self.name, str(e)))
+            pass
+
+
+class StockSplitsUpcoming(AbstractPolygonStream):
+    name = "polygon_stock_splits"
+    path = "/v3/reference/splits"
+    primary_keys = ["execution_date", "ticker"]
+    schema_filepath = SCHEMAS_DIR / "stock_splits.json"
+
+    def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        if self.split_id:
+            return []
+
+        try:
+            for i in super().get_records(context):
+                yield from i.get('results', [])
         except Exception as e:
             self.logger.error('Error while requesting %s: %s' %
                               (self.name, str(e)))
@@ -135,14 +152,23 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
         self._write_request_duration_log(url, res, None, None)
         data = res.json()
 
-        if not data or "status" not in data or data['status'] != "OK":
-            self.logger.error('Error while requesting %s: %s' %
-                              (url, json.dumps(data)))
+        if not data or "status" not in data or data['status'] not in [
+                "OK", "DELAYED"
+        ]:
+            self.logger.error('Error while requesting %s' % (url))
         else:
+            symbols = []
             for record in res.json().get('tickers', []):
                 symbol = re.sub(r'^X:', '', record['ticker'])
                 if not symbol or symbol in state_symbols:
                     continue
+                if not self.is_within_split(symbol):
+                    continue
+                symbols.append(symbol)
+
+            symbols = list(sorted(symbols))
+            self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
+            for symbol in symbols:
                 yield {"symbol": symbol, **default_context}
 
 

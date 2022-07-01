@@ -5,10 +5,11 @@ from singer_sdk import Tap, Stream
 from singer_sdk import typing as th  # JSON schema typing helpers
 from singer_sdk.exceptions import ConfigValidationError
 
-from tap_polygon.streams import MarketStatusUpcoming, OptionsHistoricalPrices, CryptoHistoricalPrices, StocksHistoricalPrices
+from tap_polygon.streams import MarketStatusUpcoming, StockSplitsUpcoming, OptionsHistoricalPrices, CryptoHistoricalPrices, StocksHistoricalPrices
 
 STREAM_TYPES = [
     MarketStatusUpcoming,
+    StockSplitsUpcoming,
     OptionsHistoricalPrices,
     CryptoHistoricalPrices,
     StocksHistoricalPrices,
