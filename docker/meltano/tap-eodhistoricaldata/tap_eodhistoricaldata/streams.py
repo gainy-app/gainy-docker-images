@@ -308,7 +308,7 @@ class EODPrices(AbstractExchangeStream):
         if row['date'] is None:
             return None
 
-        self.logger.info(f"Loading row {json.dumps(row)}")
+        self.logger.debug(f"Loading row {json.dumps(row)}")
         return row
 
 
