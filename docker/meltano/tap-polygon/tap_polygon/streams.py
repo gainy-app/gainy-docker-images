@@ -152,14 +152,23 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
         self._write_request_duration_log(url, res, None, None)
         data = res.json()
 
-        if not data or "status" not in data or data['status'] != "OK":
-            self.logger.error('Error while requesting %s: %s' %
-                              (url, json.dumps(data)))
+        if not data or "status" not in data or data['status'] not in [
+                "OK", "DELAYED"
+        ]:
+            self.logger.error('Error while requesting %s' % (url))
         else:
+            symbols = []
             for record in res.json().get('tickers', []):
                 symbol = re.sub(r'^X:', '', record['ticker'])
                 if not symbol or symbol in state_symbols:
                     continue
+                if not self.is_within_split(symbol):
+                    continue
+                symbols.append(symbol)
+
+            symbols = list(sorted(symbols))
+            self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
+            for symbol in symbols:
                 yield {"symbol": symbol, **default_context}
 
 
