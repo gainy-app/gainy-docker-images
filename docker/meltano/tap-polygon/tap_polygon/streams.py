@@ -108,7 +108,7 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
 class StocksHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_stocks_historical_prices"
     path = "/v2/aggs/ticker/{symbol}/range/1/day/{date_from}/{date_to}"
-    primary_keys = ["t", "symbol"]
+    primary_keys = ["symbol", "t"]
     schema_filepath = SCHEMAS_DIR / "stocks_historical_prices.json"
 
     @cached_property
@@ -175,7 +175,7 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_options_historical_prices"
     path = "/v2/aggs/ticker/O:{contract_name}/range/1/day/{date_from}/{date_to}"
-    primary_keys = ["t", "contract_name"]
+    primary_keys = ["contract_name", "t"]
     schema_filepath = SCHEMAS_DIR / "options_historical_prices.json"
 
     @cached_property
@@ -212,7 +212,7 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
 class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_crypto_historical_prices"
     path = "/v2/aggs/ticker/X:{symbol}/range/1/day/{date_from}/{date_to}"
-    primary_keys = ["t", "symbol"]
+    primary_keys = ["symbol", "t"]
     schema_filepath = SCHEMAS_DIR / "crypto_historical_prices.json"
 
     @cached_property
