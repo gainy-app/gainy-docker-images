@@ -182,7 +182,7 @@ class EODPrices(AbstractExchangeStream):
     # bulk api = "/eod-bulk-last-day/{exchange}"
     # historical api = "/eod/{Code}"
 
-    primary_keys = ["date", "Code"]
+    primary_keys = ["Code", "date"]
     replication_key = "date"
 
     STATE_MSG_FREQUENCY = 1000
