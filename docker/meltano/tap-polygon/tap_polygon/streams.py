@@ -64,7 +64,7 @@ class MarketStatusUpcoming(AbstractPolygonStream):
 class StockSplitsUpcoming(AbstractPolygonStream):
     name = "polygon_stock_splits"
     path = "/v3/reference/splits"
-    primary_keys = ["execution_date", "ticker"]
+    primary_keys = ["ticker", "execution_date"]
     schema_filepath = SCHEMAS_DIR / "stock_splits.json"
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
