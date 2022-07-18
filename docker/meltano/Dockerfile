@@ -7,7 +7,6 @@ RUN apt update && apt install -y postgresql-client
 RUN pip install pyyaml
 
 ENV LC_ALL C.UTF-8
-ENV DOWNSTREAM_POOL_SIZE 1
 
 WORKDIR /project
 
