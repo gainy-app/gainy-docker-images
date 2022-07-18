@@ -25,11 +25,13 @@ class AbstractEODStream(eodhistoricaldataStream):
         return self.load_symbols()
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
+        row = super().post_process(row, context)
+
         symbol = context['Code']
         symbol = symbol.replace('-USD.CC', '.CC')
         row['Code'] = symbol
 
-        return super().post_process(row, context)
+        return row
 
     def _write_record_message(self, record: dict) -> None:
         """Write out a RECORD message."""
@@ -292,6 +294,10 @@ class EODPrices(AbstractExchangeStream):
         else:
             symbol = row["code"]
 
+        row = super().post_process(row, context)
+        if row['date'] is None:
+            return None
+
         symbol = symbol.replace('-USD.CC', '.CC')
         exchange_name = context.get("exchange") or row.get(
             'exchange_short_name')
@@ -302,11 +308,6 @@ class EODPrices(AbstractExchangeStream):
             symbol += '.INDX'
 
         row['Code'] = symbol
-
-        row = super().post_process(row, context)
-
-        if row['date'] is None:
-            return None
 
         self.logger.debug(f"Loading row {json.dumps(row)}")
         return row
