@@ -2,11 +2,13 @@
 import os
 import hashlib
 from pathlib import Path
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, Optional, List, Callable
 
+import backoff
 import datadog.api
 import requests
 from singer_sdk.streams import RESTStream
+from singer_sdk.exceptions import RetriableAPIError
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
@@ -15,6 +17,16 @@ class PolygonStream(RESTStream):
     """polygon stream class."""
 
     url_base = "https://api.polygon.io"
+
+    def request_decorator(self, func: Callable) -> Callable:
+        decorator: Callable = backoff.on_exception(
+            backoff.expo,
+            (RetriableAPIError, ),
+            max_tries=6,
+            factor=5,
+            jitter=lambda w: w / 2 + backoff.full_jitter(w / 2),
+        )(func)
+        return decorator
 
     def get_next_page_token(self, response: requests.Response,
                             previous_token: Optional[Any]) -> Optional[Any]:
