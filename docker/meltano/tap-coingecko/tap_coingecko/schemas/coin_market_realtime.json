@@ -39,28 +39,28 @@
       "type": "number"
     },
     "price_change_percentage_24h": {
-      "type": "object"
+      "type": "number"
     },
     "market_cap_change_24h": {
       "type": "number"
     },
     "market_cap_change_percentage_24h": {
-      "type": "object"
+      "type": "number"
     },
     "circulating_supply": {
-      "type": "object"
+      "type": "number"
     },
     "total_supply": {
-      "type": "object"
+      "type": "number"
     },
     "max_supply": {
-      "type": "object"
+      "type": "number"
     },
     "ath": {
       "type": "number"
     },
     "ath_change_percentage": {
-      "type": "object"
+      "type": "number"
     },
     "ath_date": {
       "type": "string",
@@ -70,7 +70,7 @@
       "type": "number"
     },
     "atl_change_percentage": {
-      "type": "object"
+      "type": "number"
     },
     "atl_date": {
       "type": "string",
