@@ -48,13 +48,13 @@
       "type": "number"
     },
     "circulating_supply": {
-      "type": "number"
+      "type": "string"
     },
     "total_supply": {
-      "type": "number"
+      "type": "string"
     },
     "max_supply": {
-      "type": "number"
+      "type": "string"
     },
     "ath": {
       "type": "number"
