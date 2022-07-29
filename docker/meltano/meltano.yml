@@ -72,9 +72,13 @@ plugins:
     - name: target-s3-csv-history
       inherit_from: target-s3-csv
 
+    - name: target-bigquery
+      variant: transferwise
+      pip_url: pipelinewise-target-bigquery
+
   transformers:
     - name: dbt
-      pip_url: dbt-postgres==1.1.1
+      pip_url: dbt-postgres==1.2.0
   orchestrators:
     - name: airflow
-      pip_url: psycopg2-binary==2.9.3 apache-airflow==2.3.2 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.3.2/constraints-${MELTANO__PYTHON_VERSION}.txt
+      pip_url: psycopg2-binary==2.9.3 apache-airflow==2.3.3 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.3.3/constraints-${MELTANO__PYTHON_VERSION}.txt
