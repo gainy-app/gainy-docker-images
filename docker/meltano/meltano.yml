@@ -75,6 +75,8 @@ plugins:
     - name: target-bigquery
       variant: transferwise
       pip_url: pipelinewise-target-bigquery
+    - name: target-bigquery-small-batch
+      inherit_from: target-bigquery
 
   transformers:
     - name: dbt
