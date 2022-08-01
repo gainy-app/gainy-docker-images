@@ -104,6 +104,27 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
                               (self.name, symbol, str(e)))
             pass
 
+    def get_state_symbols(self, field_name) -> Dict[str, str]:
+        state_partitions = super().partitions or []
+        state_symbols = {}
+        for context in state_partitions:
+            symbol = context[field_name]
+            if symbol in state_symbols:
+                state_symbols[symbol] = min(context["date_to"],
+                                            state_symbols[symbol])
+            else:
+                state_symbols[symbol] = context["date_to"]
+        return state_symbols
+
+    def get_partition(self, field_name: str, symbol: str,
+                      default_context: dict, state_symbols: Dict[str, str]):
+        partition = {field_name: symbol, **default_context}
+
+        if symbol in state_symbols:
+            partition["date_from"] = state_symbols[symbol]
+
+        return partition
+
 
 class StocksHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_stocks_historical_prices"
@@ -119,15 +140,7 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
         }
 
         # 1. load from state
-        state_partitions = super().partitions or []
-        state_symbols = {}
-        for context in state_partitions:
-            symbol = context["symbol"]
-            if symbol in state_symbols:
-                state_symbols[symbol] = min(context["date_to"],
-                                            state_symbols[symbol])
-            else:
-                state_symbols[symbol] = context["date_to"]
+        state_symbols = self.get_state_symbols("symbol")
 
         # 2. load from config
         stock_symbols = self.config.get("stock_symbols")
@@ -138,12 +151,8 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                 if not symbol or not self.is_within_split(symbol):
                     continue
 
-                partition = {"symbol": symbol, **default_context}
-
-                if symbol in state_symbols:
-                    partition["date_from"] = state_symbols[symbol]
-
-                yield partition
+                yield self.get_partition("symbol", symbol, default_context,
+                                         state_symbols)
 
             return
 
@@ -171,12 +180,8 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
             symbols = list(sorted(symbols))
             self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
             for symbol in symbols:
-                partition = {"symbol": symbol, **default_context}
-
-                if symbol in state_symbols:
-                    partition["date_from"] = state_symbols[symbol]
-
-                yield partition
+                yield self.get_partition("symbol", symbol, default_context,
+                                         state_symbols)
 
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
@@ -193,27 +198,18 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
         }
 
         # 1. load from state
-        state_partitions = super().partitions or []
-        state_contract_names = set()
-        for context in state_partitions:
-            state_contract_names.add(context["contract_name"])
-            yield {
-                "contract_name": context["contract_name"],
-                "date_from": context["date_to"],
-                "date_to": default_context["date_to"],
-            }
+        state_symbols = self.get_state_symbols("contract_name")
 
         # 2. load from config
         option_contract_names = self.config.get("option_contract_names",
                                                 "").split(",")
         for contract_name in option_contract_names:
             contract_name = contract_name.strip()
-            if not contract_name or contract_name in state_contract_names:
-                continue
-            if not self.is_within_split(contract_name):
+            if not contract_name or not self.is_within_split(contract_name):
                 continue
 
-            yield {"contract_name": contract_name, **default_context}
+            yield self.get_partition("contract_name", contract_name,
+                                     default_context, state_symbols)
 
 
 class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
@@ -230,15 +226,7 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
         }
 
         # 1. load from state
-        state_partitions = super().partitions or []
-        state_symbols = set()
-        for context in state_partitions:
-            state_symbols.add(context["symbol"])
-            yield {
-                "symbol": context["symbol"],
-                "date_from": context["date_to"],
-                "date_to": default_context["date_to"],
-            }
+        state_symbols = self.get_state_symbols("symbol")
 
         # 2. load from config
         crypto_symbols = self.config.get("crypto_symbols")
@@ -246,12 +234,11 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
             crypto_symbols = crypto_symbols.split(",")
             for symbol in crypto_symbols:
                 symbol = symbol.strip()
-                if not symbol or symbol in state_symbols:
-                    continue
-                if not self.is_within_split(symbol):
+                if not symbol or not self.is_within_split(symbol):
                     continue
 
-                yield {"symbol": symbol, **default_context}
+                yield self.get_partition("symbol", symbol, default_context,
+                                         state_symbols)
             return
 
         # 3. load all
@@ -269,9 +256,8 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
         else:
             for record in res.json().get('tickers', []):
                 symbol = re.sub(r'^X:', '', record['ticker'])
-                if not symbol or symbol in state_symbols:
-                    continue
-                if not self.is_within_split(symbol):
+                if not symbol or not self.is_within_split(symbol):
                     continue
 
-                yield {"symbol": symbol, **default_context}
+                yield self.get_partition("symbol", symbol, default_context,
+                                         state_symbols)
