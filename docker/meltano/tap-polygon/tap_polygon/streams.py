@@ -116,7 +116,8 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
                 state_symbols[symbol] = context["date_to"]
         return state_symbols
 
-    def get_partition(self, field_name: str, symbol: str, default_context: dict, state_symbols: Dict[str, str]):
+    def get_partition(self, field_name: str, symbol: str,
+                      default_context: dict, state_symbols: Dict[str, str]):
         partition = {field_name: symbol, **default_context}
 
         if symbol in state_symbols:
@@ -150,7 +151,8 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                 if not symbol or not self.is_within_split(symbol):
                     continue
 
-                yield self.get_partition("symbol", symbol, default_context, state_symbols)
+                yield self.get_partition("symbol", symbol, default_context,
+                                         state_symbols)
 
             return
 
@@ -178,7 +180,8 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
             symbols = list(sorted(symbols))
             self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
             for symbol in symbols:
-                yield self.get_partition("symbol", symbol, default_context, state_symbols)
+                yield self.get_partition("symbol", symbol, default_context,
+                                         state_symbols)
 
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
@@ -205,7 +208,8 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
             if not contract_name or not self.is_within_split(contract_name):
                 continue
 
-            yield self.get_partition("contract_name", contract_name, default_context, state_symbols)
+            yield self.get_partition("contract_name", contract_name,
+                                     default_context, state_symbols)
 
 
 class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
@@ -233,7 +237,8 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
                 if not symbol or not self.is_within_split(symbol):
                     continue
 
-                yield self.get_partition("symbol", symbol, default_context, state_symbols)
+                yield self.get_partition("symbol", symbol, default_context,
+                                         state_symbols)
             return
 
         # 3. load all
@@ -254,4 +259,5 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
                 if not symbol or not self.is_within_split(symbol):
                     continue
 
-                yield self.get_partition("symbol", symbol, default_context, state_symbols)
+                yield self.get_partition("symbol", symbol, default_context,
+                                         state_symbols)
