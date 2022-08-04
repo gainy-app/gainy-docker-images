@@ -116,8 +116,12 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
                 state_symbols[symbol] = context["date_to"]
         return state_symbols
 
-    def get_partition(self, field_name: str, symbol: str,
-                      default_context: dict, state_symbols: Dict[str, str], partial_update: bool = true):
+    def get_partition(self,
+                      field_name: str,
+                      symbol: str,
+                      default_context: dict,
+                      state_symbols: Dict[str, str],
+                      partial_update: bool = true):
         partition = {field_name: symbol, **default_context}
 
         if partial_update and symbol in state_symbols:
