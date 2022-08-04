@@ -121,7 +121,7 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
                       symbol: str,
                       default_context: dict,
                       state_symbols: Dict[str, str],
-                      partial_update: bool = true):
+                      partial_update: bool = True):
         partition = {field_name: symbol, **default_context}
 
         if partial_update and symbol in state_symbols:
