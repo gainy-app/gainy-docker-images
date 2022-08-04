@@ -117,10 +117,10 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
         return state_symbols
 
     def get_partition(self, field_name: str, symbol: str,
-                      default_context: dict, state_symbols: Dict[str, str]):
+                      default_context: dict, state_symbols: Dict[str, str], partial_update: bool = true):
         partition = {field_name: symbol, **default_context}
 
-        if symbol in state_symbols:
+        if partial_update and symbol in state_symbols:
             partition["date_from"] = state_symbols[symbol]
 
         return partition
@@ -152,7 +152,7 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                     continue
 
                 yield self.get_partition("symbol", symbol, default_context,
-                                         state_symbols)
+                                         state_symbols, False)
 
             return
 
@@ -181,7 +181,7 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
             self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
             for symbol in symbols:
                 yield self.get_partition("symbol", symbol, default_context,
-                                         state_symbols)
+                                         state_symbols, False)
 
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
@@ -209,7 +209,7 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
                 continue
 
             yield self.get_partition("contract_name", contract_name,
-                                     default_context, state_symbols)
+                                     default_context, state_symbols, False)
 
 
 class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
