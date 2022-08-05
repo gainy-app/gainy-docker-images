@@ -14,9 +14,13 @@ RECORD_MODE = RecordMode.NONE
 # RECORD_MODE = RecordMode.NEW_EPISODES
 CONFIG = {
     "api_key": "fake_key",
-    "option_contract_names": "TSLA240621C01090000,TSLA240621C00250000",
-    "crypto_symbols": "BTCUSD",
-    "stock_symbols": "AAPL",
+    "option_contract_names": ["TSLA240621C01090000", "TSLA240621C00250000"],
+    "crypto_symbols": ["BTCUSD"],
+    "stock_symbols": ["AAPL"],
+}
+EXCHANGES_CONFIG = {
+    "api_key": "fake_key",
+    "stock_exchanges": ["XNAS"],
 }
 
 STATE = {
@@ -73,6 +77,15 @@ def test_standard_tap_tests():
                   allow_playback_repeats=True)
 def test_tap_sync_all():
     tap = Tappolygon(config=CONFIG)
+    tap.sync_all()
+
+
+@freeze_time("2022-05-05")
+@vcr.use_cassette("cassettes/tap/tap-core.yaml",
+                  record_mode=RECORD_MODE,
+                  allow_playback_repeats=True)
+def test_tap_sync_exchanges():
+    tap = Tappolygon(config=EXCHANGES_CONFIG)
     tap.sync_all()
 
 

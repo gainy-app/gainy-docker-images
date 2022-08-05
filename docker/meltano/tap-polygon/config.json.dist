@@ -1,8 +1,9 @@
 {
   "api_key": "INVALID_TOKEN_HERE",
-  "option_contract_names": "TSLA240621C01090000,TSLA240621C00250000",
-  "crypto_symbols": "BTCUSD",
-  "stock_symbols": "AAPL",
+  "option_contract_names": ["TSLA240621C01090000","TSLA240621C00250000"],
+  "crypto_symbols": ["BTCUSD"],
+  "stock_exchanges": ["XNAS", "XNYS"],
+  "stock_symbols": ["AAPL"],
   "split_num": 2,
   "split_id": 0
 }

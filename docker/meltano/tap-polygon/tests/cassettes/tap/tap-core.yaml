@@ -221,48 +221,6 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?apiKey=fake_key
-  response:
-    body:
-      string: !!binary |
-        H4sIADHJumIC/51Qyw6CMBD8FdOzMeVRYrwR4eYBotEY46GBRogIhLY+Qvh3d7E1XjzopbOd7exO
-        pydZo2tFFhPmOu50QqTiSku4kyhehfs4IkCqMjuLDtlDT3L+gKInGZwUmoXBymBj8GrxhsWAL7hU
-        qW6UGPUJ0jPPg8Ya9wO2RiINoi8nYIFPPZdSOnd9FjDm2Fmbjufi7aXWVQWNEr2TL8MQ79bOpaxH
-        MbdOf/9R24lr9Hcer1jR73YTprsx6QbilcuC1ydhfX9QiejsGt3mXIl8nHUcnmMpxtHIAQAA
-    headers:
-      Connection:
-      - keep-alive
-      Content-Encoding:
-      - gzip
-      Content-Length:
-      - '422'
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 05 May 2022 04:53:40 GMT
-      Server:
-      - nginx/1.19.2
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      X-Request-Id:
-      - d0c00cc6c90f9e841fe720385fec2bcf
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
     uri: https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1980-01-01/2022-05-05?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
   response:
     body:
@@ -534,4 +492,38 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.polygon.io/v3/reference/tickers?exchange=XNAS&active=true&sort=ticker&order=asc&limit=1000&apiKey=fake_key
+  response:
+    body:
+      string: '{"results":[{"ticker":"AAPL"}],"status":"OK"}'
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Aug 2022 08:39:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 88b819d2a9999304bd4c3c80153d52de
+    status:
+      code: 401
+      message: Unauthorized
 version: 1
