@@ -170,7 +170,11 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                 while page == 0 or next_url:
                     page += 1
                     if next_url:
-                        res = requests.get(url=next_url)
+                        res = requests.get(url=next_url,
+                                           params={
+                                               "apiKey":
+                                               self.config['api_key'],
+                                           })
                         next_url = None
                     else:
                         res = requests.get(url=self.url_base + url,
