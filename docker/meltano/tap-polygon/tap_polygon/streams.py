@@ -160,32 +160,52 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
 
             return
 
-        # 3. load all
-        url = "/v2/snapshot/locale/us/markets/stocks/tickers"
-        res = requests.get(url=self.url_base + url,
-                           params={
-                               "apiKey": self.config['api_key'],
-                           })
-        self._write_request_duration_log(url, res, None, None)
-        data = res.json()
-
-        if not data or "status" not in data or data['status'] not in [
-                "OK", "DELAYED"
-        ]:
-            self.logger.error('Error while requesting %s' % (url))
-        else:
+        exchanges = self.config.get("stock_exchanges")
+        if exchanges:
             symbols = []
-            for record in res.json().get('tickers', []):
-                symbol = re.sub(r'^X:', '', record['ticker'])
-                if not symbol or not self.is_within_split(symbol):
-                    continue
-                symbols.append(symbol)
+            url = "/v3/reference/tickers"
+            for exchange in exchanges:
+                next_url = None
+                page = 0
+                while page == 0 or next_url:
+                    page += 1
+                    if next_url:
+                        res = requests.get(url=next_url)
+                        next_url = None
+                    else:
+                        res = requests.get(url=self.url_base + url,
+                                           params={
+                                               "exchange": exchange,
+                                               "active": "true",
+                                               "sort": "ticker",
+                                               "order": "asc",
+                                               "limit": 1000,
+                                               "apiKey":
+                                               self.config['api_key'],
+                                           })
+                    self._write_request_duration_log(url, res, None, None)
+                    data = res.json()
+
+                    if not data or "status" not in data or data[
+                            'status'] not in ["OK", "DELAYED"]:
+                        raise Exception('Error while requesting %s' % (url))
+
+                    for record in data.get('results', []):
+                        symbol = record['ticker']
+                        if not symbol or not self.is_within_split(symbol):
+                            continue
+                        symbols.append(symbol)
+
+                    next_url = data.get('next_url')
+                    if not next_url:
+                        break
 
             symbols = list(sorted(symbols))
             self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
             for symbol in symbols:
                 yield self.get_partition("symbol", symbol, default_context,
                                          state_symbols, False)
+            return
 
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):

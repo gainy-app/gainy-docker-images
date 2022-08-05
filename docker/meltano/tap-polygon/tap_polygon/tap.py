@@ -22,6 +22,11 @@ class Tappolygon(Tap):
 
     config_jsonschema = th.PropertiesList(
         th.Property("api_key", th.StringType, required=True),
+        th.Property(
+            "exchanges",
+            th.ArrayType(th.StringType),
+            required=False,
+            description="List of exchanges to load ticker symbols from"),
         th.Property("option_contract_names",
                     th.StringType,
                     required=False,
