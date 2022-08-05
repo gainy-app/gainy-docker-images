@@ -149,9 +149,7 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
         # 2. load from config
         stock_symbols = self.config.get("stock_symbols")
         if stock_symbols:
-            stock_symbols = stock_symbols.split(",")
             for symbol in stock_symbols:
-                symbol = symbol.strip()
                 if not symbol or not self.is_within_split(symbol):
                     continue
 
@@ -161,55 +159,52 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
             return
 
         exchanges = self.config.get("stock_exchanges")
-        if exchanges:
-            symbols = []
-            url = "/v3/reference/tickers"
-            for exchange in exchanges:
-                next_url = None
-                page = 0
-                while page == 0 or next_url:
-                    page += 1
-                    if next_url:
-                        res = requests.get(url=next_url,
-                                           params={
-                                               "apiKey":
-                                               self.config['api_key'],
-                                           })
-                        next_url = None
-                    else:
-                        res = requests.get(url=self.url_base + url,
-                                           params={
-                                               "exchange": exchange,
-                                               "active": "true",
-                                               "sort": "ticker",
-                                               "order": "asc",
-                                               "limit": 1000,
-                                               "apiKey":
-                                               self.config['api_key'],
-                                           })
-                    self._write_request_duration_log(url, res, None, None)
-                    data = res.json()
+        symbols = []
+        url = "/v3/reference/tickers"
+        for exchange in exchanges:
+            next_url = None
+            page = 0
+            while page == 0 or next_url:
+                page += 1
+                if next_url:
+                    res = requests.get(url=next_url,
+                                       params={
+                                           "apiKey": self.config['api_key'],
+                                       })
+                    next_url = None
+                else:
+                    res = requests.get(url=self.url_base + url,
+                                       params={
+                                           "exchange": exchange,
+                                           "active": "true",
+                                           "sort": "ticker",
+                                           "order": "asc",
+                                           "limit": 1000,
+                                           "apiKey": self.config['api_key'],
+                                       })
+                self._write_request_duration_log(url, res, None, None)
+                data = res.json()
 
-                    if not data or "status" not in data or data[
-                            'status'] not in ["OK", "DELAYED"]:
-                        raise Exception('Error while requesting %s' % (url))
+                if not data or "status" not in data or data['status'] not in [
+                        "OK", "DELAYED"
+                ]:
+                    raise Exception('Error while requesting %s' % (url))
 
-                    for record in data.get('results', []):
-                        symbol = record['ticker']
-                        if not symbol or not self.is_within_split(symbol):
-                            continue
-                        symbols.append(symbol)
+                for record in data.get('results', []):
+                    symbol = record['ticker']
+                    if not symbol or not self.is_within_split(symbol):
+                        continue
+                    symbols.append(symbol)
 
-                    next_url = data.get('next_url')
-                    if not next_url:
-                        break
+                next_url = data.get('next_url')
+                if not next_url:
+                    break
 
-            symbols = list(sorted(symbols))
-            self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
-            for symbol in symbols:
-                yield self.get_partition("symbol", symbol, default_context,
-                                         state_symbols, False)
-            return
+        symbols = list(sorted(symbols))
+        self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
+        for symbol in symbols:
+            yield self.get_partition("symbol", symbol, default_context,
+                                     state_symbols, False)
 
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
@@ -229,10 +224,8 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
         state_symbols = self.get_state_symbols("contract_name")
 
         # 2. load from config
-        option_contract_names = self.config.get("option_contract_names",
-                                                "").split(",")
+        option_contract_names = self.config.get("option_contract_names", [])
         for contract_name in option_contract_names:
-            contract_name = contract_name.strip()
             if not contract_name or not self.is_within_split(contract_name):
                 continue
 
@@ -259,9 +252,7 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
         # 2. load from config
         crypto_symbols = self.config.get("crypto_symbols")
         if crypto_symbols:
-            crypto_symbols = crypto_symbols.split(",")
             for symbol in crypto_symbols:
-                symbol = symbol.strip()
                 if not symbol or not self.is_within_split(symbol):
                     continue
 

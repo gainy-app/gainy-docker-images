@@ -14,9 +14,9 @@ RECORD_MODE = RecordMode.NONE
 # RECORD_MODE = RecordMode.NEW_EPISODES
 CONFIG = {
     "api_key": "fake_key",
-    "option_contract_names": "TSLA240621C01090000,TSLA240621C00250000",
-    "crypto_symbols": "BTCUSD",
-    "stock_symbols": "AAPL",
+    "option_contract_names": ["TSLA240621C01090000", "TSLA240621C00250000"],
+    "crypto_symbols": ["BTCUSD"],
+    "stock_symbols": ["AAPL"],
 }
 EXCHANGES_CONFIG = {
     "api_key": "fake_key",
