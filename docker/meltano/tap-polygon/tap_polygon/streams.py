@@ -1,5 +1,5 @@
 """Stream type classes for tap-polygon."""
-from abc import ABC
+from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from functools import cached_property, reduce
 from pathlib import Path
@@ -18,7 +18,7 @@ from tap_polygon.client import PolygonStream
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
-class AbstractPolygonStream(PolygonStream):
+class AbstractPolygonStream(PolygonStream, ABC):
     selected_by_default = True
     STATE_MSG_FREQUENCY = 100
 
@@ -80,7 +80,7 @@ class StockSplitsUpcoming(AbstractPolygonStream):
             pass
 
 
-class AbstractHistoricalPricesStream(AbstractPolygonStream):
+class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
     selected_by_default = True
     STATE_MSG_FREQUENCY = 100
 
@@ -94,12 +94,32 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
 
         return params
 
-    def get_symbols_state(self, field_name) -> Dict[str, str]:
+    def request_records(self, context: Optional[dict]) -> Iterable[dict]:
+        for record in super().request_records(context):
+            yield from record.get('results', [])
+
+    @abstractmethod
+    def get_symbols(self) -> Iterable[str]:
+        pass
+
+    @cached_property
+    def partitions(self) -> Iterable[Dict[str, Any]]:
+        symbols_state = self.get_symbols_state()
+        symbols = self.get_symbols()
+        symbols = list(sorted(symbols))
+        self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
+        for symbol in symbols:
+            if symbol in symbols_state:
+                yield symbols_state[symbol]['context']
+            else:
+                yield {"symbol": symbol}
+
+    def get_symbols_state(self) -> Dict[str, str]:
         state_partitions = super().partitions or []
         symbols_state = {}
         for context in state_partitions:
             state = self.get_context_state(context)
-            symbol = context[field_name]
+            symbol = context['symbol']
             symbols_state[symbol] = state
         return symbols_state
 
@@ -144,7 +164,7 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
 
             self.logger.info('Symbol context %s %s' %
                              (symbol, json.dumps(context)))
-            records = next(super().get_records(context)).get('results', [])
+            records = super().get_records(context)
 
             if is_incremental and 'first_record' in state:
                 # if incremental update - update the date_to in the first_record
@@ -171,18 +191,6 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
     path = "/v2/aggs/ticker/{symbol}/range/1/day/{date_from}/{date_to}"
     primary_keys = ["symbol", "t"]
     schema_filepath = SCHEMAS_DIR / "stocks_historical_prices.json"
-
-    @cached_property
-    def partitions(self) -> Iterable[Dict[str, Any]]:
-        symbols_state = self.get_symbols_state("symbol")
-        symbols = self.get_symbols()
-        symbols = list(sorted(symbols))
-        self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
-        for symbol in symbols:
-            if symbol in symbols_state:
-                yield symbols_state[symbol]['context']
-            else:
-                yield {"symbol": symbol}
 
     def get_symbols(self) -> Iterable[str]:
         stock_symbols = self.config.get("stock_symbols")
@@ -242,24 +250,11 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_options_historical_prices"
-    path = "/v2/aggs/ticker/O:{contract_name}/range/1/day/{date_from}/{date_to}"
+    path = "/v2/aggs/ticker/O:{symbol}/range/1/day/{date_from}/{date_to}"
     primary_keys = ["contract_name", "t"]
     schema_filepath = SCHEMAS_DIR / "options_historical_prices.json"
 
-    @cached_property
-    def partitions(self) -> Iterable[Dict[str, Any]]:
-        contract_names_state = self.get_symbols_state("contract_name")
-        contract_names = self.get_contract_names()
-        contract_names = list(sorted(contract_names))
-        self.logger.info('Loading contract_names %s' %
-                         (json.dumps(contract_names)))
-        for contract_name in contract_names:
-            if contract_name in contract_names_state:
-                yield contract_names_state[contract_name]['context']
-            else:
-                yield {"contract_name": contract_name}
-
-    def get_contract_names(self) -> Iterable[str]:
+    def get_symbols(self) -> Iterable[str]:
         option_contract_names = self.config.get("option_contract_names", [])
         for contract_name in option_contract_names:
             if not contract_name or not self.is_within_split(contract_name):
@@ -267,24 +262,16 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
 
             yield contract_name
 
+    def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
+        row['contract_name'] = context["symbol"]
+        return super().post_process(row, context)
+
 
 class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_crypto_historical_prices"
     path = "/v2/aggs/ticker/X:{symbol}/range/1/day/{date_from}/{date_to}"
     primary_keys = ["symbol", "t"]
     schema_filepath = SCHEMAS_DIR / "crypto_historical_prices.json"
-
-    @cached_property
-    def partitions(self) -> Iterable[Dict[str, Any]]:
-        symbols_state = self.get_symbols_state("symbol")
-        symbols = self.get_symbols()
-        symbols = list(sorted(symbols))
-        self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
-        for symbol in symbols:
-            if symbol in symbols_state:
-                yield symbols_state[symbol]['context']
-            else:
-                yield {"symbol": symbol}
 
     def get_symbols(self) -> Iterable[str]:
         crypto_symbols = self.config.get("crypto_symbols")

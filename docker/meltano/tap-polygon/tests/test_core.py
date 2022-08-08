@@ -30,7 +30,7 @@ STATE = {
         "polygon_options_historical_prices": {
             "partitions": [{
                 "context": {
-                    "contract_name": "TSLA240621C00250000",
+                    "symbol": "TSLA240621C00250000",
                     "date_from": "1980-01-01",
                     "date_to": "2022-05-05"
                 }
