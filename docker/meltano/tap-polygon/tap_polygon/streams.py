@@ -94,16 +94,6 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
 
         return params
 
-    def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
-        try:
-            for i in super().get_records(context):
-                yield from i.get('results', [])
-        except Exception as e:
-            symbol = context.get("contract_name") or context.get("symbol")
-            self.logger.error('Error while requesting %s for contract %s: %s' %
-                              (self.name, symbol, str(e)))
-            pass
-
     def get_state_symbols(self, field_name) -> Dict[str, str]:
         state_partitions = super().partitions or []
         state_symbols = {}
@@ -129,6 +119,61 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
 
         return partition
 
+    def get_symbols_state(self, field_name) -> Dict[str, str]:
+        state_partitions = super().partitions or []
+        symbols_state = {}
+        for context in state_partitions:
+            state = self.get_context_state(context)
+            symbol = context[field_name]
+            symbols_state[symbol] = state
+        return symbols_state
+
+
+    def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        try:
+            state = self.get_context_state(context)
+
+            is_incremental = False
+            symbol = context.get("contract_name") or context.get("symbol")
+            if 'first_record' in state:
+                first_record_context = {**context, **{
+                    "date_from": state['first_record']['t'],
+                    "date_to": state['first_record']['t'],
+                }}
+                res = requests.get(url=self.get_url(first_record_context), params=self.get_url_params(first_record_context, None))
+                data = res.json()
+                if data and 'results' in data and data['results']:
+                    first_record = data['results'][0]
+                    if first_record['t'] == state['first_record']['t'] and abs(first_record['c'] - state['first_record']['c']) < 1e-6:
+                        context['date_from'] = state['first_record']['date_to']
+                        is_incremental = True
+
+            if 'date_from' not in context:
+                context['date_from'] = '1980-01-01'
+            if 'date_to' not in context:
+                context['date_to'] = datetime.now().strftime('%Y-%m-%d')
+
+            self.logger.info('Symbol context %s %s' % (symbol, json.dumps(context)))
+            records = next(super().get_records(context)).get('results', [])
+
+            if is_incremental and 'first_record' in state:
+                # if incremental update - update the date_to in the first_record
+                state['first_record']['date_to'] = context['date_to']
+            else:
+                # if full update - extract first record, otherwise it's preserved
+                for record in records:
+                    yield record
+                    state['first_record'] = record.copy()
+                    break
+
+            yield from records
+
+            del context['date_from'], context['date_to']
+
+        except Exception as e:
+            symbol = context.get("contract_name") or context.get("symbol")
+            self.logger.error('Error while requesting %s for contract %s: %s' %
+                              (self.name, symbol, str(e)))
 
 class StocksHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_stocks_historical_prices"
@@ -137,28 +182,31 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
     schema_filepath = SCHEMAS_DIR / "stocks_historical_prices.json"
 
     @cached_property
-    def partitions(self) -> List[Dict[str, Any]]:
-        default_context = {
-            'date_from': '1980-01-01',
-            'date_to': datetime.now().strftime('%Y-%m-%d')
-        }
+    def partitions(self) -> Iterable[Dict[str, Any]]:
+        symbols_state = self.get_symbols_state("symbol")
+        symbols = self.get_symbols()
+        symbols = list(sorted(symbols))
+        self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
+        for symbol in symbols:
+            if symbol in symbols_state:
+                yield symbols_state[symbol]['context']
+            else:
+                yield {"symbol": symbol}
 
-        # 1. load from state
-        state_symbols = self.get_state_symbols("symbol")
-
-        # 2. load from config
+    def get_symbols(self) -> Iterable[str]:
         stock_symbols = self.config.get("stock_symbols")
         if stock_symbols:
             for symbol in stock_symbols:
                 if not symbol or not self.is_within_split(symbol):
                     continue
-
-                yield self.get_partition("symbol", symbol, default_context,
-                                         state_symbols, False)
+                yield symbol
 
             return
 
         exchanges = self.config.get("stock_exchanges")
+        if not exchanges:
+            return
+
         symbols = []
         url = "/v3/reference/tickers"
         for exchange in exchanges:
@@ -194,17 +242,11 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                     symbol = record['ticker']
                     if not symbol or not self.is_within_split(symbol):
                         continue
-                    symbols.append(symbol)
+                    yield symbol
 
                 next_url = data.get('next_url')
                 if not next_url:
                     break
-
-        symbols = list(sorted(symbols))
-        self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
-        for symbol in symbols:
-            yield self.get_partition("symbol", symbol, default_context,
-                                     state_symbols, False)
 
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
@@ -214,23 +256,24 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
     schema_filepath = SCHEMAS_DIR / "options_historical_prices.json"
 
     @cached_property
-    def partitions(self) -> List[Dict[str, Any]]:
-        default_context = {
-            'date_from': '1980-01-01',
-            'date_to': datetime.now().strftime('%Y-%m-%d')
-        }
+    def partitions(self) -> Iterable[Dict[str, Any]]:
+        contract_names_state = self.get_symbols_state("contract_name")
+        contract_names = self.get_contract_names()
+        contract_names = list(sorted(contract_names))
+        self.logger.info('Loading contract_names %s' % (json.dumps(contract_names)))
+        for contract_name in contract_names:
+            if contract_name in contract_names_state:
+                yield contract_names_state[contract_name]['context']
+            else:
+                yield {"contract_name": contract_name}
 
-        # 1. load from state
-        state_symbols = self.get_state_symbols("contract_name")
-
-        # 2. load from config
+    def get_contract_names(self) -> Iterable[str]:
         option_contract_names = self.config.get("option_contract_names", [])
         for contract_name in option_contract_names:
             if not contract_name or not self.is_within_split(contract_name):
                 continue
 
-            yield self.get_partition("contract_name", contract_name,
-                                     default_context, state_symbols, False)
+            yield contract_name
 
 
 class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
@@ -240,24 +283,25 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
     schema_filepath = SCHEMAS_DIR / "crypto_historical_prices.json"
 
     @cached_property
-    def partitions(self) -> List[Dict[str, Any]]:
-        default_context = {
-            'date_from': '2009-01-01',
-            'date_to': datetime.now().strftime('%Y-%m-%d')
-        }
+    def partitions(self) -> Iterable[Dict[str, Any]]:
+        symbols_state = self.get_symbols_state("symbol")
+        symbols = self.get_symbols()
+        symbols = list(sorted(symbols))
+        self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
+        for symbol in symbols:
+            if symbol in symbols_state:
+                yield symbols_state[symbol]['context']
+            else:
+                yield {"symbol": symbol}
 
-        # 1. load from state
-        state_symbols = self.get_state_symbols("symbol")
-
-        # 2. load from config
+    def get_symbols(self) -> Iterable[str]:
         crypto_symbols = self.config.get("crypto_symbols")
         if crypto_symbols:
             for symbol in crypto_symbols:
                 if not symbol or not self.is_within_split(symbol):
                     continue
 
-                yield self.get_partition("symbol", symbol, default_context,
-                                         state_symbols)
+                yield symbol
             return
 
         # 3. load all
@@ -278,5 +322,4 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
                 if not symbol or not self.is_within_split(symbol):
                     continue
 
-                yield self.get_partition("symbol", symbol, default_context,
-                                         state_symbols)
+                yield symbol
