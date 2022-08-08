@@ -94,31 +94,6 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
 
         return params
 
-    def get_state_symbols(self, field_name) -> Dict[str, str]:
-        state_partitions = super().partitions or []
-        state_symbols = {}
-        for context in state_partitions:
-            symbol = context[field_name]
-            if symbol in state_symbols:
-                state_symbols[symbol] = min(context["date_to"],
-                                            state_symbols[symbol])
-            else:
-                state_symbols[symbol] = context["date_to"]
-        return state_symbols
-
-    def get_partition(self,
-                      field_name: str,
-                      symbol: str,
-                      default_context: dict,
-                      state_symbols: Dict[str, str],
-                      partial_update: bool = True):
-        partition = {field_name: symbol, **default_context}
-
-        if partial_update and symbol in state_symbols:
-            partition["date_from"] = state_symbols[symbol]
-
-        return partition
-
     def get_symbols_state(self, field_name) -> Dict[str, str]:
         state_partitions = super().partitions or []
         symbols_state = {}
@@ -128,6 +103,17 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
             symbols_state[symbol] = state
         return symbols_state
 
+    def fetch(self, url, params):
+        res = requests.get(url=url, params=params)
+        self._write_request_duration_log(url, res, None, None)
+        return res.json()
+
+    def load_first_record(self, context) -> Dict[str, Any]:
+        url = self.get_url(context)
+        params = self.get_url_params(context, None)
+        data = self.fetch(url, params)
+        if data and 'results' in data and data['results']:
+            return data['results'][0]
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
         try:
@@ -136,24 +122,28 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
             is_incremental = False
             symbol = context.get("contract_name") or context.get("symbol")
             if 'first_record' in state:
-                first_record_context = {**context, **{
-                    "date_from": state['first_record']['t'],
-                    "date_to": state['first_record']['t'],
-                }}
-                res = requests.get(url=self.get_url(first_record_context), params=self.get_url_params(first_record_context, None))
-                data = res.json()
-                if data and 'results' in data and data['results']:
-                    first_record = data['results'][0]
-                    if first_record['t'] == state['first_record']['t'] and abs(first_record['c'] - state['first_record']['c']) < 1e-6:
-                        context['date_from'] = state['first_record']['date_to']
-                        is_incremental = True
+                first_record_context = {
+                    **context,
+                    **{
+                        "date_from": state['first_record']['t'],
+                        "date_to": state['first_record']['t'],
+                    }
+                }
+                first_record = self.request_decorator(
+                    self.load_first_record)(first_record_context)
+                if first_record and first_record['t'] == state['first_record'][
+                        't'] and abs(first_record['c'] -
+                                     state['first_record']['c']) < 1e-6:
+                    context['date_from'] = state['first_record']['date_to']
+                    is_incremental = True
 
             if 'date_from' not in context:
                 context['date_from'] = '1980-01-01'
             if 'date_to' not in context:
                 context['date_to'] = datetime.now().strftime('%Y-%m-%d')
 
-            self.logger.info('Symbol context %s %s' % (symbol, json.dumps(context)))
+            self.logger.info('Symbol context %s %s' %
+                             (symbol, json.dumps(context)))
             records = next(super().get_records(context)).get('results', [])
 
             if is_incremental and 'first_record' in state:
@@ -174,6 +164,7 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream):
             symbol = context.get("contract_name") or context.get("symbol")
             self.logger.error('Error while requesting %s for contract %s: %s' %
                               (self.name, symbol, str(e)))
+
 
 class StocksHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_stocks_historical_prices"
@@ -215,23 +206,23 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
             while page == 0 or next_url:
                 page += 1
                 if next_url:
-                    res = requests.get(url=next_url,
-                                       params={
-                                           "apiKey": self.config['api_key'],
-                                       })
+                    url = next_url
+                    params = {
+                        "apiKey": self.config['api_key'],
+                    }
                     next_url = None
                 else:
-                    res = requests.get(url=self.url_base + url,
-                                       params={
-                                           "exchange": exchange,
-                                           "active": "true",
-                                           "sort": "ticker",
-                                           "order": "asc",
-                                           "limit": 1000,
-                                           "apiKey": self.config['api_key'],
-                                       })
-                self._write_request_duration_log(url, res, None, None)
-                data = res.json()
+                    url = self.url_base + url
+                    params = {
+                        "exchange": exchange,
+                        "active": "true",
+                        "sort": "ticker",
+                        "order": "asc",
+                        "limit": 1000,
+                        "apiKey": self.config['api_key'],
+                    }
+
+                data = self.request_decorator(self.fetch)(url, params)
 
                 if not data or "status" not in data or data['status'] not in [
                         "OK", "DELAYED"
@@ -260,7 +251,8 @@ class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
         contract_names_state = self.get_symbols_state("contract_name")
         contract_names = self.get_contract_names()
         contract_names = list(sorted(contract_names))
-        self.logger.info('Loading contract_names %s' % (json.dumps(contract_names)))
+        self.logger.info('Loading contract_names %s' %
+                         (json.dumps(contract_names)))
         for contract_name in contract_names:
             if contract_name in contract_names_state:
                 yield contract_names_state[contract_name]['context']
@@ -305,19 +297,17 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
             return
 
         # 3. load all
-        url = "/v2/snapshot/locale/global/markets/crypto/tickers"
-        res = requests.get(url=self.url_base + url,
-                           params={
-                               "apiKey": self.config['api_key'],
-                           })
-        self._write_request_duration_log(url, res, None, None)
-        data = res.json()
+        url = self.url_base + "/v2/snapshot/locale/global/markets/crypto/tickers"
+        params = {
+            "apiKey": self.config['api_key'],
+        }
+        data = self.request_decorator(self.fetch)(url, params)
 
         if not data or "status" not in data or data['status'] != "OK":
             self.logger.error('Error while requesting %s: %s' %
                               (url, json.dumps(data)))
         else:
-            for record in res.json().get('tickers', []):
+            for record in data.get('tickers', []):
                 symbol = re.sub(r'^X:', '', record['ticker'])
                 if not symbol or not self.is_within_split(symbol):
                     continue
