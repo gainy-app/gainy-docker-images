@@ -207,7 +207,6 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
             return
 
         symbols = []
-        url = "/v3/reference/tickers"
         for exchange in exchanges:
             next_url = None
             page = 0
@@ -220,7 +219,7 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                     }
                     next_url = None
                 else:
-                    url = self.url_base + url
+                    url = self.url_base + "/v3/reference/tickers"
                     params = {
                         "exchange": exchange,
                         "active": "true",
