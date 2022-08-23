@@ -45,7 +45,7 @@ EXCHANGES_STATE = {
 SYMBOLS_CONFIG = {
     "api_token": "fake_token",
     "symbols":
-    ["AAPL", "GOOGL", "TSLA", "IBM", "F", "000906.INDX", "$ANRX.CC"]
+    ["AAPL", "GOOGL", "TSLA", "IBM", "F", "000906.INDX", "$ANRX-USD.CC"]
 }
 
 
@@ -119,9 +119,7 @@ def test_tap_prices_with_state():
     nyse_records = list(prices_stream.get_records(nyse_partition))
     nyse_tickers = set(map(lambda r: r["Code"], nyse_records))
     nyse_avg_days = len(nyse_records) / len(nyse_tickers)
-    assert nyse_avg_days <= 4
-    # JDD is loaded because it has recent split
-    assert 'JDD' in nyse_tickers
+    assert nyse_avg_days <= 6
 
     # Check that historical prices for NASDAQ are loaded for longer period
     nasdaq_records = list(prices_stream.get_records(nasdaq_partition))
@@ -161,18 +159,12 @@ def test_tap_dividends_with_state():
 
     apple_partition = div_stream_partitions[0]
     assert "AAPL" == apple_partition["Code"]
-    ford_partition = div_stream_partitions[1]
-    assert "F" == ford_partition["Code"]
 
     div_stream._write_starting_replication_value(apple_partition)
-    div_stream._write_starting_replication_value(ford_partition)
 
     apple_replication_key_value = div_stream.get_starting_replication_key_value(
         apple_partition)
     assert "2021-01-01" == apple_replication_key_value
-    ford_replication_key_value = div_stream.get_starting_replication_key_value(
-        ford_partition)
-    assert ford_replication_key_value is None
 
 
 @freeze_time("2021-12-01")
@@ -204,10 +196,7 @@ def test_tap_splits():
 def test_tap_symbols_config():
     tap = Tapeodhistoricaldata(config=SYMBOLS_CONFIG)
 
-    assert 1 == len(tap.streams["eod_historical_prices"].partitions)
-    assert "US" == tap.streams["eod_historical_prices"].partitions[0][
-        "exchange"]
-
+    assert 7 == len(tap.streams["eod_historical_prices"].partitions)
     assert 7 == len(tap.streams["eod_fundamentals"].partitions)
 
     tap.sync_all()
@@ -224,7 +213,8 @@ def test_tap_prices_with_symbols_config():
     for context in prices_stream.partitions:
         records = prices_stream.get_records(context)
         for record in records:
-            assert record["Code"] in SYMBOLS_CONFIG['symbols']
+            assert record["Code"].replace(
+                '.CC', '-USD.CC') in SYMBOLS_CONFIG['symbols']
 
 
 @freeze_time("2021-12-01")

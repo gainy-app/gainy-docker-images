@@ -159,19 +159,38 @@ class AbstractExchangeStream(eodhistoricaldataStream, ABC):
 
     @cached_property
     def partitions(self) -> List[Dict[str, Any]]:
-        state_partitions = super().partitions
+        state_partitions = super().partitions or []
+        exchange_states = {}
+        for context in state_partitions:
+            state = self.get_context_state(context)
+            if 'exchange' not in context:
+                continue
+            exchange = context['exchange']
+            exchange_states[exchange] = state
+
+        symbol_states = {}
+        for context in state_partitions:
+            state = self.get_context_state(context)
+            if 'symbol' not in context:
+                continue
+            symbol = context['symbol']
+            symbol_states[symbol] = state
 
         partitions = []
-        exchanges = self.config.get("exchanges", []) or ["US"]
+        exchanges = self.config.get("exchanges", [])
         for exchange in exchanges:
-            exchange_partitions = [
-                p for p in state_partitions or []
-                if p.get("exchange", None) == exchange
-            ]
-            if exchange_partitions:
-                partitions.append(exchange_partitions[0])
+            if exchange in exchange_states:
+                partitions.append(exchange_states[exchange]['context'])
             else:
                 partitions.append({"exchange": exchange})
+
+        if not exchanges:
+            symbols = self.config.get("symbols", [])
+            for symbol in symbols:
+                if symbol in symbol_states:
+                    partitions.append(symbol_states[symbol]['context'])
+                else:
+                    partitions.append({"symbol": symbol})
 
         return partitions
 
@@ -211,6 +230,10 @@ class EODPrices(AbstractExchangeStream):
 
     def get_records_all(self, symbols: Iterable[str],
                         context: Optional[dict]) -> Iterable[Dict[str, Any]]:
+        state = self.get_context_state(context)
+        first_records = state.get('first_records', {})
+        last_record_dates = state.get('last_record_dates', {})
+
         context["api"] = "eod"
 
         for symbol in symbols:
@@ -218,9 +241,37 @@ class EODPrices(AbstractExchangeStream):
                 continue
             try:
                 context["object"] = symbol
-                yield from super().get_records(context)
+
+                records = super().get_records(context)
+                first_records_match = None
+
+                last_record_date = last_record_dates.get(symbol)
+
+                for record in records:
+                    if first_records_match is None:
+                        first_record = first_records.get(symbol)
+                        first_records_match = first_record and first_record[
+                            "date"] == record['date'] and abs(
+                                first_record["adjusted_close"] -
+                                record['adjusted_close']) < 1e-3
+
+                        first_records[symbol] = context["first_record"] = {
+                            "date": record['date'],
+                            "adjusted_close": record['adjusted_close'],
+                        }
+
+                    if first_records_match and last_record_date and record[
+                            'date'] < last_record_date:
+                        continue
+
+                    last_record_dates[symbol] = record['date']
+                    yield record
+
             except requests.exceptions.RequestException as e:
                 self.logger.exception(e)
+
+        state['first_records'] = first_records
+        state['last_record_dates'] = last_record_dates
 
     def get_records_partial(
             self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
@@ -235,12 +286,7 @@ class EODPrices(AbstractExchangeStream):
         del context["date"]
 
     def get_records(self, context: Optional[dict]) -> Iterable[Dict[str, Any]]:
-        if not self.is_initial_load(context) and self.split_id() > 0:
-            self.logger.info(
-                f"Skipping bulk load for split: `{self.split_id()}`")
-            return []
-
-        if self.is_initial_load(context):
+        if 'exchange' in context:
             self.logger.info(
                 f"Loading prices using historical EOD API for exchange: {context['exchange']}"
             )
@@ -248,34 +294,16 @@ class EODPrices(AbstractExchangeStream):
                 record['Code']
                 for record in self.load_symbols(exchange=context["exchange"])
             ]
-            yield from self.get_records_all(symbols, context)
+            print(symbols, context["exchange"])
         else:
             self.logger.info(
-                f"Loading prices using bulk daily EOD API for exchange: {context['exchange']}"
+                f"Loading prices using historical EOD API for symbol: {context['symbol']}"
             )
-            yield from self.get_records_partial(context)
+            symbols = [context['symbol']]
 
-            # load all prices for recently split symbols
-            from_date = datetime.strptime(
-                self.get_starting_replication_key_value(context), "%Y-%m-%d")
-            dates = self.loading_dates(from_date - timedelta(days=7))
-            full_refresh_symbols = self.load_split_symbols(
-                exchange=context["exchange"], dates=dates)
-            self.logger.info(
-                f"Loading all prices for recently split symbols: {json.dumps(full_refresh_symbols)}"
-            )
-            yield from self.get_records_all(full_refresh_symbols, context)
+        yield from self.get_records_all(symbols, context)
 
-            # load all prices for full_refresh_symbols
-            full_refresh_symbols = self.config.get("full_refresh_symbols")
-            if full_refresh_symbols:
-                full_refresh_symbols = full_refresh_symbols.split(",")
-                self.logger.info(
-                    f"Loading all prices (config): {json.dumps(full_refresh_symbols)}"
-                )
-                yield from self.get_records_all(full_refresh_symbols, context)
-
-        del context["api"], context["object"]
+        del context["api"], context["object"], context["first_record"]
 
     def loading_dates(self, from_date) -> List[str]:
         to_date = datetime.now()
@@ -308,6 +336,10 @@ class EODPrices(AbstractExchangeStream):
             symbol += '.INDX'
 
         row['Code'] = symbol
+
+        state = self.get_context_state(context)
+        if 'first_record' in context:
+            row['first_date'] = context['first_record']['date']
 
         self.logger.debug(f"Loading row {json.dumps(row)}")
         return row

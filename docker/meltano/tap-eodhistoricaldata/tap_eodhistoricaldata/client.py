@@ -64,6 +64,9 @@ class eodhistoricaldataStream(RESTStream):
             self.logger.info("Using symbols from the config parameter")
             symbols = map(lambda symbol: re.sub(r'\.CC$', '-USD.CC', symbol),
                           symbols)
+            symbols = map(
+                lambda symbol: re.sub(r'-USD-USD\.CC$', '-USD.CC', symbol),
+                symbols)
             records = [{
                 "Code": symbol,
                 "Type": symbols_type,

@@ -246,6 +246,13 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                 if not next_url:
                     break
 
+    def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
+        state = self.get_context_state(context)
+        if state and 'first_record' in state and 't' in state['first_record']:
+            row['first_t'] = state['first_record']['t']
+
+        return super().post_process(row, context)
+
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_options_historical_prices"
