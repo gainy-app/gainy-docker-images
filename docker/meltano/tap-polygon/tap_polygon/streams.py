@@ -164,26 +164,32 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
 
             self.logger.info('Symbol context %s %s' %
                              (symbol, json.dumps(context)))
-            records = super().get_records(context)
 
             if is_incremental and 'first_record' in state:
                 # if incremental update - update the date_to in the first_record
                 state['first_record']['date_to'] = context['date_to']
+                yield from super().get_records(context)
             else:
                 # if full update - extract first record, otherwise it's preserved
-                for record in records:
-                    yield record
-                    state['first_record'] = record.copy()
-                    break
+                first_record_saved = False
+                for record in self.request_records(context):
+                    if not first_record_saved:
+                        state['first_record'] = record.copy()
+                        state['first_record']['date_to'] = context['date_to']
+                        first_record_saved = True
 
-            yield from records
+                    transformed_record = self.post_process(record, context)
+                    if transformed_record is None:
+                        continue
+                    yield transformed_record
 
             del context['date_from'], context['date_to']
 
         except Exception as e:
             symbol = context.get("contract_name") or context.get("symbol")
-            self.logger.error('Error while requesting %s for contract %s: %s' %
-                              (self.name, symbol, str(e)))
+            self.logger.exception(
+                'Error while requesting %s for symbol %s: %s' %
+                (self.name, symbol, str(e)))
 
 
 class StocksHistoricalPrices(AbstractHistoricalPricesStream):

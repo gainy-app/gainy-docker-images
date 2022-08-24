@@ -241,16 +241,15 @@ class EODPrices(AbstractExchangeStream):
                 continue
             try:
                 context["object"] = symbol
+                context["first_record"] = None
 
-                records = super().get_records(context)
                 first_records_match = None
-
                 last_record_date = last_record_dates.get(symbol)
 
-                for record in records:
+                for record in self.request_records(context):
                     if first_records_match is None:
                         first_record = first_records.get(symbol)
-                        first_records_match = first_record and first_record[
+                        first_records_match = first_record is not None and first_record[
                             "date"] == record['date'] and abs(
                                 first_record["adjusted_close"] -
                                 record['adjusted_close']) < 1e-3
@@ -265,7 +264,11 @@ class EODPrices(AbstractExchangeStream):
                         continue
 
                     last_record_dates[symbol] = record['date']
-                    yield record
+
+                    transformed_record = self.post_process(record, context)
+                    if transformed_record is None:
+                        continue
+                    yield transformed_record
 
             except requests.exceptions.RequestException as e:
                 self.logger.exception(e)
@@ -294,7 +297,6 @@ class EODPrices(AbstractExchangeStream):
                 record['Code']
                 for record in self.load_symbols(exchange=context["exchange"])
             ]
-            print(symbols, context["exchange"])
         else:
             self.logger.info(
                 f"Loading prices using historical EOD API for symbol: {context['symbol']}"
@@ -338,7 +340,7 @@ class EODPrices(AbstractExchangeStream):
         row['Code'] = symbol
 
         state = self.get_context_state(context)
-        if 'first_record' in context:
+        if 'first_record' in context and context['first_record']:
             row['first_date'] = context['first_record']['date']
 
         self.logger.debug(f"Loading row {json.dumps(row)}")
