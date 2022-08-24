@@ -22,7 +22,7 @@ EXCHANGES_STATE = {
         "eod_historical_prices": {
             "partitions": [{
                 "context": {
-                    "exchange": "NYSE"
+                    "symbol": "AAPL"
                 },
                 "replication_key": "date",
                 "replication_key_value": "2021-11-28"
@@ -92,59 +92,29 @@ def test_tap_prices_with_state():
 
     prices_stream = tap.streams["eod_historical_prices"]
     price_stream_partitions = prices_stream.partitions
-    assert len(price_stream_partitions) == 4
 
-    nasdaq_partition = price_stream_partitions[0]
-    assert "NASDAQ" == nasdaq_partition["exchange"]
-    nyse_partition = price_stream_partitions[1]
-    assert "NYSE" == nyse_partition["exchange"]
-    indices_partition = price_stream_partitions[2]
-    assert "INDX" == indices_partition["exchange"]
-    crypto_partition = price_stream_partitions[3]
-    assert "CC" == crypto_partition["exchange"]
+    symbols = set([i['symbol'] for i in price_stream_partitions])
+    assert '$ANRX-USD.CC' in symbols
+    assert '000906.INDX' in symbols
+    assert 'AAPL' in symbols
 
-    prices_stream._write_starting_replication_value(nasdaq_partition)
-    prices_stream._write_starting_replication_value(nyse_partition)
-    prices_stream._write_starting_replication_value(indices_partition)
-    prices_stream._write_starting_replication_value(crypto_partition)
+    for partition in price_stream_partitions:
+        prices_stream._write_starting_replication_value(partition)
 
-    nasdaq_replication_key_value = prices_stream.get_starting_replication_key_value(
-        nasdaq_partition)
-    assert nasdaq_replication_key_value is None
-    nyse_replication_key_value = prices_stream.get_starting_replication_key_value(
-        nyse_partition)
-    assert "2021-11-28" == nyse_replication_key_value
+        replication_key_value = prices_stream.get_starting_replication_key_value(
+            partition)
+        if partition['symbol'] == 'AAPL':
+            assert "2021-11-28" == replication_key_value
+        else:
+            assert replication_key_value is None
 
-    # Check that historical prices for NYSE are loaded for a couple of days since previous replication
-    nyse_records = list(prices_stream.get_records(nyse_partition))
-    nyse_tickers = set(map(lambda r: r["Code"], nyse_records))
-    nyse_avg_days = len(nyse_records) / len(nyse_tickers)
-    assert nyse_avg_days <= 4
-    # JDD is loaded because it has recent split
-    assert 'JDD' in nyse_tickers
-
-    # Check that historical prices for NASDAQ are loaded for longer period
-    nasdaq_records = list(prices_stream.get_records(nasdaq_partition))
-    nasdaq_tickers = set(map(lambda r: r["Code"], nasdaq_records))
-    nasdaq_avg_days = len(nasdaq_records) / len(nasdaq_tickers)
-    assert nasdaq_avg_days > 5
-
-    # Check that historical prices for INDICES are loaded
-    indices_records = list(prices_stream.get_records(indices_partition))
-    indices_tickers = set(map(lambda r: r["Code"], indices_records))
-    indices_avg_days = len(indices_records) / len(indices_tickers)
-    assert indices_avg_days > 5
-    for symbol in indices_tickers:
-        assert re.search(r'\.INDX$', symbol) is not None
-
-    # Check that historical prices for CRYPTO are loaded
-    crypto_records = list(prices_stream.get_records(crypto_partition))
-    crypto_tickers = set(map(lambda r: r["Code"], crypto_records))
-    crypto_avg_days = len(crypto_records) / len(crypto_tickers)
-    assert crypto_avg_days > 5
-    for symbol in crypto_tickers:
-        assert re.search(r'\-USD.CC$', symbol) is None
-        assert re.search(r'\.CC$', symbol) is not None
+        # Check that historical prices for NYSE are loaded for a couple of days since previous replication
+        records = list(prices_stream.get_records(partition))
+        nyse_avg_days = len(records)
+        if partition['symbol'] == 'AAPL':
+            assert len(records) <= 6
+        else:
+            assert len(records) > 6
 
 
 @freeze_time("2021-12-01")
@@ -161,18 +131,12 @@ def test_tap_dividends_with_state():
 
     apple_partition = div_stream_partitions[0]
     assert "AAPL" == apple_partition["Code"]
-    ford_partition = div_stream_partitions[1]
-    assert "F" == ford_partition["Code"]
 
     div_stream._write_starting_replication_value(apple_partition)
-    div_stream._write_starting_replication_value(ford_partition)
 
     apple_replication_key_value = div_stream.get_starting_replication_key_value(
         apple_partition)
     assert "2021-01-01" == apple_replication_key_value
-    ford_replication_key_value = div_stream.get_starting_replication_key_value(
-        ford_partition)
-    assert ford_replication_key_value is None
 
 
 @freeze_time("2021-12-01")
@@ -204,10 +168,7 @@ def test_tap_splits():
 def test_tap_symbols_config():
     tap = Tapeodhistoricaldata(config=SYMBOLS_CONFIG)
 
-    assert 1 == len(tap.streams["eod_historical_prices"].partitions)
-    assert "US" == tap.streams["eod_historical_prices"].partitions[0][
-        "exchange"]
-
+    assert 7 == len(tap.streams["eod_historical_prices"].partitions)
     assert 7 == len(tap.streams["eod_fundamentals"].partitions)
 
     tap.sync_all()

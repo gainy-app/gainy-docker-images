@@ -9,6 +9,10 @@
       "type": ["string", "null"],
       "format": "date"
     },
+    "first_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
     "open": {
       "type": "number"
     },
