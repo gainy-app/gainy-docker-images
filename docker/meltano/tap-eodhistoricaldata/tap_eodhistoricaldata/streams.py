@@ -161,37 +161,29 @@ class AbstractExchangeStream(eodhistoricaldataStream, ABC):
     def partitions(self) -> List[Dict[str, Any]]:
         state_partitions = super().partitions or []
         exchange_states = {}
-        for context in state_partitions:
-            state = self.get_context_state(context)
-            if 'exchange' not in context:
-                continue
-            exchange = context['exchange']
-            exchange_states[exchange] = state
-
         symbol_states = {}
         for context in state_partitions:
             state = self.get_context_state(context)
-            if 'symbol' not in context:
-                continue
-            symbol = context['symbol']
-            symbol_states[symbol] = state
+            if 'exchange' in context:
+                exchange = context.get('exchange')
+                if exchange:
+                    exchange_states[exchange] = state
+
+            if 'symbol' in context:
+                symbol = context.get('symbol')
+                if symbol:
+                    symbol_states[symbol] = state
 
         partitions = []
-        exchanges = self.config.get("exchanges", [])
-        for exchange in exchanges:
-            if exchange in exchange_states:
-                partitions.append(exchange_states[exchange]['context'])
+        for partition in self.load_symbols():
+            symbol = partition['Code']
+            if symbol in symbol_states:
+                print(symbol_states[symbol]['context'])
+                partitions.append(symbol_states[symbol]['context'])
             else:
-                partitions.append({"exchange": exchange})
+                partitions.append({"symbol": symbol})
 
-        if not exchanges:
-            symbols = self.config.get("symbols", [])
-            for symbol in symbols:
-                if symbol in symbol_states:
-                    partitions.append(symbol_states[symbol]['context'])
-                else:
-                    partitions.append({"symbol": symbol})
-
+        print(partitions)
         return partitions
 
 
