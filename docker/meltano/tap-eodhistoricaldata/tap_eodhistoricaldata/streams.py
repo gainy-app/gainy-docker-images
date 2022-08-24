@@ -178,12 +178,10 @@ class AbstractExchangeStream(eodhistoricaldataStream, ABC):
         for partition in self.load_symbols():
             symbol = partition['Code']
             if symbol in symbol_states:
-                print(symbol_states[symbol]['context'])
                 partitions.append(symbol_states[symbol]['context'])
             else:
                 partitions.append({"symbol": symbol})
 
-        print(partitions)
         return partitions
 
 
