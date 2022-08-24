@@ -191,6 +191,13 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
                 'Error while requesting %s for symbol %s: %s' %
                 (self.name, symbol, str(e)))
 
+    def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
+        state = self.get_context_state(context)
+        if state and 'first_record' in state and 't' in state['first_record']:
+            row['first_t'] = state['first_record']['t']
+
+        return super().post_process(row, context)
+
 
 class StocksHistoricalPrices(AbstractHistoricalPricesStream):
     name = "polygon_stocks_historical_prices"
@@ -251,13 +258,6 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                 next_url = data.get('next_url')
                 if not next_url:
                     break
-
-    def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
-        state = self.get_context_state(context)
-        if state and 'first_record' in state and 't' in state['first_record']:
-            row['first_t'] = state['first_record']['t']
-
-        return super().post_process(row, context)
 
 
 class OptionsHistoricalPrices(AbstractHistoricalPricesStream):
