@@ -22,6 +22,7 @@ for (( ATTEMPT=0; ATTEMPT<10; ATTEMPT++ )); do
   fi
 
   if hasura migrate apply --skip-update-check; then
+    MIGRATIONS_APPLIED="true"
     break
   fi
 
@@ -29,15 +30,24 @@ for (( ATTEMPT=0; ATTEMPT<10; ATTEMPT++ )); do
   sleep 6
 done
 
+if [ "$MIGRATIONS_APPLIED" != "true" ]; then
+  exit 1
+fi
+
 echo hasura metadata apply
-for (( ATTEMPT=0; ATTEMPT<60; ATTEMPT++ )); do
+for (( ATTEMPT=0; ATTEMPT<120; ATTEMPT++ )); do
   if hasura metadata apply --skip-update-check; then
+    METADATA_APPLIED="true"
     break
   fi
 
   echo hasura metadata apply failed, sleeping
   sleep 60
 done
+
+if [ "$METADATA_APPLIED" != "true" ]; then
+  exit 1
+fi
 
 # Dirty hack around an issue with hasura not migrating rest endpoints
 # https://github.com/hasura/graphql-engine/issues/7898
