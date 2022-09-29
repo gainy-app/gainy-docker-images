@@ -3,7 +3,7 @@ FROM meltano/meltano:v2.7.1-python3.9
 ARG CODEARTIFACT_PIPY_URL
 RUN pip install -U --index-url ${CODEARTIFACT_PIPY_URL} gainy-compute
 
-RUN apt update && apt install -y postgresql-client
+RUN apt update && apt install -y postgresql-client libpq-dev
 RUN pip install pyyaml
 
 ENV LC_ALL C.UTF-8
