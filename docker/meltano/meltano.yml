@@ -36,6 +36,10 @@ plugins:
       inherit_from: tap-postgres
     - name: tap-postgres-analytics-small-batch
       inherit_from: tap-postgres-analytics
+    - name: tap-postgres-analytics-bigquery
+      inherit_from: tap-postgres
+    - name: tap-postgres-analytics-bigquery-small-batch
+      inherit_from: tap-postgres-analytics
 
     - name: tap-postgres-website
       inherit_from: tap-postgres
