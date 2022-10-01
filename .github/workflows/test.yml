@@ -39,12 +39,14 @@ jobs:
           script: |
             const output = `#### Tests: ✅ \`${{ steps.test.outcome }}\`
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
+            try {
+              github.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            } catch(e) {}
 
       - name: Tests Status
         if: steps.test.outcome == 'failure'
