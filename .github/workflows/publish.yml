@@ -67,7 +67,16 @@ jobs:
               state: 'open',
               head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
             })
-            issue_number = context.issue.number || issues.data[0].number
+            
+            if (context.issue) {
+              issue_number = context.issue.number
+            } else if (issues.data[0]) {
+              issue_number = issues.data[0].number
+            }
+            
+            if (!issue_number) {
+              return
+            }
             
             const output = `#### Published version \`${{ env.IMAGE_TAG }}\` by @${{ github.actor }}`;
             github.issues.createComment({
