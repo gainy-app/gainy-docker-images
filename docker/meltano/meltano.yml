@@ -84,7 +84,9 @@ plugins:
 
   transformers:
     - name: dbt
-      pip_url: dbt-postgres==1.2.0
+      pip_url: dbt-postgres==1.2.2
   orchestrators:
     - name: airflow
-      pip_url: psycopg2-binary==2.9.3 apache-airflow==2.3.3 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.3.3/constraints-${MELTANO__PYTHON_VERSION}.txt
+      pip_url: psycopg2-binary==2.9.3 apache-airflow==2.4.1 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.4.1/constraints-${MELTANO__PYTHON_VERSION}.txt
+environments:
+  - name: dev
