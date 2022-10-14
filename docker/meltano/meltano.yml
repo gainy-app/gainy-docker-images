@@ -22,6 +22,7 @@ plugins:
     - name: tap-csv
 
     - name: tap-postgres
+      pip_url: git+https://github.com/asmisha/pipelinewise-tap-postgres.git@refresh-streams-schema
     - name: tap-postgres-sync
       inherit_from: tap-postgres
     - name: tap-postgres-sync-fundamentals

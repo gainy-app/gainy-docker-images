@@ -69,6 +69,10 @@ jobs:
             })
             issue_number = context.issue.number || issues.data[0].number
             
+            if (!issue_number) {
+              return
+            }
+            
             const output = `#### Published version \`${{ env.IMAGE_TAG }}\` by @${{ github.actor }}`;
             github.issues.createComment({
               issue_number: issue_number,
