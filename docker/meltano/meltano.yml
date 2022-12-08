@@ -54,6 +54,10 @@ plugins:
     - name: tap-postgres-history-weekly
       inherit_from: tap-postgres-history
 
+    - name: tap-bigquery
+      variant: anelendata
+      pip_url: tap-bigquery
+
   loaders:
     - name: target-postgres
       variant: transferwise
