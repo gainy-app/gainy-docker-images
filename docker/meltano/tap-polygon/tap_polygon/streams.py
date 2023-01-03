@@ -83,8 +83,15 @@ class StockSplitsUpcoming(AbstractPolygonStream):
 class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
     selected_by_default = True
     STATE_MSG_FREQUENCY = 100
-    default_date_from = '1980-01-01'
-    default_date_to = datetime.date.today().strftime('%Y-%m-%d')
+    http_headers = {
+        'X-Polygon-Edge-ID': '0',
+        'X-Polygon-Edge-IP-Address': '0.0.0.0'
+    }
+
+    def __init__(self, tap, name=None, schema=None, path=None):
+        super().__init__(tap, name=name, schema=schema, path=path)
+        self.default_date_from = '1980-01-01'
+        self.default_date_to = datetime.date.today().strftime('%Y-%m-%d')
 
     def get_url_params(self, context: Optional[dict],
                        next_page_token: Optional[Any]) -> Dict[str, Any]:
@@ -319,10 +326,6 @@ class RealtimePrices(AbstractHistoricalPricesStream):
     path = "/v2/aggs/ticker/{symbol}/range/1/minute/{date_from}/{date_to}"
     primary_keys = ["symbol", "t"]
     schema_filepath = SCHEMAS_DIR / "realtime_prices.json"
-    http_headers = {
-        'X-Polygon-Edge-ID': '0',
-        'X-Polygon-Edge-IP-Address': '0.0.0.0'
-    }
 
     def __init__(self, tap, name=None, schema=None, path=None):
         super().__init__(tap, name=name, schema=schema, path=path)
@@ -371,3 +374,18 @@ class RealtimePrices(AbstractHistoricalPricesStream):
                     break
 
                 url = data['next_url']
+
+        option_contract_names = self.config.get("option_contract_names", [])
+        for contract_name in option_contract_names:
+            if not contract_name or not self.is_within_split(contract_name):
+                continue
+
+            yield f"O:{contract_name}"
+
+    def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
+        symbol = context['symbol']
+        symbol = re.sub(r"^X:(\w*)USD$", "\\1.CC", symbol)
+        symbol = re.sub(r"^O:(\w*)$", "\\1", symbol)
+        row['symbol'] = symbol
+
+        return super().post_process(row, context)
