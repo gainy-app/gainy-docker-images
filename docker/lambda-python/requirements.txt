@@ -1,4 +1,4 @@
-psycopg2-binary==2.9.3
+psycopg2-binary==2.9.5
 numpy==1.22.1
 datadog==0.42.0
 plaid-python==8.4.0

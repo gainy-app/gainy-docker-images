@@ -5,6 +5,7 @@ for i in /usr/lib/postgresql/*/bin; do
 done
 
 while ! pg_isready -d $HASURA_GRAPHQL_DATABASE_URL; do sleep 1; done &> /dev/null
+while [ "$(psql -d $HASURA_GRAPHQL_DATABASE_URL -c "select count(*) from deployment.public_schemas where schema_name = '$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME' and deployed_at is not null" -t --csv)" == "0" ]; do sleep 10; done
 
 python3 generate_config.py
 
@@ -14,38 +15,21 @@ export HASURA_GRAPHQL_ENDPOINT=http://localhost:$HASURA_GRAPHQL_SERVER_PORT
 LOCKFILE=/run/graphql-engine.pid
 ( nohup graphql-engine serve 2>&1 & echo $! > $LOCKFILE ) > /proc/1/fd/1 &
 
-echo hasura migrate apply
-for (( ATTEMPT=0; ATTEMPT<10; ATTEMPT++ )); do
+for (( ATTEMPT=0; ATTEMPT<2; ATTEMPT++ )); do
   if ! curl -s "$HASURA_GRAPHQL_ENDPOINT/healthz" | grep OK > /dev/null; then
     sleep 6;
-    continue;
   fi
-
-  if hasura migrate apply --skip-update-check; then
-    MIGRATIONS_APPLIED="true"
-    break
-  fi
-
-  echo hasura migrate apply failed, sleeping
-  sleep 6
 done
 
-if [ "$MIGRATIONS_APPLIED" != "true" ]; then
+echo hasura migrate apply
+if ! hasura migrate apply --skip-update-check; then
+  echo hasura migrate apply failed
   exit 1
 fi
 
 echo hasura metadata apply
-for (( ATTEMPT=0; ATTEMPT<120; ATTEMPT++ )); do
-  if hasura metadata apply --skip-update-check; then
-    METADATA_APPLIED="true"
-    break
-  fi
-
-  echo hasura metadata apply failed, sleeping
-  sleep 60
-done
-
-if [ "$METADATA_APPLIED" != "true" ]; then
+if ! hasura metadata apply --skip-update-check; then
+  echo hasura metadata apply failed
   exit 1
 fi
 

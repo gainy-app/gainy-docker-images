@@ -17,6 +17,7 @@ CONFIG = {
     "option_contract_names": ["TSLA240621C01090000", "TSLA240621C00250000"],
     "crypto_symbols": ["BTCUSD"],
     "stock_symbols": ["AAPL"],
+    "realtime_symbols": ["AAPL", "O:TSLA240621C00250000", "X:BTCUSD"],
 }
 EXCHANGES_CONFIG = {
     "api_key": "fake_key",
@@ -54,6 +55,54 @@ STATE = {
                 }
             }]
         },
+        "polygon_intraday_prices": {
+            "partitions": [{
+                "context": {
+                    "symbol": "AAPL"
+                },
+                "first_record": {
+                    "v": 1055,
+                    "vw": 144.4812,
+                    "o": 144.74,
+                    "c": 144.44,
+                    "h": 144.74,
+                    "l": 144.4,
+                    "t": 1670922000000,
+                    "n": 44,
+                    "date_to": 1672749366337
+                }
+            }, {
+                "context": {
+                    "symbol": "O:TSLA240621C00250000"
+                },
+                "first_record": {
+                    "v": 3,
+                    "vw": 30.17,
+                    "o": 30.17,
+                    "c": 30.17,
+                    "h": 30.17,
+                    "l": 30.17,
+                    "t": 1670941920000,
+                    "n": 1,
+                    "date_to": 1672749366337
+                }
+            }, {
+                "context": {
+                    "symbol": "X:BTCUSD"
+                },
+                "first_record": {
+                    "v": 20.42590421000002,
+                    "vw": 17214.2022,
+                    "o": 17212.9,
+                    "c": 17209.62,
+                    "h": 17232,
+                    "l": 17208.78,
+                    "t": 1670889600000,
+                    "n": 368,
+                    "date_to": 1672749366337
+                }
+            }]
+        }
     }
 }
 
@@ -118,6 +167,9 @@ def test_validate_schema():
         STATE["bookmarks"]["polygon_crypto_historical_prices"]["partitions"][0]
         ["context"], "crypto_historical_prices.json",
         "polygon_crypto_historical_prices")
+    _validate_schema(
+        STATE["bookmarks"]["polygon_intraday_prices"]["partitions"][0]
+        ["context"], "realtime_prices.json", "polygon_intraday_prices")
 
 
 def _validate_schema(context, schema_file, stream_name):

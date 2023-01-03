@@ -524,6 +524,176 @@ interactions:
       X-Request-Id:
       - 88b819d2a9999304bd4c3c80153d52de
     status:
-      code: 401
-      message: Unauthorized
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.polygon.io/v3/reference/tickers?market=stocks&active=true&sort=ticker&order=asc&limit=1000&apiKey=fake_key
+  response:
+    body:
+      string: '{"results":[{"ticker":"AAPL"}],"status":"OK"}'
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Aug 2022 08:39:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 88b819d2a9999304bd4c3c80153d52de
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.polygon.io/v3/reference/tickers?market=crypto&active=true&sort=ticker&order=asc&limit=1000&apiKey=fake_key
+  response:
+    body:
+      string: '{"results":[{"ticker":"X:BTCUSD"}],"status":"OK"}'
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Aug 2022 08:39:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 88b819d2a9999304bd4c3c80153d52de
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.polygon.io/v2/aggs/ticker/X:BTCUSD/range/1/minute/2022-04-14/1651708800000?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
+  response:
+    body:
+      string: '{"results":[{"c": 75.0875,"h": 75.15,"l": 73.7975,"n": 1,"o": 74.06,"t": 1577941200000,"v": 135647456,"vw": 74.6099}],"status":"OK"}'
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Aug 2022 08:39:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 88b819d2a9999304bd4c3c80153d52de
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/minute/2022-04-14/1651708800000?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
+  response:
+    body:
+      string: '{"results":[{"c": 75.0875,"h": 75.15,"l": 73.7975,"n": 1,"o": 74.06,"t": 1577941200000,"v": 135647456,"vw": 74.6099}],"status":"OK"}'
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Aug 2022 08:39:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 88b819d2a9999304bd4c3c80153d52de
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.polygon.io/v2/aggs/ticker/O:TSLA240621C01090000/range/1/minute/2022-04-14/1651708800000?apiKey=fake_key&adjusted=true&sort=asc&limit=50000
+  response:
+    body:
+      string: '{"results":[{"c": 75.0875,"h": 75.15,"l": 73.7975,"n": 1,"o": 74.06,"t": 1577941200000,"v": 135647456,"vw": 74.6099}],"status":"OK"}'
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Aug 2022 08:39:40 GMT
+      Server:
+      - nginx/1.19.2
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 88b819d2a9999304bd4c3c80153d52de
+    status:
+      code: 200
+      message: OK
 version: 1
