@@ -6,7 +6,7 @@
       "type": "string"
     },
     "v": {
-      "type": "integer"
+      "type": "number"
     },
     "vw": {
       "type": "number"

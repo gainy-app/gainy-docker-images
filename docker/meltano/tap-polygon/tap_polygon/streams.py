@@ -322,7 +322,7 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
 
 
 class RealtimePrices(AbstractHistoricalPricesStream):
-    name = "polygon_intraday_prices"
+    name = "polygon_intraday_prices_launchpad"
     path = "/v2/aggs/ticker/{symbol}/range/1/minute/{date_from}/{date_to}"
     primary_keys = ["symbol", "t"]
     schema_filepath = SCHEMAS_DIR / "realtime_prices.json"

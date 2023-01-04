@@ -55,7 +55,7 @@ STATE = {
                 }
             }]
         },
-        "polygon_intraday_prices": {
+        "polygon_intraday_prices_launchpad": {
             "partitions": [{
                 "context": {
                     "symbol": "AAPL"
@@ -168,8 +168,9 @@ def test_validate_schema():
         ["context"], "crypto_historical_prices.json",
         "polygon_crypto_historical_prices")
     _validate_schema(
-        STATE["bookmarks"]["polygon_intraday_prices"]["partitions"][0]
-        ["context"], "realtime_prices.json", "polygon_intraday_prices")
+        STATE["bookmarks"]["polygon_intraday_prices_launchpad"]["partitions"]
+        [0]["context"], "realtime_prices.json",
+        "polygon_intraday_prices_launchpad")
 
 
 def _validate_schema(context, schema_file, stream_name):
