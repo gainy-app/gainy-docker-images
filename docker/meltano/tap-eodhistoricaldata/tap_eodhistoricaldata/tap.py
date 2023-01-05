@@ -17,10 +17,6 @@ class Tapeodhistoricaldata(Tap):
 
     config_jsonschema = th.PropertiesList(
         th.Property("api_token", th.StringType, required=True),
-        th.Property("streams",
-                    th.ArrayType(th.StringType),
-                    required=False,
-                    description="List of streams to run"),
         th.Property("symbols",
                     th.ArrayType(th.StringType),
                     required=False,
@@ -48,15 +44,8 @@ class Tapeodhistoricaldata(Tap):
     parse_env_config = True
 
     def discover_streams(self) -> List[Stream]:
-        streams = [stream_class(tap=self) for stream_class in STREAM_TYPES]
-
-        configured_streams = self.config.get("streams")
-        if configured_streams:
-            streams = list(
-                filter(lambda stream: stream.name in configured_streams,
-                       streams))
-
-        return streams
+        # """Return a list of discovered streams."""
+        return [stream_class(tap=self) for stream_class in STREAM_TYPES]
 
     def _validate_config(
             self,
