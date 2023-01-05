@@ -5,7 +5,6 @@ for i in /usr/lib/postgresql/*/bin; do
 done
 
 while ! pg_isready -d $HASURA_GRAPHQL_DATABASE_URL; do sleep 1; done &> /dev/null
-while [ "$(psql -d $HASURA_GRAPHQL_DATABASE_URL -c "select count(*) from deployment.public_schemas where schema_name = '$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME' and deployed_at is not null" -t --csv)" == "0" ]; do sleep 10; done
 
 python3 generate_config.py
 
@@ -26,6 +25,8 @@ if ! hasura migrate apply --skip-update-check; then
   echo hasura migrate apply failed
   exit 1
 fi
+
+while [ "$(psql -d $HASURA_GRAPHQL_DATABASE_URL -c "select count(*) from deployment.public_schemas where schema_name = '$HASURA_GRAPHQL_PUBLIC_SCHEMA_NAME' and deployed_at is not null" -t --csv)" == "0" ]; do sleep 10; done
 
 echo hasura metadata apply
 if ! hasura metadata apply --skip-update-check; then
