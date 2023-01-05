@@ -115,7 +115,7 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
     def partitions(self) -> Iterable[Dict[str, Any]]:
         symbols_state = self.get_symbols_state()
         symbols = self.get_symbols()
-        symbols = list(sorted(symbols))
+        symbols = list(sorted(set(symbols)))
         self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
         for symbol in symbols:
             if symbol in symbols_state:
