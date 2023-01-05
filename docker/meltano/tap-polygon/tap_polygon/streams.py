@@ -352,8 +352,8 @@ class RealtimePrices(AbstractHistoricalPricesStream):
             "order": "asc",
             "limit": 1000,
         }
-        url = self.url_base + f"/v3/reference/tickers"
         for market in ['stocks', 'crypto']:
+            url = self.url_base + f"/v3/reference/tickers"
             params["market"] = market
             while url:
                 data = self.request_decorator(self.fetch)(
