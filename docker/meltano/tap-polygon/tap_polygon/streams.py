@@ -151,20 +151,26 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
             is_incremental = False
             symbol = context.get("contract_name") or context.get("symbol")
             if 'first_record' in state:
-                first_record_context = {
-                    **context,
-                    **{
-                        "date_from": state['first_record']['t'],
-                        "date_to": state['first_record']['t'],
-                    }
-                }
-                first_record = self.request_decorator(
-                    self.load_first_record)(first_record_context)
-                if first_record and first_record['t'] == state['first_record'][
-                        't'] and abs(first_record['c'] -
-                                     state['first_record']['c']) < 1e-6:
-                    context['date_from'] = state['first_record']['date_to']
+                if self.config.get("realtime"):
                     is_incremental = True
+                else:
+                    first_record_context = {
+                        **context,
+                        **{
+                            "date_from": state['first_record']['t'],
+                            "date_to": state['first_record']['t'],
+                        }
+                    }
+                    first_record = self.request_decorator(
+                        self.load_first_record)(first_record_context)
+                    if first_record and first_record['t'] == state[
+                            'first_record']['t'] and abs(
+                                first_record['c'] -
+                                state['first_record']['c']) < 1e-6:
+                        is_incremental = True
+
+            if is_incremental:
+                context['date_from'] = state['first_record']['date_to']
 
             if 'date_from' not in context:
                 context['date_from'] = self.default_date_from
