@@ -8,9 +8,7 @@ while ! PGPASSWORD=$PG_PASSWORD pg_isready -h $PG_HOST -p $PG_PORT -U $PG_USERNA
 
 find /init.d -maxdepth 1 -type f | sort | while read -r i; do
   chmod +x $i
-  set -a
-    source $i
-  set +a
+  $i || exit 1
 done
 
 meltano "$@"
