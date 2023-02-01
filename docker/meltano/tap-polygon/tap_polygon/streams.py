@@ -230,11 +230,23 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
 
             return
 
+        default_params = {
+            "active": "true",
+            "sort": "ticker",
+            "order": "asc",
+            "limit": 1000,
+            "apiKey": self.config['api_key'],
+        }
         exchanges = self.config.get("stock_exchanges")
-        if not exchanges:
-            return
+        if exchanges:
+            params_list = [{
+                "exchange": exchange,
+                **default_params
+            } for exchange in exchanges]
+        else:
+            params_list = [{**default_params}]
 
-        for exchange in exchanges:
+        for params in params_list:
             next_url = None
             page = 0
             while page == 0 or next_url:
@@ -246,14 +258,6 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                     }
                 else:
                     url = self.url_base + "/v3/reference/tickers"
-                    params = {
-                        "exchange": exchange,
-                        "active": "true",
-                        "sort": "ticker",
-                        "order": "asc",
-                        "limit": 1000,
-                        "apiKey": self.config['api_key'],
-                    }
 
                 data = self.request_decorator(self.fetch)(url, params)
 
