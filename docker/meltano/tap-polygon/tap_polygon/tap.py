@@ -3,9 +3,8 @@ from typing import List, Tuple
 
 from singer_sdk import Tap, Stream
 from singer_sdk import typing as th  # JSON schema typing helpers
-from singer_sdk.exceptions import ConfigValidationError
 
-from tap_polygon.streams import MarketStatusUpcoming, StockSplitsUpcoming, OptionsHistoricalPrices, CryptoHistoricalPrices, StocksHistoricalPrices
+from tap_polygon.streams import MarketStatusUpcoming, StockSplitsUpcoming, OptionsHistoricalPrices, CryptoHistoricalPrices, StocksHistoricalPrices, RealtimePrices
 
 STREAM_TYPES = [
     MarketStatusUpcoming,
@@ -13,6 +12,7 @@ STREAM_TYPES = [
     OptionsHistoricalPrices,
     CryptoHistoricalPrices,
     StocksHistoricalPrices,
+    RealtimePrices,
 ]
 
 
@@ -39,6 +39,14 @@ class Tappolygon(Tap):
                     th.ArrayType(th.StringType),
                     required=False,
                     description="Stock symbols to load"),
+        th.Property("realtime_symbols",
+                    th.ArrayType(th.StringType),
+                    required=False,
+                    description="Realtime symbols to load"),
+        th.Property("realtime",
+                    th.BooleanType,
+                    required=False,
+                    description="Filter by `realtime` stream flag"),
         th.Property("split_id",
                     th.StringType,
                     required=False,

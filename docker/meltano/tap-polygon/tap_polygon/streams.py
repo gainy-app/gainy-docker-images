@@ -1,6 +1,6 @@
 """Stream type classes for tap-polygon."""
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+import datetime
 from functools import cached_property, reduce
 from pathlib import Path
 from typing import Any, Dict, Optional, Iterable, List
@@ -83,6 +83,15 @@ class StockSplitsUpcoming(AbstractPolygonStream):
 class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
     selected_by_default = True
     STATE_MSG_FREQUENCY = 100
+    http_headers = {
+        'X-Polygon-Edge-ID': '0',
+        'X-Polygon-Edge-IP-Address': '0.0.0.0'
+    }
+
+    def __init__(self, tap, name=None, schema=None, path=None):
+        super().__init__(tap, name=name, schema=schema, path=path)
+        self.default_date_from = '1980-01-01'
+        self.default_date_to = datetime.date.today().strftime('%Y-%m-%d')
 
     def get_url_params(self, context: Optional[dict],
                        next_page_token: Optional[Any]) -> Dict[str, Any]:
@@ -106,7 +115,7 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
     def partitions(self) -> Iterable[Dict[str, Any]]:
         symbols_state = self.get_symbols_state()
         symbols = self.get_symbols()
-        symbols = list(sorted(symbols))
+        symbols = list(sorted(set(symbols)))
         self.logger.info('Loading symbols %s' % (json.dumps(symbols)))
         for symbol in symbols:
             if symbol in symbols_state:
@@ -123,15 +132,15 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
             symbols_state[symbol] = state
         return symbols_state
 
-    def fetch(self, url, params):
-        res = requests.get(url=url, params=params)
+    def fetch(self, url, params, headers=None):
+        res = requests.get(url=url, params=params, headers=headers)
         self._write_request_duration_log(url, res, None, None)
         return res.json()
 
     def load_first_record(self, context) -> Dict[str, Any]:
         url = self.get_url(context)
         params = self.get_url_params(context, None)
-        data = self.fetch(url, params)
+        data = self.fetch(url, params, headers=self.http_headers)
         if data and 'results' in data and data['results']:
             return data['results'][0]
 
@@ -142,25 +151,31 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
             is_incremental = False
             symbol = context.get("contract_name") or context.get("symbol")
             if 'first_record' in state:
-                first_record_context = {
-                    **context,
-                    **{
-                        "date_from": state['first_record']['t'],
-                        "date_to": state['first_record']['t'],
-                    }
-                }
-                first_record = self.request_decorator(
-                    self.load_first_record)(first_record_context)
-                if first_record and first_record['t'] == state['first_record'][
-                        't'] and abs(first_record['c'] -
-                                     state['first_record']['c']) < 1e-6:
-                    context['date_from'] = state['first_record']['date_to']
+                if self.config.get("realtime"):
                     is_incremental = True
+                else:
+                    first_record_context = {
+                        **context,
+                        **{
+                            "date_from": state['first_record']['t'],
+                            "date_to": state['first_record']['t'],
+                        }
+                    }
+                    first_record = self.request_decorator(
+                        self.load_first_record)(first_record_context)
+                    if first_record and first_record['t'] == state[
+                            'first_record']['t'] and abs(
+                                first_record['c'] -
+                                state['first_record']['c']) < 1e-6:
+                        is_incremental = True
+
+            if is_incremental:
+                context['date_from'] = state['first_record']['date_to']
 
             if 'date_from' not in context:
-                context['date_from'] = '1980-01-01'
+                context['date_from'] = self.default_date_from
             if 'date_to' not in context:
-                context['date_to'] = datetime.now().strftime('%Y-%m-%d')
+                context['date_to'] = self.default_date_to
 
             self.logger.info('Symbol context %s %s' %
                              (symbol, json.dumps(context)))
@@ -215,12 +230,23 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
 
             return
 
+        default_params = {
+            "active": "true",
+            "sort": "ticker",
+            "order": "asc",
+            "limit": 1000,
+            "apiKey": self.config['api_key'],
+        }
         exchanges = self.config.get("stock_exchanges")
-        if not exchanges:
-            return
+        if exchanges:
+            params_list = [{
+                "exchange": exchange,
+                **default_params
+            } for exchange in exchanges]
+        else:
+            params_list = [{**default_params}]
 
-        symbols = []
-        for exchange in exchanges:
+        for params in params_list:
             next_url = None
             page = 0
             while page == 0 or next_url:
@@ -230,17 +256,8 @@ class StocksHistoricalPrices(AbstractHistoricalPricesStream):
                     params = {
                         "apiKey": self.config['api_key'],
                     }
-                    next_url = None
                 else:
                     url = self.url_base + "/v3/reference/tickers"
-                    params = {
-                        "exchange": exchange,
-                        "active": "true",
-                        "sort": "ticker",
-                        "order": "asc",
-                        "limit": 1000,
-                        "apiKey": self.config['api_key'],
-                    }
 
                 data = self.request_decorator(self.fetch)(url, params)
 
@@ -312,3 +329,73 @@ class CryptoHistoricalPrices(AbstractHistoricalPricesStream):
                     continue
 
                 yield symbol
+
+
+class RealtimePrices(AbstractHistoricalPricesStream):
+    name = "polygon_intraday_prices_launchpad"
+    path = "/v2/aggs/ticker/{symbol}/range/1/minute/{date_from}/{date_to}"
+    primary_keys = ["symbol", "t"]
+    schema_filepath = SCHEMAS_DIR / "realtime_prices.json"
+
+    def __init__(self, tap, name=None, schema=None, path=None):
+        super().__init__(tap, name=name, schema=schema, path=path)
+        self.default_date_from = (
+            datetime.date.today() -
+            datetime.timedelta(weeks=3)).strftime("%Y-%m-%d")
+        self.default_date_to = int(datetime.datetime.now().timestamp() * 1000)
+
+    def get_symbols(self) -> Iterable[str]:
+        realtime_symbols = self.config.get("realtime_symbols")
+        if realtime_symbols:
+            for symbol in realtime_symbols:
+                if not symbol or not self.is_within_split(symbol):
+                    continue
+
+                yield symbol
+            return
+
+        # load all
+        params = {
+            "apiKey": self.config['api_key'],
+            "active": "true",
+            "sort": "ticker",
+            "order": "asc",
+            "limit": 1000,
+        }
+        for market in ['stocks', 'crypto']:
+            url = self.url_base + f"/v3/reference/tickers"
+            params["market"] = market
+            while url:
+                data = self.request_decorator(self.fetch)(
+                    url, params, headers=self.http_headers)
+
+                if not data or "status" not in data or data['status'] != "OK":
+                    self.logger.error('Error while requesting %s: %s' %
+                                      (url, json.dumps(data)))
+                else:
+                    for record in data.get('results', []):
+                        symbol = record['ticker']
+                        if not symbol or not self.is_within_split(symbol):
+                            continue
+
+                        yield symbol
+
+                if 'next_url' not in data:
+                    break
+
+                url = data['next_url']
+
+        option_contract_names = self.config.get("option_contract_names", [])
+        for contract_name in option_contract_names:
+            if not contract_name or not self.is_within_split(contract_name):
+                continue
+
+            yield f"O:{contract_name}"
+
+    def post_process(self, row: dict, context: Optional[dict] = None) -> dict:
+        symbol = context['symbol']
+        symbol = re.sub(r"^X:(\w*)USD$", "\\1.CC", symbol)
+        symbol = re.sub(r"^O:(\w*)$", "\\1", symbol)
+        row['symbol'] = symbol
+
+        return super().post_process(row, context)
