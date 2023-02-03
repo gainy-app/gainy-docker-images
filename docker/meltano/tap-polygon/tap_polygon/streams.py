@@ -21,6 +21,10 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 class AbstractPolygonStream(PolygonStream, ABC):
     selected_by_default = True
     STATE_MSG_FREQUENCY = 100
+    http_headers = {
+        'X-Polygon-Edge-ID': '0',
+        'X-Polygon-Edge-IP-Address': '0.0.0.0'
+    }
 
     def _write_record_message(self, record: dict) -> None:
         """Write out a RECORD message."""
@@ -83,10 +87,6 @@ class StockSplitsUpcoming(AbstractPolygonStream):
 class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
     selected_by_default = True
     STATE_MSG_FREQUENCY = 100
-    http_headers = {
-        'X-Polygon-Edge-ID': '0',
-        'X-Polygon-Edge-IP-Address': '0.0.0.0'
-    }
 
     def __init__(self, tap, name=None, schema=None, path=None):
         super().__init__(tap, name=name, schema=schema, path=path)
@@ -133,6 +133,11 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
         return symbols_state
 
     def fetch(self, url, params, headers=None):
+        if headers is None:
+            headers = self.http_headers
+        else:
+            headers = {**self.http_headers, **headers}
+
         res = requests.get(url=url, params=params, headers=headers)
         self._write_request_duration_log(url, res, None, None)
         return res.json()
@@ -140,7 +145,7 @@ class AbstractHistoricalPricesStream(AbstractPolygonStream, ABC):
     def load_first_record(self, context) -> Dict[str, Any]:
         url = self.get_url(context)
         params = self.get_url_params(context, None)
-        data = self.fetch(url, params, headers=self.http_headers)
+        data = self.fetch(url, params)
         if data and 'results' in data and data['results']:
             return data['results'][0]
 
@@ -366,8 +371,7 @@ class RealtimePrices(AbstractHistoricalPricesStream):
             url = self.url_base + f"/v3/reference/tickers"
             params["market"] = market
             while url:
-                data = self.request_decorator(self.fetch)(
-                    url, params, headers=self.http_headers)
+                data = self.request_decorator(self.fetch)(url, params)
 
                 if not data or "status" not in data or data['status'] != "OK":
                     self.logger.error('Error while requesting %s: %s' %
