@@ -96,7 +96,8 @@ class eodhistoricaldataStream(RESTStream):
                     record["Type"],
                     "Exchange":
                     record["Exchange"],
-                } for record in res.json()]
+                } for record in res.json()
+                                    if re.match("^[^()]+$", record["Code"])]
 
                 if exchange_symbols_limit is not None:
                     exchange_symbols = list(
