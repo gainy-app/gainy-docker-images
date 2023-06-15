@@ -1,4 +1,4 @@
-FROM meltano/meltano:v2.7-python3.9
+FROM meltano/meltano:v2.7.0-python3.9
 
 ARG CODEARTIFACT_PIPY_URL
 RUN pip install -U --index-url ${CODEARTIFACT_PIPY_URL} "gainy-compute<0.5.0"
