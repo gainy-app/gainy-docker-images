@@ -1,7 +1,7 @@
-FROM meltano/meltano:v2.6.0-python3.9
+FROM meltano/meltano:v2.19.1-python3.9
 
 ARG CODEARTIFACT_PIPY_URL
-RUN pip install -U --index-url ${CODEARTIFACT_PIPY_URL} "gainy-compute<0.5.0"
+RUN pip install -U --index-url ${CODEARTIFACT_PIPY_URL} gainy-compute
 
 RUN apt update && apt install -y postgresql-client libpq-dev netcat curl
 RUN pip install pyyaml
